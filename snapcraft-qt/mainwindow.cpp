@@ -6,6 +6,7 @@
 #include <QMessageBox>
 #include <QDebug>
 #include <QProcess>
+#include <QDesktopServices>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -27,6 +28,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->snapcraft_path->clear();
     ui->terminal->setText("test");
     ui->terminal->clear();
+
+    snapcraft=new QProcess(0);
 
 }
 
@@ -93,7 +96,7 @@ void MainWindow::load_snapcraft_yaml(){
         for(int i= 0; i<napname.size() ;i++){
         ui->yaml->append(napname.at(i));
         }
-        ui->terminal->append("Opening <b>"+fileName+"</b>...<br>Done.");
+        ui->terminal->append("Opening <b>"+fileName+"</b>...<br>Done.<br>");
         //set current snap name
         snapname = napname.at(0);
         ui->current_snap->setText("current : <b>"+snapname.remove("name:")+"</b>");
@@ -137,7 +140,7 @@ void MainWindow::on_open_snap_clicked()
 
 void MainWindow::show_tree(){ //create tree
 
-    ui->terminal->append("\nComputing tree for <b>"+fileName+"</b>...<br>Done<br>Ready");
+    ui->terminal->append("\nComputing tree for <b>"+fileName+"</b>...<br>Done");
 
     QString prog = "tree";
     QStringList args;
@@ -153,6 +156,48 @@ void MainWindow::show_tree(){ //create tree
 
 void MainWindow::on_new_snap_clicked()
 {
+
+    //get dir path from qfiledialog
+    fileName = QFileDialog::getExistingDirectory(this,
+          tr("Select a Directory to init SnapCraft"),"" , QFileDialog::ShowDirsOnly
+                                                 | QFileDialog::DontResolveSymlinks);
+    if(fileName.length()>1){//verify we got directory
+
+        fileName=fileName+"/snapcraft.yaml";
+
+   // run prog
+    QString prog = "snapcraft";
+    QStringList args;
+    args<<"init";
+    snapcraft->setWorkingDirectory(fileName.remove("/snapcraft.yaml"));
+
+    snapcraft->start(prog,args);
+    ui->terminal->append("\nInitializing snapcraft in <b>"+fileName.remove("/snapcraft.yaml")+"</b><br>");
+    snapcraft->waitForFinished();
+    ui->terminal->append(snapcraft->readAll());
+
+    fileName=fileName+"/snapcraft.yaml";
+
+    //load file to interface
+    load_snapcraft_yaml();
+    //hide the session options
+    hide_session_options();
+    //show current snap options
+    show_current_snap_options();
+
+    //set snap name
+    ui->snapcraft_path->setText(fileName);
+
+    //open snapcraft.yaml from initialized dir
+    show_tree();
+    }
+    else{//if directory is empty or user cancelled init
+        QMessageBox::warning(this, tr("Snapcraft"),
+                                   tr("Unable to init snapcraft !\n\n"
+                                    "Directory invalid."),
+                                   QMessageBox::Ok);
+        hide_current_snap_options();
+    }
 
 }
 
@@ -223,6 +268,8 @@ void MainWindow::on_snapcraft_path_textChanged(const QString &arg1)
 
         ui->commands_frame->setDisabled(true);
 
+        ui->open_with_files->setDisabled(true);
+
     }
     else{
         ui->yaml->setDisabled(false);
@@ -233,6 +280,9 @@ void MainWindow::on_snapcraft_path_textChanged(const QString &arg1)
         ui->terminal->setDisabled(false);
 
         ui->commands_frame->setDisabled(false);
+
+        ui->open_with_files->setDisabled(false);
+
 
     }
 }
@@ -257,4 +307,9 @@ void MainWindow::on_clear_term_clicked()
 void MainWindow::on_tree_now_clicked()
 {
     show_tree();
+}
+
+void MainWindow::on_open_with_files_clicked()
+{
+QDesktopServices::openUrl(QUrl(ui->snapcraft_path->text().remove("/snapcraft.yaml") ));
 }

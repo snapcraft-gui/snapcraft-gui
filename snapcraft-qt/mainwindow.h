@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QProcess>
 
 namespace Ui {
 class MainWindow;
@@ -20,6 +21,7 @@ private:
     QString fileName;
     QString snapname;
     QString snapcraft_yaml;
+    QProcess *snapcraft;
 
 private slots:
     void setStyle(QString fname);//set style of player from CSS file
@@ -44,6 +46,7 @@ private slots:
     void on_terminal_textChanged();
     void on_clear_term_clicked();
     void on_tree_now_clicked();
+    void on_open_with_files_clicked();
 };
 
 #endif // MAINWINDOW_H
