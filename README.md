@@ -11,5 +11,6 @@ Build on Ubuntu 16.04 (Qt version 5.5.1) Gcc(64bit)
 
 #dependencies
 tree - sudo apt install tree
+
 snapcraft - sudo apt install snapcraft 
 
