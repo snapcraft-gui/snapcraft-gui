@@ -8,13 +8,36 @@
 #include <QProcess>
 #include <QDesktopServices>
 
+#include <QNetworkRequest>
+
+#include <QSplitter>
+#include <QSettings>
+
+
+
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    setStyle(":/rc/style.qss");
 
+
+
+    QSplitter *split1 = new QSplitter;
+
+    split1->addWidget(ui->yaml);
+    split1->addWidget(ui->tree);
+    split1->setOrientation(Qt::Horizontal);
+
+    ui->horizontalLayout_5->addWidget(split1);
+
+    QSettings settings;
+    restoreGeometry(settings.value("geometry").toByteArray());
+    restoreState(settings.value("windowState").toByteArray());
+
+
+    setStyle(":/rc/style.qss");
     ui->clean_toolButton->setPopupMode(QToolButton::InstantPopup);
 
     //TODO check if snapcraft is installed
@@ -309,7 +332,67 @@ void MainWindow::on_tree_now_clicked()
     show_tree();
 }
 
+//open snapcraft path-----------------------------------
 void MainWindow::on_open_with_files_clicked()
 {
 QDesktopServices::openUrl(QUrl(ui->snapcraft_path->text().remove("/snapcraft.yaml") ));
 }
+//open snapcraft path-----------------------------------
+
+//get highlight data read iit-----------------------------
+void MainWindow::on_highlight_clicked()
+{
+   QString damn =  QUrl::toPercentEncoding(ui->yaml->toPlainText());
+   QNetworkRequest request(QUrl("http://markup.su/api/highlighter?language=YAML&theme=SpaceCadet&source="+damn));
+   reply =m_network_manager.get(request);
+   connect(this->reply,SIGNAL(finished()),this,SLOT(request_done()));
+
+}
+void MainWindow::request_done(){
+  if(this->reply->error() == QNetworkReply::NoError){
+   QByteArray ans= reply->readAll();
+   QString s_data = QTextCodec::codecForMib(106)->toUnicode(ans);  //106 is textcode for UTF-8 here --- http://www.iana.org/assignments/character-sets/character-sets.xml
+   ui->yaml->setHtml(s_data);}
+
+   else if(this->reply->error()== QNetworkReply::OperationCanceledError){
+       QMessageBox::information(0, QObject::tr("Error !"),
+                                QObject::tr("Cancelled by User."));
+       ui->terminal->append("canceled by user.");
+   }
+   else if(this->reply->error()==QNetworkReply::NetworkSessionFailedError )
+   {
+      QMessageBox::critical(0, QObject::tr("Error !"),
+                                QObject::tr("Please try again , you need a working internet connection to highlight file YAML file"
+                                            "."));
+   }
+   else{
+       QMessageBox::critical(this, QObject::tr("Error !"),
+                                tr("Network Error !"));
+       ui->terminal->append("Network Error.");
+   }
+}
+//get highlight data read iit-----------------------------
+
+//togle back to normal view (no syntax high_lightning)
+void MainWindow::on_normal_clicked()
+{
+    ui->yaml->setText(ui->yaml->toPlainText());
+}
+
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    QSettings settings;
+    settings.setValue("geometry", saveGeometry());
+    settings.setValue("windowState", saveState());
+//    settings.setValue("playersize" ,ui->webView_2->saveGeometry());
+//    settings.setValue("listviewsize" ,ui->listView->saveGeometry());
+//    settings.setValue("listviewwidth",ui->listView->width());
+//    settings.setValue("listviewheight",ui->listView->height());
+    QMainWindow::closeEvent(event);
+    qDebug()<<"closing";
+}
+
+
+
+

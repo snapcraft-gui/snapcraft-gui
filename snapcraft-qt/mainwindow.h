@@ -3,6 +3,9 @@
 
 #include <QMainWindow>
 #include <QProcess>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+#include <QTextCodec>
 
 namespace Ui {
 class MainWindow;
@@ -22,6 +25,9 @@ private:
     QString snapname;
     QString snapcraft_yaml;
     QProcess *snapcraft;
+    QNetworkReply *reply;
+    QNetworkAccessManager m_network_manager;
+
 
 private slots:
     void setStyle(QString fname);//set style of player from CSS file
@@ -30,6 +36,8 @@ private slots:
     void show_current_snap_options();//show current snap options
     void hide_session_options(); //hide the session options
     void show_session_options(); //show the session options
+
+    void closeEvent(QCloseEvent *event);
 
 
     void load_snapcraft_yaml(); // load snapcraft.yaml to interface
@@ -47,6 +55,9 @@ private slots:
     void on_clear_term_clicked();
     void on_tree_now_clicked();
     void on_open_with_files_clicked();
+     void on_highlight_clicked();
+    void request_done();
+    void on_normal_clicked();
 };
 
 #endif // MAINWINDOW_H
