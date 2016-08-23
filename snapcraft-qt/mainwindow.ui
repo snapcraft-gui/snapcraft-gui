@@ -1,0 +1,618 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>534</width>
+    <height>477</height>
+   </rect>
+  </property>
+  <property name="font">
+   <font>
+    <pointsize>9</pointsize>
+    <italic>false</italic>
+   </font>
+  </property>
+  <property name="windowTitle">
+   <string>SnapCraft-Gui</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <property name="bottomMargin">
+     <number>9</number>
+    </property>
+    <item>
+     <widget class="QLineEdit" name="snapcraft_path">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>7</pointsize>
+        <italic>true</italic>
+       </font>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QFrame" name="frame_3">
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Plain</enum>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <property name="leftMargin">
+          <number>4</number>
+         </property>
+         <property name="topMargin">
+          <number>4</number>
+         </property>
+         <property name="rightMargin">
+          <number>4</number>
+         </property>
+         <property name="bottomMargin">
+          <number>4</number>
+         </property>
+         <item>
+          <widget class="QPushButton" name="new_snap">
+           <property name="text">
+            <string>New (init)</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="open_snap">
+           <property name="text">
+            <string>Open (yaml)</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="current_snap">
+             <property name="styleSheet">
+              <string notr="true">color: rgb(206, 206, 206);</string>
+             </property>
+             <property name="text">
+              <string>Current:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="close_current">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>close</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QFrame" name="commands_frame">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Plain</enum>
+        </property>
+        <layout class="QGridLayout" name="gridLayout">
+         <property name="leftMargin">
+          <number>4</number>
+         </property>
+         <property name="topMargin">
+          <number>4</number>
+         </property>
+         <property name="rightMargin">
+          <number>4</number>
+         </property>
+         <property name="bottomMargin">
+          <number>4</number>
+         </property>
+         <item row="0" column="0">
+          <widget class="QPushButton" name="pull">
+           <property name="text">
+            <string>Pull</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="4">
+          <widget class="QToolButton" name="clean_toolButton">
+           <property name="text">
+            <string>Clean</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="4">
+          <widget class="QToolButton" name="assets_toolButton">
+           <property name="text">
+            <string>Assets</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="2">
+          <widget class="QPushButton" name="stage">
+           <property name="text">
+            <string>Stage</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QPushButton" name="prime">
+           <property name="text">
+            <string>Prime</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="2">
+          <widget class="QPushButton" name="snap">
+           <property name="text">
+            <string>Snap</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="logo">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap resource="rc.qrc">:/images/images/logo.png</pixmap>
+        </property>
+        <property name="margin">
+         <number>8</number>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <item row="0" column="2">
+       <widget class="QLabel" name="label_2">
+        <property name="font">
+         <font>
+          <italic>true</italic>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: rgb(206, 206, 206);</string>
+        </property>
+        <property name="text">
+         <string>Tree</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QPushButton" name="save_snapcraft">
+        <property name="text">
+         <string>save</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QPushButton" name="tree_now">
+        <property name="text">
+         <string>tree</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLabel" name="label">
+        <property name="font">
+         <font>
+          <italic>true</italic>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: rgb(206, 206, 206);</string>
+        </property>
+        <property name="text">
+         <string>Snapcraft.yaml</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QFrame" name="frame_2">
+      <property name="frameShape">
+       <enum>QFrame::NoFrame</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Plain</enum>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QTextEdit" name="yaml">
+         <property name="font">
+          <font>
+           <pointsize>11</pointsize>
+          </font>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QTextEdit" name="tree">
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>534</width>
+     <height>19</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionNew"/>
+    <addaction name="actionOpen"/>
+    <addaction name="actionClose_Currrent"/>
+    <addaction name="separator"/>
+    <addaction name="actionQuit"/>
+   </widget>
+   <widget class="QMenu" name="menuTools">
+    <property name="title">
+     <string>Tools</string>
+    </property>
+    <addaction name="actionUbuntu_Paste"/>
+    <addaction name="actionOpen_Snapcraft_with_Gedit"/>
+    <addaction name="actionEnvironment_infp"/>
+    <addaction name="actionSettings"/>
+    <addaction name="separator"/>
+    <addaction name="actionList_plugins"/>
+    <addaction name="actionLogin"/>
+    <addaction name="actionLogout"/>
+    <addaction name="actionRegister"/>
+    <addaction name="actionTour"/>
+    <addaction name="actionPush"/>
+    <addaction name="actionUpload"/>
+    <addaction name="actionRelease"/>
+    <addaction name="separator"/>
+    <addaction name="actionClean"/>
+    <addaction name="actionCleanbuild"/>
+    <addaction name="actionPull"/>
+    <addaction name="actionStage"/>
+    <addaction name="actionPrime"/>
+    <addaction name="actionSnap"/>
+   </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="actionShow_Snapcraft_Help"/>
+    <addaction name="separator"/>
+    <addaction name="actionAbout"/>
+    <addaction name="actionAbout_Qt"/>
+    <addaction name="separator"/>
+    <addaction name="actionWebsite"/>
+    <addaction name="actionSnapcraft_io"/>
+    <addaction name="actionHttp_developer_ubuntu_com_snappy_snapcraft"/>
+   </widget>
+   <widget class="QMenu" name="menuPackae_manager">
+    <property name="title">
+     <string>Package manager</string>
+    </property>
+    <addaction name="actionRemove_installed"/>
+    <addaction name="actionInstall_a_snap"/>
+    <addaction name="separator"/>
+    <addaction name="actionSearchStore"/>
+   </widget>
+   <widget class="QMenu" name="menuDebug">
+    <property name="title">
+     <string>Debug</string>
+    </property>
+    <addaction name="actionInstall_snappy_debug"/>
+    <addaction name="actionConnect_to_Snappy_Debug"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuPackae_manager"/>
+   <addaction name="menuTools"/>
+   <addaction name="menuHelp"/>
+   <addaction name="menuDebug"/>
+  </widget>
+  <widget class="QDockWidget" name="dockWidget_2">
+   <property name="statusTip">
+    <string/>
+   </property>
+   <property name="floating">
+    <bool>false</bool>
+   </property>
+   <property name="features">
+    <set>QDockWidget::DockWidgetMovable|QDockWidget::DockWidgetVerticalTitleBar</set>
+   </property>
+   <property name="windowTitle">
+    <string>   Output</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>8</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_3">
+    <layout class="QVBoxLayout" name="verticalLayout_4">
+     <item>
+      <widget class="QTextEdit" name="terminal">
+       <property name="font">
+        <font>
+         <italic>true</italic>
+        </font>
+       </property>
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="clear_term">
+       <property name="text">
+        <string>Clear</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <action name="actionNew">
+   <property name="text">
+    <string>New</string>
+   </property>
+  </action>
+  <action name="actionOpen">
+   <property name="text">
+    <string>Open</string>
+   </property>
+  </action>
+  <action name="actionAbout_Qt">
+   <property name="text">
+    <string>About Qt</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About</string>
+   </property>
+  </action>
+  <action name="actionWebsite">
+   <property name="text">
+    <string>Website</string>
+   </property>
+  </action>
+  <action name="actionUbuntu_Paste">
+   <property name="text">
+    <string>Ubuntu Paste</string>
+   </property>
+  </action>
+  <action name="actionOpen_Snapcraft_with_Gedit">
+   <property name="text">
+    <string>Open  yaml with Gedit</string>
+   </property>
+  </action>
+  <action name="actionSettings">
+   <property name="text">
+    <string>Settings</string>
+   </property>
+  </action>
+  <action name="actionEnvironment_infp">
+   <property name="text">
+    <string>Environment info</string>
+   </property>
+  </action>
+  <action name="actionSnapcraft_io">
+   <property name="text">
+    <string>Snapcraft.io</string>
+   </property>
+  </action>
+  <action name="actionShow_Snapcraft_Help">
+   <property name="text">
+    <string>Show Snapcraft Help</string>
+   </property>
+  </action>
+  <action name="actionBrowse_Installed_Apps">
+   <property name="text">
+    <string>Browse Installed Apps</string>
+   </property>
+  </action>
+  <action name="actionBrowse_Installed_apps">
+   <property name="text">
+    <string>Browse Installed apps</string>
+   </property>
+  </action>
+  <action name="actionClose_Currrent">
+   <property name="text">
+    <string>Close Current</string>
+   </property>
+  </action>
+  <action name="actionQuit">
+   <property name="text">
+    <string>Quit</string>
+   </property>
+  </action>
+  <action name="actionList_plugins">
+   <property name="text">
+    <string>List-plugins</string>
+   </property>
+  </action>
+  <action name="actionLogin">
+   <property name="text">
+    <string>Login</string>
+   </property>
+  </action>
+  <action name="actionLogout">
+   <property name="text">
+    <string>Logout</string>
+   </property>
+  </action>
+  <action name="actionRegister">
+   <property name="text">
+    <string>Register</string>
+   </property>
+  </action>
+  <action name="actionTour">
+   <property name="text">
+    <string>Tour</string>
+   </property>
+  </action>
+  <action name="actionPush">
+   <property name="text">
+    <string>Push</string>
+   </property>
+  </action>
+  <action name="actionUpload">
+   <property name="text">
+    <string>Upload</string>
+   </property>
+  </action>
+  <action name="actionRelease">
+   <property name="text">
+    <string>Release</string>
+   </property>
+  </action>
+  <action name="actionLifecycle_commands">
+   <property name="text">
+    <string>Lifecycle commands</string>
+   </property>
+  </action>
+  <action name="actionClean">
+   <property name="text">
+    <string>Clean</string>
+   </property>
+  </action>
+  <action name="actionCleanbuild">
+   <property name="text">
+    <string>Cleanbuild</string>
+   </property>
+  </action>
+  <action name="actionPull">
+   <property name="text">
+    <string>Pull</string>
+   </property>
+  </action>
+  <action name="actionStage">
+   <property name="text">
+    <string>Stage</string>
+   </property>
+  </action>
+  <action name="actionPrime">
+   <property name="text">
+    <string>Prime</string>
+   </property>
+  </action>
+  <action name="actionSnap">
+   <property name="text">
+    <string>Snap</string>
+   </property>
+  </action>
+  <action name="actionList_Installled">
+   <property name="text">
+    <string>List Installed</string>
+   </property>
+  </action>
+  <action name="actionRemove_installed">
+   <property name="text">
+    <string>Remove installed snap</string>
+   </property>
+  </action>
+  <action name="actionInstall_a_snap">
+   <property name="text">
+    <string>Install a local snap </string>
+   </property>
+  </action>
+  <action name="actionConnect_to_Snappy_Debug">
+   <property name="text">
+    <string>Connect to Snappy Debug</string>
+   </property>
+  </action>
+  <action name="actionInstall_snappy_debug">
+   <property name="text">
+    <string>Install snappy-debug</string>
+   </property>
+  </action>
+  <action name="actionHttp_developer_ubuntu_com_snappy_snapcraft">
+   <property name="text">
+    <string>Developer website</string>
+   </property>
+  </action>
+  <action name="actionSearchStore">
+   <property name="text">
+    <string>Search Store</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources>
+  <include location="rc.qrc"/>
+ </resources>
+ <connections/>
+</ui>
