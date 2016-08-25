@@ -9,7 +9,7 @@
 #include <QDesktopServices>
 
 #include <QNetworkRequest>
-
+#include <QCloseEvent>
 #include <QSplitter>
 #include <QSettings>
 
@@ -274,7 +274,7 @@ void MainWindow::on_close_current_clicked()
         msgBox.setInformativeText("Do you want to save your changes?");
         msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
         msgBox.setDefaultButton(QMessageBox::Save);
-        int ret = msgBox.exec(); //return code
+        ret = msgBox.exec(); //return code
 
         switch (ret) {
           case QMessageBox::Save:
@@ -302,6 +302,7 @@ void MainWindow::on_close_current_clicked()
               break;
           case QMessageBox::Cancel:
               // Cancel was clicked
+            ret=2334123;//setting my own code to evoke cancel event
             //do nothing
               break;
           default:
@@ -346,7 +347,7 @@ else{
 //QString fst = firstline;
 
 if(ui->yaml->toPlainText().length()>1&&ui->yaml->toPlainText().split(QRegExp("[\r\n]"),QString::SkipEmptyParts).at(0) !=firstline){
-    ui->terminal->append("<b style='color:red'>Warning:</b> snapname changed <b style='color:green'>[Suggestion] :</b>Please Click Save before performing build");
+    ui->terminal->append("<b style='color:red'>Project warning:</b> snapname changed <b style='color:green'>[Suggestion] :</b>Please Click Save before performing build.<br>");
   //  qDebug()<<ui->yaml->toPlainText().split("\n").at(0);
 
 }
@@ -499,13 +500,23 @@ void MainWindow::on_normal_clicked()
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
+
+    //check for project changes are pending to save
+    on_close_current_clicked();
+
+
+    if(ret==2334123){//my custom code to check cancel button event
+        event->ignore();
+    }
+    else{
+
     QSettings settings("com.keshavnrj.snapcraft-gui", "snapcraft-gui");
     settings.setValue("geometry", saveGeometry());
     settings.setValue("windowState", saveState());
     settings.setValue("split1_state", split1->saveState());
     settings.setValue("outputdock_state", ui->dockWidget_2->saveGeometry());
     QMainWindow::closeEvent(event);
-    qDebug()<<"closing";
+    qDebug()<<"closing";}
 }
 
 

@@ -31,6 +31,7 @@ private:
     QNetworkAccessManager m_network_manager;
     QSplitter *split1;
     QString done_message;
+    int ret;
 
 
 private slots:
