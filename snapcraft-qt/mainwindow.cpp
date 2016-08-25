@@ -115,7 +115,7 @@ void MainWindow::load_snapcraft_yaml(){
         //to read the name of snap
         QStringList napname ;
         QFileInfo info(fileName);
-        qDebug()<<info.size();
+        //qDebug()<<info.size();
         if(info.size()>0){
 
         while (!in.atEnd())
@@ -132,7 +132,8 @@ void MainWindow::load_snapcraft_yaml(){
         ui->terminal->append("<span style='color:red'>Opening </span> <b>"+fileName+"</b>");
 
         //virtually click save button
-        on_save_snapcraft_clicked();
+      //  on_save_snapcraft_clicked();
+        ui->save_snapcraft->setDisabled(true);
 
         //set current snap name
         if(napname.at(0).contains("name:")){
@@ -470,7 +471,7 @@ void MainWindow::request_done(){
    QByteArray ans= reply->readAll();
    QString s_data = QTextCodec::codecForMib(106)->toUnicode(ans);  //106 is textcode for UTF-8 here --- http://www.iana.org/assignments/character-sets/character-sets.xml
    ui->yaml->setHtml(s_data.replace("background:#0d0d0d;","background:transparent;font-family: Ubuntu;font-size: 15px;"));
-   ui->terminal->append("<span style='color:red'>Editor: </span>Set highlight mode.[previous process part]."+done_message);
+   ui->terminal->append("<span style='color:red'>Editor: </span>Set highlight mode.[process part]."+done_message);
    ui->highlight->setChecked(true);
    ui->normal->setChecked(false);
    }
@@ -493,9 +494,10 @@ void MainWindow::request_done(){
    else{
        QMessageBox::critical(this, QObject::tr("Error !"),
                                 tr("Network Error !<br><br><i>Currently Snapcraft-gui uses online service to highlight yaml.</i>"));
-       ui->terminal->append("<span style='color:red'>Network Error:</span><i>Currently Snapcraft-gui uses online service to highlight yaml.</i>");
+       ui->terminal->append("<span style='color:red'>Editor: </span><span style='color:skyblue'>Network Error:</span><i>Currently Snapcraft-gui uses online service to highlight yaml.</i><br>");
   ui->highlight->setChecked(false);
   ui->normal->setChecked(true);
+
   }
 }
 //end get highlight data read iit-----------------------------
@@ -516,7 +518,6 @@ void MainWindow::closeEvent(QCloseEvent *event)
     //check for project changes are pending to save
     on_close_current_clicked();
 
-
     if(ret==2334123){//my custom code to check cancel button event
         event->ignore();
     }
@@ -534,3 +535,25 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 
 
+
+void MainWindow::on_actionNew_triggered()
+{
+    on_new_snap_clicked();
+}
+
+void MainWindow::on_actionOpen_triggered()
+{
+    on_open_snap_clicked();
+}
+
+void MainWindow::on_actionAbout_Qt_triggered()
+{
+    qApp->aboutQt();
+}
+
+void MainWindow::on_actionQuit_triggered()
+{
+    //check for project changes are pending to save
+    on_close_current_clicked();
+    qApp->quit();
+}
