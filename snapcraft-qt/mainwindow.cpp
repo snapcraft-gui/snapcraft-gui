@@ -24,7 +24,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
 
-    QSplitter *split1 = new QSplitter;
+    split1 = new QSplitter(0);
 
     split1->addWidget(ui->yaml);
     split1->addWidget(ui->tree);
@@ -32,10 +32,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->horizontalLayout_5->addWidget(split1);
 
-    QSettings settings;
+    QSettings settings("com.keshavnrj.snapcraft-gui", "snapcraft-gui");
     restoreGeometry(settings.value("geometry").toByteArray());
     restoreState(settings.value("windowState").toByteArray());
-
+    ui->dockWidget_2->restoreGeometry(settings.value("outputdock_state").toByteArray());
+    split1->restoreState(settings.value("split1_state").toByteArray());
 
     setStyle(":/rc/style.qss");
     ui->clean_toolButton->setPopupMode(QToolButton::InstantPopup);
@@ -53,8 +54,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->terminal->clear();
 
     snapcraft=new QProcess(0);
+    done_message ="<br><span style='color:green'>Done.</span><br>";
 
 }
+
 
 //Loading qss and setting style from it--------------------------------
 void MainWindow::setStyle(QString fname)
@@ -126,7 +129,7 @@ void MainWindow::load_snapcraft_yaml(){
 
         firstline = napname.at(0); //save first line to watch snap name changes, to chnage name throughout the session
 
-        ui->terminal->append("Opening <b>"+fileName+"</b><br>Done.<br>");
+        ui->terminal->append("<span style='color:red'>Opening </span> <b>"+fileName+"</b>");
         //set current snap name
         if(napname.at(0).contains("name:")){
         snapname = napname.at(0);
@@ -180,8 +183,6 @@ void MainWindow::on_open_snap_clicked()
 
 void MainWindow::show_tree(){ //create tree
 
-    ui->terminal->append("\nComputing tree for <b>"+fileName+"</b><br>Done");
-
     QString prog = "tree";
     QStringList args;
     QFile f(fileName);
@@ -189,8 +190,22 @@ void MainWindow::show_tree(){ //create tree
     args<<"-L"<<"3"<<path;  // to depth of 3
     QProcess *tree = new QProcess(this);
     tree->start(prog, args);
-    tree->waitForFinished();
-    ui->tree->setText(tree->readAll());
+  //  tree->waitForFinished();
+
+  QString tree_output;//=  tree->readAll();
+  qDebug()<<tree->readAll();
+  QString tree_error = tree->readAllStandardOutput();
+  //check tree is installed on system
+  if(tree_error.contains("installed")){
+   ui->terminal->append(tree_output+done_message);
+  }
+  else{
+  ui->terminal->append("<span style='color:red'>Computing tree: </span>"+fileName+done_message);
+  ui->tree->setText(tree_output);
+  }
+
+
+
 
 }
 
@@ -305,15 +320,13 @@ void MainWindow::on_save_snapcraft_clicked()
     QTextStream out(&file);
     out << ui->yaml->toPlainText();
 
-//    //load file to interface
-//    load_snapcraft_yaml(); //loaded yaml
-
     //save the initial content into a string to compare later in yaml text xhanged slot to change state of save btn
     snapcraft_yaml = ui->yaml->toPlainText();
 
+    ui->terminal->append("<span style='color:red'>Editor: </span>Saved file"+fileName+done_message);
+
     //disable after save
     ui->save_snapcraft->setDisabled(true);
-
 
 }
 
@@ -363,10 +376,11 @@ void MainWindow::on_terminal_textChanged()
         ui->clear_term->setDisabled(false);
     }
 
+    //to remove uneeded snapname changed lines when file loads to editor's textchange events
     if(ui->terminal->toPlainText().contains("Opening ")){
         QString old_term_data = ui->terminal->toPlainText();
-        QString new_term_data = old_term_data.split("Opening ").at(1);
-        ui->terminal->setText(new_term_data.prepend("Opening: "));
+        QString new_term_data =old_term_data.split("Opening ").at(1);
+        ui->terminal->setText("<br><span style='color:red'>Opening: </span>"+new_term_data+done_message);
     }
 }
 
@@ -386,6 +400,7 @@ void MainWindow::on_tree_now_clicked()
 void MainWindow::on_open_with_files_clicked()
 {
 QDesktopServices::openUrl(QUrl(ui->snapcraft_path->text().remove("/snapcraft.yaml") ));
+ui->terminal->append("<span style='color:red'>File Manager: </span>Open snapcraft base dir with system's Filemanager."+done_message);
 }
 //open snapcraft path-----------------------------------
 
@@ -403,7 +418,10 @@ void MainWindow::request_done(){
   if(this->reply->error() == QNetworkReply::NoError){
    QByteArray ans= reply->readAll();
    QString s_data = QTextCodec::codecForMib(106)->toUnicode(ans);  //106 is textcode for UTF-8 here --- http://www.iana.org/assignments/character-sets/character-sets.xml
-   ui->yaml->setHtml(s_data.replace("background:#0d0d0d;","background:transparent;font-family: Ubuntu;font-size: 15px;"));}
+   ui->yaml->setHtml(s_data.replace("background:#0d0d0d;","background:transparent;font-family: Ubuntu;font-size: 15px;"));
+   ui->terminal->append("<span style='color:red'>Editor: </span>Set highlight mode."+done_message);
+
+   }
 
    else if(this->reply->error()== QNetworkReply::OperationCanceledError){
        QMessageBox::information(0, QObject::tr("Error !"),
@@ -418,28 +436,27 @@ void MainWindow::request_done(){
    }
    else{
        QMessageBox::critical(this, QObject::tr("Error !"),
-                                tr("Network Error !"));
-       ui->terminal->append("Network Error.");
+                                tr("Network Error !<br><br><i>Currently Snapcraft-gui uses online service to highlight yaml.</i>"));
+       ui->terminal->append("<span style='color:red'>Network Error:</span><i>Currently Snapcraft-gui uses online service to highlight yaml.</i>");
    }
 }
-//get highlight data read iit-----------------------------
+//end get highlight data read iit-----------------------------
 
 //togle back to normal view (no syntax high_lightning)
 void MainWindow::on_normal_clicked()
 {
     ui->yaml->setText(ui->yaml->toPlainText());
+    ui->terminal->append("<span style='color:red'>Editor: </span>Set normal mode."+done_message);
 }
 
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    QSettings settings;
+    QSettings settings("com.keshavnrj.snapcraft-gui", "snapcraft-gui");
     settings.setValue("geometry", saveGeometry());
     settings.setValue("windowState", saveState());
-//    settings.setValue("playersize" ,ui->webView_2->saveGeometry());
-//    settings.setValue("listviewsize" ,ui->listView->saveGeometry());
-//    settings.setValue("listviewwidth",ui->listView->width());
-//    settings.setValue("listviewheight",ui->listView->height());
+    settings.setValue("split1_state", split1->saveState());
+    settings.setValue("outputdock_state", ui->dockWidget_2->saveGeometry());
     QMainWindow::closeEvent(event);
     qDebug()<<"closing";
 }

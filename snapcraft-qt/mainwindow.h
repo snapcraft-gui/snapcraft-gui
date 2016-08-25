@@ -6,6 +6,7 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QTextCodec>
+#include <QSplitter>
 
 namespace Ui {
 class MainWindow;
@@ -28,11 +29,12 @@ private:
     QProcess *snapcraft;
     QNetworkReply *reply;
     QNetworkAccessManager m_network_manager;
+    QSplitter *split1;
+    QString done_message;
 
 
 private slots:
     void setStyle(QString fname);//set style of player from CSS file
-
     void hide_current_snap_options(); //hide current snap options
     void show_current_snap_options();//show current snap options
     void hide_session_options(); //hide the session options
