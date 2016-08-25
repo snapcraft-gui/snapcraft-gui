@@ -204,7 +204,7 @@ void MainWindow::show_tree(){ //create tree
     }
     else {
      ui->terminal->append("<span style='color:red'>Tree: </span>tree not installed.<br>");
-     ui->tree->setText("<span style='color:red'>Tree: </span>tree not installed.");
+     ui->tree->setText("<span style='color:red'>Tree: </span>tree not installed.<br><br>We assume tree binary is installed in one of these locations:<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/usr/bin/tree<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/usr/local/bin/tree");
   }
 
 
@@ -302,6 +302,7 @@ void MainWindow::on_close_current_clicked()
               break;
           case QMessageBox::Cancel:
               // Cancel was clicked
+            //do nothing
               break;
           default:
               // should never be reached
