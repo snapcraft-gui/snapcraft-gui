@@ -148,6 +148,7 @@ void MainWindow::load_snapcraft_yaml(){
 
         //save the initial content into a string to compare later in yaml text xhanged slot to change state of save btn
         snapcraft_yaml = ui->yaml->toPlainText();
+        on_highlight_clicked();
 }
         }
 
@@ -170,6 +171,7 @@ void MainWindow::on_open_snap_clicked()
 
       //set snap name
       ui->snapcraft_path->setText(fileName);
+    setWindowTitle(this->windowTitle().append(" >> "+snapname + " @ "+fileName));
 
       //run tree command
       show_tree();
@@ -335,7 +337,6 @@ ui->snapcraft_path->clear();
 //snapcraft text change events
 void MainWindow::on_yaml_textChanged()
 {
-
 if(snapcraft_yaml == ui->yaml->toPlainText()){
     ui->save_snapcraft->setDisabled(true);
 }
@@ -458,7 +459,9 @@ void MainWindow::on_highlight_clicked()
    QString damn =  QUrl::toPercentEncoding(ui->yaml->toPlainText());
    QNetworkRequest request(QUrl("http://markup.su/api/highlighter?language=YAML&theme=SpaceCadet&source="+damn));
    reply =m_network_manager.get(request);
+   ui->terminal->append("<span style='color:red'>Editor : </span> highlighting wait...[].<br>");
    connect(this->reply,SIGNAL(finished()),this,SLOT(request_done()));
+
 
 }
 //loaded highlight data
@@ -467,26 +470,33 @@ void MainWindow::request_done(){
    QByteArray ans= reply->readAll();
    QString s_data = QTextCodec::codecForMib(106)->toUnicode(ans);  //106 is textcode for UTF-8 here --- http://www.iana.org/assignments/character-sets/character-sets.xml
    ui->yaml->setHtml(s_data.replace("background:#0d0d0d;","background:transparent;font-family: Ubuntu;font-size: 15px;"));
-   ui->terminal->append("<span style='color:red'>Editor: </span>Set highlight mode."+done_message);
-
+   ui->terminal->append("<span style='color:red'>Editor: </span>Set highlight mode.[previous process part]."+done_message);
+   ui->highlight->setChecked(true);
+   ui->normal->setChecked(false);
    }
 
    else if(this->reply->error()== QNetworkReply::OperationCanceledError){
        QMessageBox::information(0, QObject::tr("Error !"),
                                 QObject::tr("Cancelled by User."));
        ui->terminal->append("canceled by user.");
+       ui->highlight->setChecked(false);
+       ui->normal->setChecked(true);
    }
    else if(this->reply->error()==QNetworkReply::NetworkSessionFailedError )
    {
       QMessageBox::critical(0, QObject::tr("Error !"),
                                 QObject::tr("Please try again , you need a working internet connection to highlight file YAML file"
                                             "."));
+      ui->highlight->setChecked(false);
+      ui->normal->setChecked(true);
    }
    else{
        QMessageBox::critical(this, QObject::tr("Error !"),
                                 tr("Network Error !<br><br><i>Currently Snapcraft-gui uses online service to highlight yaml.</i>"));
        ui->terminal->append("<span style='color:red'>Network Error:</span><i>Currently Snapcraft-gui uses online service to highlight yaml.</i>");
-   }
+  ui->highlight->setChecked(false);
+  ui->normal->setChecked(true);
+  }
 }
 //end get highlight data read iit-----------------------------
 
@@ -494,6 +504,8 @@ void MainWindow::request_done(){
 void MainWindow::on_normal_clicked()
 {
     ui->yaml->setText(ui->yaml->toPlainText());
+    ui->highlight->setChecked(false);
+    ui->normal->setChecked(true);
     ui->terminal->append("<span style='color:red'>Editor: </span>Set normal mode."+done_message);
 }
 
