@@ -350,6 +350,7 @@
         </property>
         <property name="styleSheet">
          <string notr="true">background-color:#0D0D0D;
+color: rgb(128, 89, 120);
 background-image: url(:/images/images/grid.png);
 background-attachment: fixed;
 

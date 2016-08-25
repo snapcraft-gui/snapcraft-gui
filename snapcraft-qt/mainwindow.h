@@ -22,8 +22,9 @@ public:
 private:
     Ui::MainWindow *ui;
     QString fileName;
-    QString snapname;
-    QString snapcraft_yaml;
+    QString snapname;  //name of snap
+    QString firstline; //first line which should conatin "name:"
+    QString snapcraft_yaml; //code inside yaml file
     QProcess *snapcraft;
     QNetworkReply *reply;
     QNetworkAccessManager m_network_manager;

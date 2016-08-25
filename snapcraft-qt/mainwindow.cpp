@@ -111,6 +111,10 @@ void MainWindow::load_snapcraft_yaml(){
         QTextStream in(&file);
         //to read the name of snap
         QStringList napname ;
+        QFileInfo info(fileName);
+        qDebug()<<info.size();
+        if(info.size()>0){
+
         while (!in.atEnd())
           {
             napname.append(in.readLine());
@@ -119,15 +123,28 @@ void MainWindow::load_snapcraft_yaml(){
         for(int i= 0; i<napname.size() ;i++){
         ui->yaml->append(napname.at(i));
         }
-        ui->terminal->append("Opening <b>"+fileName+"</b>...<br>Done.<br>");
+
+        firstline = napname.at(0); //save first line to watch snap name changes, to chnage name throughout the session
+
+        ui->terminal->append("Opening <b>"+fileName+"</b><br>Done.<br>");
         //set current snap name
+        if(napname.at(0).contains("name:")){
         snapname = napname.at(0);
-        ui->current_snap->setText("current : <b>"+snapname.remove("name:")+"</b>");
+        snapname = snapname.split("#").at(0);
+        snapname = snapname.remove("name:");
+        ui->current_snap->setText("current : <b>"+snapname+"</b>");
+        }
+        else{
+            //terminal dump (snap name not set)
+            ui->terminal->append("<br>Please Specify name of snap in line: <b>1</b>");
+        }
 
-        //save the initial content into a string to compare later
+        //save the initial content into a string to compare later in yaml text xhanged slot to change state of save btn
         snapcraft_yaml = ui->yaml->toPlainText();
-
 }
+        }
+
+
 //load snapcraft.yaml to interface-------------------------------
 
 
@@ -136,9 +153,9 @@ void MainWindow::on_open_snap_clicked()
 {
   fileName = QFileDialog::getOpenFileName(this,
         tr("Open SnapCraft"), "", tr("Snapcraft Files (*.yaml)"));
-  if(fileName.length()>13){ //verify we got file
+  if(fileName.length()>13){ //verify we got file (atleat file name will be 13"snapcraft.yaml")
       //load file to interface
-      load_snapcraft_yaml();
+      load_snapcraft_yaml(); //loaded yaml
       //hide the session options
       hide_session_options();
       //show current snap options
@@ -163,7 +180,7 @@ void MainWindow::on_open_snap_clicked()
 
 void MainWindow::show_tree(){ //create tree
 
-    ui->terminal->append("\nComputing tree for <b>"+fileName+"</b>...<br>Done");
+    ui->terminal->append("\nComputing tree for <b>"+fileName+"</b><br>Done");
 
     QString prog = "tree";
     QStringList args;
@@ -179,7 +196,6 @@ void MainWindow::show_tree(){ //create tree
 
 void MainWindow::on_new_snap_clicked()
 {
-
     //get dir path from qfiledialog
     fileName = QFileDialog::getExistingDirectory(this,
           tr("Select a Directory to init SnapCraft"),"" , QFileDialog::ShowDirsOnly
@@ -257,19 +273,47 @@ ui->snapcraft_path->clear();
 void MainWindow::on_yaml_textChanged()
 {
 
-if(ui->yaml->toPlainText().length()>0 || snapcraft_yaml!=ui->yaml->toPlainText()){
-    ui->save_snapcraft->setDisabled(false);
-
-}
-else{
+if(snapcraft_yaml == ui->yaml->toPlainText()){
     ui->save_snapcraft->setDisabled(true);
 }
+else{
+    ui->save_snapcraft->setDisabled(false);
+}
+
+//save first line to some string
+//QString fst = firstline;
+
+if(ui->yaml->toPlainText().length()>1&&ui->yaml->toPlainText().split(QRegExp("[\r\n]"),QString::SkipEmptyParts).at(0) !=firstline){
+    ui->terminal->append("<b style='color:red'>Warning:</b> snapname changed <b style='color:green'>[Suggestion] :</b>Please Click Save before performing build");
+  //  qDebug()<<ui->yaml->toPlainText().split("\n").at(0);
+
+}
+snapname = ui->yaml->toPlainText().split("\n").at(0);
+snapname = snapname.split("#").at(0);
+snapname = snapname.remove("name:");
+ui->current_snap->setText("current : <b>"+snapname+"</b>");
 
 }
 
 void MainWindow::on_save_snapcraft_clicked()
 {
      //save snapcraft.yaml
+    QFile file(fileName);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+        return;
+
+    QTextStream out(&file);
+    out << ui->yaml->toPlainText();
+
+//    //load file to interface
+//    load_snapcraft_yaml(); //loaded yaml
+
+    //save the initial content into a string to compare later in yaml text xhanged slot to change state of save btn
+    snapcraft_yaml = ui->yaml->toPlainText();
+
+    //disable after save
+    ui->save_snapcraft->setDisabled(true);
+
 
 }
 
@@ -318,6 +362,12 @@ void MainWindow::on_terminal_textChanged()
     else{
         ui->clear_term->setDisabled(false);
     }
+
+    if(ui->terminal->toPlainText().contains("Opening ")){
+        QString old_term_data = ui->terminal->toPlainText();
+        QString new_term_data = old_term_data.split("Opening ").at(1);
+        ui->terminal->setText(new_term_data.prepend("Opening: "));
+    }
 }
 
 void MainWindow::on_clear_term_clicked()
@@ -348,11 +398,12 @@ void MainWindow::on_highlight_clicked()
    connect(this->reply,SIGNAL(finished()),this,SLOT(request_done()));
 
 }
+//loaded highlight data
 void MainWindow::request_done(){
   if(this->reply->error() == QNetworkReply::NoError){
    QByteArray ans= reply->readAll();
    QString s_data = QTextCodec::codecForMib(106)->toUnicode(ans);  //106 is textcode for UTF-8 here --- http://www.iana.org/assignments/character-sets/character-sets.xml
-   ui->yaml->setHtml(s_data);}
+   ui->yaml->setHtml(s_data.replace("background:#0d0d0d;","background:transparent;font-family: Ubuntu;font-size: 15px;"));}
 
    else if(this->reply->error()== QNetworkReply::OperationCanceledError){
        QMessageBox::information(0, QObject::tr("Error !"),
