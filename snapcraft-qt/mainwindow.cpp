@@ -187,6 +187,9 @@ void MainWindow::on_open_snap_clicked()
 
 void MainWindow::show_tree(){ //create tree
 
+    bool tree_present = QFileInfo("/usr/bin/tree").exists();
+    if(tree_present||QFileInfo("/usr/local/bin/tree").exists()){
+
     QString prog = "tree";
     QStringList args;
     QFile f(fileName);
@@ -194,19 +197,16 @@ void MainWindow::show_tree(){ //create tree
     args<<"-L"<<"3"<<path;  // to depth of 3
     QProcess *tree = new QProcess(this);
     tree->start(prog, args);
-  //  tree->waitForFinished();
+    ui->terminal->append("<span style='color:red'>Computing tree: </span>"+fileName);
+    tree->waitForFinished();
+    ui->terminal->append("<span style='color:green'>Done.</span><br>");
+    ui->tree->setText(tree->readAll());
+    }
+    else {
+     ui->terminal->append("<span style='color:red'>Tree: </span>tree not installed.<br>");
+     ui->tree->setText("<span style='color:red'>Tree: </span>tree not installed.");
+  }
 
-  QString tree_output;//=  tree->readAll();
-  qDebug()<<tree->readAll();
-  QString tree_error = tree->readAllStandardOutput();
-  //check tree is installed on system
-  if(tree_error.contains("installed")){
-   ui->terminal->append(tree_output+done_message);
-  }
-  else{
-  ui->terminal->append("<span style='color:red'>Computing tree: </span>"+fileName+done_message);
-  ui->tree->setText(tree_output);
-  }
 
 
 
