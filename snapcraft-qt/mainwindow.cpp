@@ -130,6 +130,10 @@ void MainWindow::load_snapcraft_yaml(){
         firstline = napname.at(0); //save first line to watch snap name changes, to chnage name throughout the session
 
         ui->terminal->append("<span style='color:red'>Opening </span> <b>"+fileName+"</b>");
+
+        //virtually click save button
+        on_save_snapcraft_clicked();
+
         //set current snap name
         if(napname.at(0).contains("name:")){
         snapname = napname.at(0);
@@ -263,15 +267,57 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_close_current_clicked()
 {
-    //close current snap
-    close_session();
-    //show session options
-    show_session_options();
-    //hide current_snap_options
-    hide_current_snap_options();
+    //check if chnages in editor are to be saved first
+    if(ui->save_snapcraft->isEnabled()){  //changes are made by user
+        QMessageBox msgBox;
+        msgBox.setText("Snapcraft.yaml has been modified.");
+        msgBox.setInformativeText("Do you want to save your changes?");
+        msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+        msgBox.setDefaultButton(QMessageBox::Save);
+        int ret = msgBox.exec(); //return code
 
-    snapcraft_yaml.clear();
-    ui->save_snapcraft->setDisabled(true);
+        switch (ret) {
+          case QMessageBox::Save:
+            // Save was clicked
+            on_save_snapcraft_clicked();
+            //close current snap
+            close_session();
+            //show session options
+            show_session_options();
+            //hide current_snap_options
+            hide_current_snap_options();
+            snapcraft_yaml.clear();
+            ui->save_snapcraft->setDisabled(true);
+              break;
+          case QMessageBox::Discard:
+              // Don't Save was clicked
+            //close current snap
+            close_session();
+            //show session options
+            show_session_options();
+            //hide current_snap_options
+            hide_current_snap_options();
+            snapcraft_yaml.clear();
+            ui->save_snapcraft->setDisabled(true);
+              break;
+          case QMessageBox::Cancel:
+              // Cancel was clicked
+              break;
+          default:
+              // should never be reached
+              break;
+        }
+    }
+    else{
+        //close current snap
+        close_session();
+        //show session options
+        show_session_options();
+        //hide current_snap_options
+        hide_current_snap_options();
+        snapcraft_yaml.clear();
+        ui->save_snapcraft->setDisabled(true);
+    }
 
 }
 
