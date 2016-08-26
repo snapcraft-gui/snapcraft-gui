@@ -390,6 +390,9 @@ color: rgb(10,92,179);
         <property name="readOnly">
          <bool>true</bool>
         </property>
+        <property name="placeholderText">
+         <string/>
+        </property>
        </widget>
       </item>
      </layout>
@@ -444,7 +447,13 @@ color: rgb(10,92,179);
     <property name="title">
      <string>Help</string>
     </property>
-    <addaction name="actionShow_Snapcraft_Help"/>
+    <widget class="QMenu" name="menuShow_Snapcraft_Help">
+     <property name="title">
+      <string>Show Snapcraft Help</string>
+     </property>
+     <addaction name="actionSnapcraft_Plugins_Help"/>
+    </widget>
+    <addaction name="menuShow_Snapcraft_Help"/>
     <addaction name="separator"/>
     <addaction name="actionAbout"/>
     <addaction name="actionAbout_Qt"/>
@@ -565,11 +574,6 @@ color: rgb(10,92,179);
   <action name="actionSnapcraft_io">
    <property name="text">
     <string>Snapcraft.io</string>
-   </property>
-  </action>
-  <action name="actionShow_Snapcraft_Help">
-   <property name="text">
-    <string>Show Snapcraft Help</string>
    </property>
   </action>
   <action name="actionBrowse_Installed_Apps">
@@ -700,6 +704,11 @@ color: rgb(10,92,179);
   <action name="actionSearchStore">
    <property name="text">
     <string>Search Store</string>
+   </property>
+  </action>
+  <action name="actionSnapcraft_Plugins_Help">
+   <property name="text">
+    <string>Snapcraft Plugins Help</string>
    </property>
   </action>
  </widget>

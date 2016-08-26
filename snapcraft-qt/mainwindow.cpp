@@ -24,7 +24,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-
+    on_actionSnapcraft_Plugins_Help_triggered();
 
     split1 = new QSplitter(0);
 
@@ -48,6 +48,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //initiate interface
 
     hide_current_snap_options();
+
     on_yaml_textChanged();
 
 
@@ -57,8 +58,16 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->terminal->setText("test");
     ui->terminal->clear();
 
-    snapcraft=new QProcess(0);
+    snapcraft=new QProcess(this);
     done_message ="<br><span style='color:green'>Done.</span><br>";
+    ui->save_snapcraft->setDisabled(true);
+
+    //some info in ui->yaml
+    ui->yaml->setText("This is snapcraft.yaml editor with snapcraft's specific yaml syntax highlight support.<br> An online syntax highlighter backend is also integrated which support lots of themes.<br>Click New to create new Snapcraft project or click Open to load existing snapcraft project.<br><br>#This tool is Developed by - Keshav Bhatt [keshavnrj@gmail.com].");//do not chnage this phrase it will breakfunctionality "Keshav Bhatt [keshavnrj@gmail.com]"
+    //some info in ui->tree
+    ui->tree->setText("Here you can see contents of loaded project directory where snapcraft.yaml is located in a tree-like format.<br>You can see size of Files and Directories, Directories are identified by '/' sign while Executable files are by '*' sign.<br><br>NOTE:<span style='color:grey;font-size:14px;'> Max display depth of the directory tree is 3 to generate tree faster !</span>");
+
+
 
 }
 
@@ -82,6 +91,8 @@ void MainWindow::setStyle(QString fname)
 void MainWindow::hide_current_snap_options(){
     ui->current_snap->hide();
     ui->close_current->hide();
+
+    ui->actionClose_Currrent->setDisabled(true);//since we having no project opened
 }
 //hide current snap options-------------------------------
 
@@ -89,6 +100,10 @@ void MainWindow::hide_current_snap_options(){
 void MainWindow::show_current_snap_options(){
     ui->current_snap->show();
     ui->close_current->show();
+
+    ui->actionClose_Currrent->setDisabled(false);//since we having project opened
+    ui->actionOpen->setDisabled(true);//since we have to close current before opening other
+    ui->actionNew->setDisabled(true);//since we have to close current before creating new
 }
 //hide current snap options-------------------------------
 
@@ -165,6 +180,7 @@ void MainWindow::load_snapcraft_yaml(){
 
 void MainWindow::on_open_snap_clicked()
 {
+  ui->yaml->clear();
   fileName = QFileDialog::getOpenFileName(this,
         tr("Open SnapCraft"), "", tr("Snapcraft Files (*.yaml)"));
   if(fileName.length()>13){ //verify we got file (atleat file name will be 13"snapcraft.yaml")
@@ -186,6 +202,11 @@ void MainWindow::on_open_snap_clicked()
        QMessageBox::warning(this, tr("Snapcraft"),
                                   tr("Unable to load snapcraft file.\n"),
                                   QMessageBox::Ok);
+       //some info in ui->yaml
+       ui->yaml->setText("This is snapcraft.yaml editor with snapcraft's specific yaml syntax highlight support.<br> An online syntax highlighter backend is also integrated which support lots of themes.<br>Click New to create new Snapcraft project or click Open to load existing snapcraft project.<br><br>#This tool is Developed by - Keshav Bhatt [keshavnrj@gmail.com].");
+       //some info in ui->tree
+       ui->tree->setText("Here you can see contents of loaded project directory where snapcraft.yaml is located in a tree-like format.<br>You can see size of Files and Directories, Directories are identified by '/' sign while Executable files are by '*' sign.<br><br>NOTE:<span style='color:grey;font-size:14px;'> Max display depth of the directory tree is 3 to generate tree faster !</span>");
+
        hide_current_snap_options();
   }
 
@@ -201,7 +222,7 @@ void MainWindow::show_tree(){ //create tree
     QStringList args;
     QFile f(fileName);
     QString path = QFileInfo(f).filePath().remove("snapcraft.yaml");
-    args<<"-L"<<"3"<<path;  // to depth of 3
+    args<<"-Q"<<"-h"<<"-F"<<"--du"<<"-L"<<"3"<<path;  // to depth of 3
     QProcess *tree = new QProcess(this);
     tree->start(prog, args);
     ui->terminal->append("<span style='color:red'>Computing tree: </span>"+fileName);
@@ -222,6 +243,7 @@ void MainWindow::show_tree(){ //create tree
 
 void MainWindow::on_new_snap_clicked()
 {
+    ui->yaml->clear();
     //get dir path from qfiledialog
     fileName = QFileDialog::getExistingDirectory(this,
           tr("Select a Directory to init SnapCraft"),"" , QFileDialog::ShowDirsOnly
@@ -334,6 +356,13 @@ void MainWindow::on_close_current_clicked()
 void MainWindow::close_session(){
 
 ui->snapcraft_path->clear();
+ui->actionOpen->setDisabled(false); //to allow user open new snapcraft.yaml
+ui->actionNew->setDisabled(false); //to allow user create new snapcraft.yaml
+
+//some info in ui->yaml
+ui->yaml->setText("This is snapcraft.yaml editor with snapcraft's specific yaml syntax highlight support.<br> An online syntax highlighter backend is also integrated which support lots of themes.<br>Click New to create new Snapcraft project or click Open to load existing snapcraft project.<br><br>#This tool is Developed by - Keshav Bhatt [keshavnrj@gmail.com].");
+//some info in ui->tree
+ui->tree->setText("Here you can see contents of loaded project directory where snapcraft.yaml is located in a tree-like format.<br>You can see size of Files and Directories, Directories are identified by '/' sign while Executable files are by '*' sign.<br><br>NOTE:<span style='color:grey;font-size:14px;'> Max display depth of the directory tree is 3 to generate tree faster !</span>");
 
 }
 //close the session -------------------------------
@@ -347,6 +376,10 @@ if(snapcraft_yaml == ui->yaml->toPlainText()){
 }
 else{
     ui->save_snapcraft->setDisabled(false);
+}
+
+if(ui->yaml->toPlainText().contains("Keshav Bhatt [keshavnrj@gmail.com]")){//do not chnage "Keshav Bhatt [keshavnrj@gmail.com]"
+    ui->save_snapcraft->setDisabled(true);
 }
 
 //save first line to some string
@@ -398,7 +431,6 @@ void MainWindow::on_snapcraft_path_textChanged(const QString &arg1)
         ui->tree_now->setDisabled(true);
 
         ui->terminal->clear();
-        ui->terminal->setDisabled(true);
 
         ui->commands_frame->setDisabled(true);
 
@@ -410,8 +442,6 @@ void MainWindow::on_snapcraft_path_textChanged(const QString &arg1)
 
         ui->tree->setDisabled(false);
         ui->tree_now->setDisabled(false);
-
-        ui->terminal->setDisabled(false);
 
         ui->commands_frame->setDisabled(false);
 
@@ -561,17 +591,68 @@ void MainWindow::on_actionQuit_triggered()
 {
     //check for project changes are pending to save
     on_close_current_clicked();
+
+    if( ret==2334123){
+        //cancel
+    }
+    else{
     qApp->quit();
+    }
+
+}
+
+void MainWindow::on_actionClose_Currrent_triggered()
+{
+    on_close_current_clicked();
 }
 
 
 //install snap from local file
 void MainWindow::on_actionInstall_a_snap_triggered()
 {
-
-    //popup a installer dialog
+    //popup a Package manager
     Install_local_snap_dialog *install = new Install_local_snap_dialog(this);
     install->exec();
+}
 
 
+
+void MainWindow::on_actionList_plugins_triggered()
+{
+    QString prog = "snapcraft";
+    QStringList args;
+    args<<"list-plugins";
+    QProcess *process = new QProcess(this);
+    process->start(prog, args);
+    process->waitForFinished();
+    QString out = process->readAll();
+
+
+    QStringList t =out.split(" ");
+    for(int i=0;i<t.size();i++){
+        if(QString(t.at(i)).length()>0){//skip empty lines
+        ui->terminal->append(QString("<span style='color:skyblue'>"+t.at(i)+"</span>").remove("\n")); // remove \n to skip newline
+        }
+    }
+
+}
+
+void MainWindow::on_actionSnapcraft_Plugins_Help_triggered()
+{
+    QString prog = "snapcraft";
+    QStringList args;
+    args<<"help"<<"plugins";
+    QProcess *process = new QProcess(this);
+    process->start(prog, args);
+    process->waitForFinished();
+    QString out = process->readAll();
+
+        ui->terminal->setText(out);
+
+
+}
+
+void MainWindow::on_actionWebsite_triggered()
+{
+        QDesktopServices::openUrl(QUrl("https://github.com/keshavbhatt/snapcraft-gui"));
 }

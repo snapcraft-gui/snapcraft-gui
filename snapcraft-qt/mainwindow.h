@@ -69,6 +69,10 @@ private slots:
     void on_actionAbout_Qt_triggered();
     void on_actionQuit_triggered();
     void on_actionInstall_a_snap_triggered();
+    void on_actionClose_Currrent_triggered();
+    void on_actionList_plugins_triggered();
+    void on_actionSnapcraft_Plugins_Help_triggered();
+    void on_actionWebsite_triggered();
 };
 
 #endif // MAINWINDOW_H
