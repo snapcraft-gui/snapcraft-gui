@@ -80,7 +80,7 @@
          </font>
         </property>
         <property name="text">
-         <string>Highlight</string>
+         <string>Online Highlight</string>
         </property>
         <property name="shortcut">
          <string>Ctrl+H</string>
@@ -384,6 +384,7 @@ background-attachment: fixed;
        <widget class="QTextEdit" name="tree">
         <property name="styleSheet">
          <string notr="true">background-color: #0D0D0D;
+color: rgb(10,92,179);
 </string>
         </property>
         <property name="readOnly">
