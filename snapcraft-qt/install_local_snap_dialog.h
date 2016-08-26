@@ -14,7 +14,7 @@ class Install_local_snap_dialog : public QDialog
 public:
     explicit Install_local_snap_dialog(QWidget *parent = 0);
     ~Install_local_snap_dialog();
-
+    QString inputstring();
 private slots:
     void install_ready_read();
 
@@ -32,6 +32,8 @@ private slots:
 
     void on_remove_snap_clicked();
 
+    void on_installed_package_clicked(const QModelIndex &index);
+
 private:
     Ui::Install_local_snap_dialog *ui;
     QProcess *install;
@@ -42,5 +44,11 @@ private:
     QString installed_snap_name; // to remove snap after installation
     QString process_name;
 };
+class FileUtils
+{
+public:
+  //  static bool removeDir(const QString &dirName);
+};
+quint64 dir_size(const QString &str);
 
 #endif // INSTALL_LOCAL_SNAP_DIALOG_H
