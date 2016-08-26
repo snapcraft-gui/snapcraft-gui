@@ -49,6 +49,8 @@ MainWindow::MainWindow(QWidget *parent) :
     hide_current_snap_options();
     on_yaml_textChanged();
 
+
+
     ui->snapcraft_path->setText("test");
     ui->snapcraft_path->clear();
     ui->terminal->setText("test");
