@@ -1,5 +1,8 @@
-# snapcraft-gui
+# snapcraft-gui (development)
 Graphical user interface to create snaps using snapcraft as backend , written in qt.
+
+#NOTE:
+Am implementing/adding each feature one by one so, all the features will not work. see the commits log to check what will work and what will not.
 
 #ScreenShot
 
