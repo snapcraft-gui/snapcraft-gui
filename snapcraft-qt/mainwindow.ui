@@ -457,7 +457,6 @@ color: rgb(10,92,179);
     <property name="title">
      <string>Package manager</string>
     </property>
-    <addaction name="actionRemove_installed"/>
     <addaction name="actionInstall_a_snap"/>
     <addaction name="separator"/>
     <addaction name="actionSearchStore"/>
@@ -680,7 +679,7 @@ color: rgb(10,92,179);
   </action>
   <action name="actionInstall_a_snap">
    <property name="text">
-    <string>Install a local snap </string>
+    <string>Install a local snap or Remove Snaps</string>
    </property>
   </action>
   <action name="actionConnect_to_Snappy_Debug">
