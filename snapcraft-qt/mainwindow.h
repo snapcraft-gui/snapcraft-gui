@@ -68,6 +68,7 @@ private slots:
     void on_actionOpen_triggered();
     void on_actionAbout_Qt_triggered();
     void on_actionQuit_triggered();
+    void on_actionInstall_a_snap_triggered();
 };
 
 #endif // MAINWINDOW_H

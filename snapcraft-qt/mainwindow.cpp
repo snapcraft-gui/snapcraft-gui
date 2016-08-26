@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "highlighter.h"
+#include "install_local_snap_dialog.h"
 #include <QFile>
 #include <QFileDialog>
 #include <QTextStream>
@@ -176,11 +177,10 @@ void MainWindow::on_open_snap_clicked()
 
       //set snap name
       ui->snapcraft_path->setText(fileName);
-    setWindowTitle(this->windowTitle().append(" >> "+snapname + " @ "+fileName));
+      setWindowTitle(this->windowTitle().append(" >> "+snapname + " @ "+fileName));
 
       //run tree command
       show_tree();
-
   }
   else{ //pop error message
        QMessageBox::warning(this, tr("Snapcraft"),
@@ -541,8 +541,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 
 
-
-
+//file menu slots
 void MainWindow::on_actionNew_triggered()
 {
     on_new_snap_clicked();
@@ -566,3 +565,13 @@ void MainWindow::on_actionQuit_triggered()
 }
 
 
+//install snap from local file
+void MainWindow::on_actionInstall_a_snap_triggered()
+{
+
+    //popup a installer dialog
+    Install_local_snap_dialog *install = new Install_local_snap_dialog(this);
+    install->exec();
+
+
+}
