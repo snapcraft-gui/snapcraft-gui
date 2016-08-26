@@ -303,12 +303,12 @@ background-attachment: fixed;</string>
            <string notr="true">border: 0px solid #3A3939;</string>
           </property>
           <property name="text">
-           <string>Vendor :</string>
+           <string>Revision :</string>
           </property>
          </widget>
         </item>
         <item row="1" column="3">
-         <widget class="QLabel" name="vendor">
+         <widget class="QLabel" name="revision">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
             <horstretch>0</horstretch>
@@ -337,7 +337,7 @@ background-attachment: fixed;</string>
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="rc.qrc">:/images/images/logo.png</pixmap>
+         <pixmap>:/images/images/logo.png</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -396,8 +396,6 @@ background-attachment: fixed;</string>
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="rc.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

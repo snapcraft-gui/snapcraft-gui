@@ -27,7 +27,7 @@ Install_local_snap_dialog::Install_local_snap_dialog(QWidget *parent) :
 
 void Install_local_snap_dialog::install_ready_read(){
     ui->terminal_output->append("<span style='color:red'>Snap Package: </span>"+snap_path+" will install shortly...<br>");
-    QString output = install->readAll().replace("[K","ok");  //this is fucking weired char snapcraft throwing in output
+    QString output = install->readAll().replace("[K","");  //this is fucking weired char snapcraft throwing in output
     ui->terminal_output->setText(output);
 
 }
@@ -54,7 +54,10 @@ else{//when process exits with status code 1
         ui->remove_snap->setDisabled(true);
         ui->install_button->setDisabled(false);
     }
-        list_installed_snaps();
+
+    ui->installed_package->clear(); //clear list cause new data available now
+
+    list_installed_snaps();
 }
 
 
@@ -148,6 +151,7 @@ void Install_local_snap_dialog::list_installed_snaps(){
      file.remove();
 
     ui->terminal_output->append("<span style='color:red'>Snap Package Manager: </span>listed installed Snaps.<br>");
+    ui->property_grid->hide(); //cause nothing is selected in the list at this time
 }
 
 //return string from listwidget
@@ -229,3 +233,13 @@ void Install_local_snap_dialog::on_installed_package_clicked(const QModelIndex &
     }
 }
 
+
+void Install_local_snap_dialog::on_remove_selected_snap_clicked()
+{
+    process_name = "_Removed_";
+    QString prog = "pkexec";
+    QStringList args;
+    args<<"snap"<<"remove"<<inputstring().split("- ").at(1);
+    install->start(prog, args);
+
+}

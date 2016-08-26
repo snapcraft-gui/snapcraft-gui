@@ -34,6 +34,8 @@ private slots:
 
     void on_installed_package_clicked(const QModelIndex &index);
 
+    void on_remove_selected_snap_clicked();
+
 private:
     Ui::Install_local_snap_dialog *ui;
     QProcess *install;
