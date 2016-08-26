@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>547</width>
-    <height>296</height>
+    <width>724</width>
+    <height>425</height>
    </rect>
   </property>
   <property name="font">
@@ -23,6 +23,9 @@
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QLineEdit" name="snap_path">
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
        <property name="placeholderText">
         <string>Select a .snap package</string>
        </property>
@@ -337,7 +340,7 @@ background-attachment: fixed;</string>
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap>:/images/images/logo.png</pixmap>
+         <pixmap resource="rc.qrc">:/images/images/logo.png</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -354,6 +357,12 @@ background-attachment: fixed;</string>
      </property>
      <item>
       <widget class="QPushButton" name="remove_selected_snap">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="text">
         <string>Remove</string>
        </property>
@@ -361,23 +370,46 @@ background-attachment: fixed;</string>
      </item>
      <item>
       <widget class="QPushButton" name="selected_snap_info">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="text">
         <string>Info</string>
        </property>
       </widget>
      </item>
      <item>
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+      <widget class="QTextEdit" name="info_terminal">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
        </property>
-       <property name="sizeHint" stdset="0">
+       <property name="maximumSize">
         <size>
-         <width>40</width>
-         <height>20</height>
+         <width>16777215</width>
+         <height>27</height>
         </size>
        </property>
-      </spacer>
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color:#0D0D0D;
+
+background-image: url(:/images/images/grid.png);
+background-attachment: fixed;</string>
+       </property>
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QPushButton" name="close_dialog">
@@ -396,6 +428,8 @@ background-attachment: fixed;</string>
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="rc.qrc"/>
+ </resources>
  <connections/>
 </ui>

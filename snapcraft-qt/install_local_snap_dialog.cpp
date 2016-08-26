@@ -20,6 +20,7 @@ Install_local_snap_dialog::Install_local_snap_dialog(QWidget *parent) :
     ui->remove_selected_snap->setDisabled(true);
     ui->selected_snap_info->setDisabled(true);
     ui->property_grid->hide();
+    ui->selected_snap_info->hide();
 
 
     list_installed_snaps();
@@ -152,6 +153,8 @@ void Install_local_snap_dialog::list_installed_snaps(){
 
     ui->terminal_output->append("<span style='color:red'>Snap Package Manager: </span>listed installed Snaps.<br>");
     ui->property_grid->hide(); //cause nothing is selected in the list at this time
+    ui->remove_selected_snap->setDisabled(true);
+    ui->selected_snap_info->setDisabled(true);
 }
 
 //return string from listwidget
@@ -231,6 +234,9 @@ void Install_local_snap_dialog::on_installed_package_clicked(const QModelIndex &
        ui->size->setText(QString::number(cache_size) + cache_unit);
 
     }
+
+    //show snap info in mini info terminal
+    on_selected_snap_info_clicked();
 }
 
 
@@ -241,5 +247,36 @@ void Install_local_snap_dialog::on_remove_selected_snap_clicked()
     QStringList args;
     args<<"snap"<<"remove"<<inputstring().split("- ").at(1);
     install->start(prog, args);
+
+}
+
+
+//sets info of selected installed snap
+void Install_local_snap_dialog::on_selected_snap_info_clicked()
+{
+    QString prog = "snap";
+    QStringList args;
+    args<<"list"<<inputstring().split("- ").at(1);
+    QProcess *process = new QProcess(this);
+    process->start(prog, args);
+    process->waitForFinished();
+    QString out =process->readAll();
+    out.replace("Name","").replace("Version","").replace("Rev","").replace("Developer","").replace("Notes","");
+
+    ui->info_terminal->setText("<span style='color:red'>Info: </span>"+out);
+    QString plain_text = ui->info_terminal->toPlainText().remove("Info: ");
+            QStringList out_data_as_list(plain_text.split(" "));
+           // qDebug()<<out_data_as_list;
+            QString name , version ,revision,developer ,notes;
+            QString color = "<span style='color:#3D8EC9'>name: </span>";
+            name=color+out_data_as_list.at(0)+" ";
+            version=color+out_data_as_list.at(1)+" ";
+            revision=color+out_data_as_list.at(2)+" ";
+            developer=color+out_data_as_list.at(3)+" ";
+            notes=color+out_data_as_list.at(4)+" ";
+            ui->info_terminal->setText("<span style='color:red'>Info: </span>"+name+version+revision+developer+notes);
+
+            ui->revision->setText(out_data_as_list.at(2));
+            ui->version->setText(out_data_as_list.at(1));
 
 }

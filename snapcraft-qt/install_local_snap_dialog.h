@@ -36,6 +36,8 @@ private slots:
 
     void on_remove_selected_snap_clicked();
 
+    void on_selected_snap_info_clicked();
+
 private:
     Ui::Install_local_snap_dialog *ui;
     QProcess *install;
