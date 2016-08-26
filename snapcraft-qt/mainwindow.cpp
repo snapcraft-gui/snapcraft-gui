@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "highlighter.h"
 #include <QFile>
 #include <QFileDialog>
 #include <QTextStream>
@@ -149,7 +150,8 @@ void MainWindow::load_snapcraft_yaml(){
 
         //save the initial content into a string to compare later in yaml text xhanged slot to change state of save btn
         snapcraft_yaml = ui->yaml->toPlainText();
-        on_highlight_clicked();
+     //   on_highlight_clicked();
+        on_normal_clicked();
 }
         }
 
@@ -457,6 +459,8 @@ ui->terminal->append("<span style='color:red'>File Manager: </span>Open snapcraf
 //get highlight data read iit-----------------------------
 void MainWindow::on_highlight_clicked()
 {
+     delete highlighter;
+
    QString damn =  QUrl::toPercentEncoding(ui->yaml->toPlainText());
    QNetworkRequest request(QUrl("http://markup.su/api/highlighter?language=YAML&theme=SpaceCadet&source="+damn));
    reply =m_network_manager.get(request);
@@ -505,10 +509,11 @@ void MainWindow::request_done(){
 //togle back to normal view (no syntax high_lightning)
 void MainWindow::on_normal_clicked()
 {
-    ui->yaml->setText(ui->yaml->toPlainText());
-    ui->highlight->setChecked(false);
-    ui->normal->setChecked(true);
-    ui->terminal->append("<span style='color:red'>Editor: </span>Set normal mode."+done_message);
+        ui->highlight->setChecked(false);
+        ui->normal->setChecked(true);
+        ui->terminal->append("<span style='color:red'>Editor: </span>Set normal mode."+done_message);
+
+        highlighter = new Highlighter(ui->yaml->document());
 }
 
 
@@ -557,3 +562,5 @@ void MainWindow::on_actionQuit_triggered()
     on_close_current_clicked();
     qApp->quit();
 }
+
+

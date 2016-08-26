@@ -7,6 +7,7 @@
 #include <QNetworkReply>
 #include <QTextCodec>
 #include <QSplitter>
+#include "highlighter.h"
 
 namespace Ui {
 class MainWindow;
@@ -32,6 +33,7 @@ private:
     QSplitter *split1;
     QString done_message;
     int ret;
+    Highlighter *highlighter;
 
 
 private slots:
