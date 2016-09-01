@@ -8,6 +8,7 @@ Am implementing/adding each feature one by one so, all the features will not wor
 
 ![snapcraft-gui](https://github.com/keshavbhatt/snapcraft-gui/blob/master/screenshots/sc1.png?raw=true)
 ![snapcraft-gui](https://github.com/keshavbhatt/snapcraft-gui/blob/master/screenshots/sc2.png?raw=true)
+![snapcraft-gui](https://github.com/keshavbhatt/snapcraft-gui/blob/master/screenshots/sc3.png?raw=true)
 
 #Build
 Build on Ubuntu 16.04 (Qt version 5.5.1) Gcc(64bit)
