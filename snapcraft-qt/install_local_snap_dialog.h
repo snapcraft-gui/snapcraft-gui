@@ -15,6 +15,7 @@ public:
     explicit Install_local_snap_dialog(QWidget *parent = 0);
     ~Install_local_snap_dialog();
     QString inputstring();
+    QString inputstring_from_updatable();
 private slots:
     void install_ready_read();
 
@@ -38,10 +39,19 @@ private slots:
 
     void on_selected_snap_info_clicked();
 
+    void list_updates_ready(int j);
+
+    void on_update_toggled(bool checked);
+
+    void on_check_for_update_clicked();
+
+    void on_updatable_clicked(const QModelIndex &index);
+
 private:
     Ui::Install_local_snap_dialog *ui;
     QProcess *install;
     QProcess *list;
+    QProcess *list_updates;
     QString snap_path;
     QString install_command;
     bool devmode;
