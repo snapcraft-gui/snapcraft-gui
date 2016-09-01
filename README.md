@@ -3,10 +3,15 @@ Graphical user interface to create snaps using snapcraft as backend , written in
 
 #Current task:
 Snap package Manager (click package manager in file menu to see)
+
 -with local snap installation capabilities [Done]
+
 -allow remove installed snaps [Done]
+
 -allow obtain informatio about installed snaps by selecting them [Done]
+
 -allow check for snaps updates [Done]
+
 -allow update updatable snaps [Current target]
 
 #NOTE:
