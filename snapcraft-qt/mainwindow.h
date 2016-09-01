@@ -73,6 +73,8 @@ private slots:
     void on_actionList_plugins_triggered();
     void on_actionSnapcraft_Plugins_Help_triggered();
     void on_actionWebsite_triggered();
+    void on_open_with_gedit_clicked();
+    void on_package_manager_clicked();
 };
 
 #endif // MAINWINDOW_H

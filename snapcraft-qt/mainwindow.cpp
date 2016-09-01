@@ -628,7 +628,7 @@ void MainWindow::on_actionList_plugins_triggered()
     process->waitForFinished();
     QString out = process->readAll();
 
-
+    ui->terminal->clear();
     QStringList t =out.split(" ");
     for(int i=0;i<t.size();i++){
         if(QString(t.at(i)).length()>0){//skip empty lines
@@ -656,4 +656,14 @@ void MainWindow::on_actionSnapcraft_Plugins_Help_triggered()
 void MainWindow::on_actionWebsite_triggered()
 {
         QDesktopServices::openUrl(QUrl("https://github.com/keshavbhatt/snapcraft-gui"));
+}
+
+void MainWindow::on_open_with_gedit_clicked()
+{
+    QDesktopServices::openUrl(QUrl(ui->snapcraft_path->text()));
+}
+
+void MainWindow::on_package_manager_clicked()
+{
+    ui->actionInstall_a_snap->trigger();
 }
