@@ -15,10 +15,12 @@ Install_local_snap_dialog::Install_local_snap_dialog(QWidget *parent) :
     install=new QProcess(this);
     list = new QProcess(this);
     list_updates = new QProcess(this);
+    info_process =new QProcess(this);
 
     connect(this->install,SIGNAL(readyRead()),this,SLOT(install_ready_read()));
     connect(install,SIGNAL(finished(int)),this,SLOT(install_process_finished(int )));
     connect(list_updates,SIGNAL(finished(int)),this,SLOT(list_updates_ready(int)));
+    connect(info_process,SIGNAL(finished(int)),this,SLOT(info_process_finished(int)));
 
     ui->install_button->setDisabled(true);
     ui->remove_snap->setDisabled(true);
@@ -280,10 +282,16 @@ void Install_local_snap_dialog::on_selected_snap_info_clicked()
          args<<"list"<<inputstring().split("- ").at(1);
     }
 
-    QProcess *process = new QProcess(this);
-    process->start(prog, args);
-    process->waitForFinished();
-    QString out =process->readAll();
+//    QProcess *process = new QProcess(this);
+    ui->info_terminal->setText("<span style='color:red'>Info: </span>Please wait getting info...");
+    info_process->start(prog, args);
+    //info_process->waitForFinished();
+
+}
+//info process finised
+void Install_local_snap_dialog::info_process_finished(int k){
+    if(k==0){
+    QString out =info_process->readAll();
     out.replace("Name","").replace("Version","").replace("Rev","").replace("Developer","").replace("Notes","");
 
     //add data to info terminal
@@ -303,6 +311,10 @@ void Install_local_snap_dialog::on_selected_snap_info_clicked()
             //set values in info frame
             ui->revision->setText(out_data_as_list.at(2));
             ui->version->setText(out_data_as_list.at(1));
+    }
+    else{
+        ui->info_terminal->setText("<span style='color:red'>Info: </span>Something went wrong, Network connection required.");
+    }
 
 }
 
@@ -313,6 +325,9 @@ void Install_local_snap_dialog::on_selected_snap_info_clicked()
 void Install_local_snap_dialog::on_update_toggled(bool checked)
 {
     if(!checked){ //update manaher not enabled
+        ui->updatable->clear();
+        //ui->installed_package->clear();
+        //list_installed_snaps();//populate list of installed snaps
         ui->install_remove_frame->setEnabled(true);
         ui->update_frame->setEnabled(false);
         //set remove button enabled if snap from installed list is selected
@@ -324,6 +339,7 @@ void Install_local_snap_dialog::on_update_toggled(bool checked)
         ui->terminal_output->setText("<span style='color:red'>Snap Package Manager: </span>switched install-remove mode.");
     }
     else{//update manager enabled
+
         //load last update time
         QSettings settings("com.keshavnrj.snapcraft-gui", "snapcraft-gui");
         ui->last_checked->setText(settings.value("last_update_check").toString());
@@ -390,7 +406,7 @@ void Install_local_snap_dialog::list_updates_ready(int j){
          ui->info_terminal->setText("<span style='color:red'>Snap Package Manager: </span> Updates are ready to install.");
       }
      else if(j==1){//execiton error or network problem or anything
-         ui->info_terminal->setText("<span style='color:red'>Snap Package Manager: </span>Something went wrong.");
+         ui->info_terminal->setText("<span style='color:red'>Snap Package Manager: </span>Something went wrong, Network connection required.");
      }
      else{//if execution was okay but no updates found
          ui->info_terminal->setText("<span style='color:red'>Snap Package Manager: </span> Updates not found.");

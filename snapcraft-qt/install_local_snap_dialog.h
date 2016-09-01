@@ -41,6 +41,8 @@ private slots:
 
     void list_updates_ready(int j);
 
+    void info_process_finished(int k);
+
     void on_update_toggled(bool checked);
 
     void on_check_for_update_clicked();
@@ -50,6 +52,7 @@ private slots:
 private:
     Ui::Install_local_snap_dialog *ui;
     QProcess *install;
+    QProcess *info_process;
     QProcess *list;
     QProcess *list_updates;
     QString snap_path;
