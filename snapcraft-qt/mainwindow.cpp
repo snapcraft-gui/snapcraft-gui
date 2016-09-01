@@ -196,7 +196,7 @@ void MainWindow::on_open_snap_clicked()
 
       //set snap name
       ui->snapcraft_path->setText(fileName);
-      setWindowTitle(this->windowTitle().append(" >> "+snapname + " @ "+fileName));
+      setWindowTitle("SnapCraft-Gui >> "+snapname + " @ "+fileName);
 
       //run tree command
       show_tree();
@@ -358,6 +358,7 @@ void MainWindow::on_close_current_clicked()
 //close the session -------------------------------
 void MainWindow::close_session(){
 
+this->setWindowTitle("SnapCraft-Gui");
 ui->snapcraft_path->clear();
 ui->actionOpen->setDisabled(false); //to allow user open new snapcraft.yaml
 ui->actionNew->setDisabled(false); //to allow user create new snapcraft.yaml
