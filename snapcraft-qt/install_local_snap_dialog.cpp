@@ -33,6 +33,7 @@ Install_local_snap_dialog::Install_local_snap_dialog(QWidget *parent) :
     ui->update->setCheckable(true);
     ui->update->setChecked(true);
     ui->update->setChecked(false);
+    ui->update->hide();
 
 
     list_installed_snaps();
@@ -336,7 +337,7 @@ void Install_local_snap_dialog::on_update_toggled(bool checked)
         }else{
             ui->remove_selected_snap->setEnabled(false);
         }
-        ui->terminal_output->setText("<span style='color:red'>Snap Package Manager: </span>switched install-remove mode.");
+        ui->info_terminal->setText("<span style='color:red'>Snap Package Manager: </span>switched install-remove mode.");
     }
     else{//update manager enabled
 
@@ -346,7 +347,7 @@ void Install_local_snap_dialog::on_update_toggled(bool checked)
         ui->install_remove_frame->setEnabled(false);
         ui->update_frame->setEnabled(true);
         ui->remove_selected_snap->setEnabled(false);
-        ui->terminal_output->setText("<span style='color:grey'>Snap Package Manager: </span>switched update-manager mode.");
+        ui->info_terminal->setText("<span style='color:red'>Snap Package Manager: </span>switched update-manager mode.");
         //inside update options
         ui->update_options->setEnabled(false);
     }
@@ -409,7 +410,7 @@ void Install_local_snap_dialog::list_updates_ready(int j){
          ui->info_terminal->setText("<span style='color:red'>Snap Package Manager: </span>Something went wrong, Network connection required.");
      }
      else{//if execution was okay but no updates found
-         ui->info_terminal->setText("<span style='color:red'>Snap Package Manager: </span> Updates not found.");
+         ui->info_terminal->setText("<span style='color:red'>Snap Package Manager: </span> Updates not found. All Snaps are up to date.");
      }
 
 }
@@ -428,4 +429,14 @@ void Install_local_snap_dialog::on_updatable_clicked(const QModelIndex &index)
     else{
         ui->update_options->setEnabled(false);
     }}
+}
+
+void Install_local_snap_dialog::on_tabWidget_currentChanged(int index)
+{
+    qDebug()<<index;
+    if(index==0){
+        ui->update->setChecked(false);
+    }else if(index==1){
+        ui->update->setChecked(true);
+    }
 }

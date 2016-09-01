@@ -49,6 +49,8 @@ private slots:
 
     void on_updatable_clicked(const QModelIndex &index);
 
+    void on_tabWidget_currentChanged(int index);
+
 private:
     Ui::Install_local_snap_dialog *ui;
     QProcess *install;
