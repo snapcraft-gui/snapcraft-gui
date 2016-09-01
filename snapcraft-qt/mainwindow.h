@@ -34,6 +34,7 @@ private:
     QString done_message;
     int ret;
     Highlighter *highlighter;
+    QProcess *pastebin_it;
 
 
 private slots:
@@ -75,6 +76,8 @@ private slots:
     void on_actionWebsite_triggered();
     void on_open_with_gedit_clicked();
     void on_package_manager_clicked();
+    void on_pastebin_it_clicked();
+    void pastebin_it_finished(int k);
 };
 
 #endif // MAINWINDOW_H

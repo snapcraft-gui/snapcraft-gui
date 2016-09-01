@@ -14,6 +14,7 @@
 #include <QCloseEvent>
 #include <QSplitter>
 #include <QSettings>
+#include <QClipboard>
 
 
 
@@ -34,6 +35,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->horizontalLayout_5->addWidget(split1);
 
+
     QSettings settings("com.keshavnrj.snapcraft-gui", "snapcraft-gui");
     restoreGeometry(settings.value("geometry").toByteArray());
     restoreState(settings.value("windowState").toByteArray());
@@ -46,12 +48,8 @@ MainWindow::MainWindow(QWidget *parent) :
     //TODO check if snapcraft is installed
 
     //initiate interface
-
     hide_current_snap_options();
-
     on_yaml_textChanged();
-
-
 
     ui->snapcraft_path->setText("test");
     ui->snapcraft_path->clear();
@@ -60,8 +58,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->highlight->hide();//temperory
 
     snapcraft=new QProcess(this);
+    pastebin_it=new QProcess(this);
     done_message ="<br><span style='color:green'>Done.</span><br>";
     ui->save_snapcraft->setDisabled(true);
+
+    connect(this->pastebin_it,SIGNAL(finished(int)),this,SLOT(pastebin_it_finished(int)));
+
 
     //some info in ui->yaml
     ui->yaml->setText("This is snapcraft.yaml editor with snapcraft's specific yaml syntax highlight support.<br> An online syntax highlighter backend is also integrated which support lots of themes.<br>Click New to create new Snapcraft project or click Open to load existing snapcraft project.<br><br>#This tool is Developed by - Keshav Bhatt [keshavnrj@gmail.com].");//do not chnage this phrase it will breakfunctionality "Keshav Bhatt [keshavnrj@gmail.com]"
@@ -160,7 +162,7 @@ void MainWindow::load_snapcraft_yaml(){
         snapname = napname.at(0);
         snapname = snapname.split("#").at(0);
         snapname = snapname.remove("name:");
-        ui->current_snap->setText("current : <b>"+snapname+"</b>");
+        ui->current_snap->setText(" Current : <b>"+snapname+"</b>");
         }
         else{
             //terminal dump (snap name not set)
@@ -394,7 +396,7 @@ if(ui->yaml->toPlainText().length()>1&&ui->yaml->toPlainText().split(QRegExp("[\
 snapname = ui->yaml->toPlainText().split("\n").at(0);
 snapname = snapname.split("#").at(0);
 snapname = snapname.remove("name:");
-ui->current_snap->setText("current : <b>"+snapname+"</b>");
+ui->current_snap->setText(" Current : <b>"+snapname+"</b>");
 
 }
 
@@ -437,6 +439,10 @@ void MainWindow::on_snapcraft_path_textChanged(const QString &arg1)
 
         ui->open_with_files->setDisabled(true);
 
+        ui->pastebin_it->setDisabled(true);
+
+        ui->open_with_gedit->setDisabled(true);
+
     }
     else{
         ui->yaml->setDisabled(false);
@@ -447,6 +453,10 @@ void MainWindow::on_snapcraft_path_textChanged(const QString &arg1)
         ui->commands_frame->setDisabled(false);
 
         ui->open_with_files->setDisabled(false);
+
+        ui->pastebin_it->setDisabled(false);
+
+        ui->open_with_gedit->setDisabled(false);
 
 
     }
@@ -666,4 +676,30 @@ void MainWindow::on_open_with_gedit_clicked()
 void MainWindow::on_package_manager_clicked()
 {
     ui->actionInstall_a_snap->trigger();
+}
+
+void MainWindow::on_pastebin_it_clicked()
+{
+    QString o = "cat "+ui->snapcraft_path->text()+"| pastebinit";
+    pastebin_it->start("bash", QStringList()<<"-c"<< o);
+    ui->pastebin_it->setText("Wait..");
+    ui->pastebin_it->setDisabled(true);
+}
+
+void MainWindow::pastebin_it_finished(int k){
+
+    if(k==0){
+        QString url = pastebin_it->readAll();
+        ui->terminal->append("<span style='color:red'>Editor: </span>"+url);
+        ui->terminal->append("<span style='color:red'>Editor: </span>pastebin url copied to clipboard.");
+        ui->pastebin_it->setText("Pastebin-it");
+        ui->pastebin_it->setDisabled(false);
+        QClipboard *clipboard = QApplication::clipboard();
+        clipboard->setText(url);
+    }
+    else if(k==1){
+         ui->terminal->append("<span style='color:red'>"+pastebin_it->readAllStandardError()+"</span>");
+         ui->pastebin_it->setText("Pastebin-it");
+         ui->pastebin_it->setDisabled(false);
+    }
 }
