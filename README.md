@@ -1,8 +1,19 @@
 # snapcraft-gui (development)
 Graphical user interface to create snaps using snapcraft as backend , written in qt.
 
+#Current task:
+Snap package Manager (click package manager in file menu to see)
+-with local snap installation capabilities [Done]
+-allow remove installed snaps [Done]
+-allow obtain informatio about installed snaps by selecting them [Done]
+-allow check for snaps updates [Done]
+-allow update updatable snaps [Current target]
+
 #NOTE:
 Am implementing/adding each feature one by one so, all the features will not work. see the commits log to check what will work and what will not.
+
+Currently it will not build any snap, that feature is yet to be implemented.
+
 
 #ScreenShot
 
