@@ -57,6 +57,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->snapcraft_path->clear();
     ui->terminal->setText("test");
     ui->terminal->clear();
+    ui->highlight->hide();//temperory
 
     snapcraft=new QProcess(this);
     done_message ="<br><span style='color:green'>Done.</span><br>";
@@ -489,53 +490,53 @@ ui->terminal->append("<span style='color:red'>File Manager: </span>Open snapcraf
 //open snapcraft path-----------------------------------
 
 //get highlight data read iit-----------------------------
-void MainWindow::on_highlight_clicked()
-{
-     delete highlighter;
+//void MainWindow::on_highlight_clicked()
+//{
+//     delete highlighter;
 
-   QString damn =  QUrl::toPercentEncoding(ui->yaml->toPlainText());
-   QNetworkRequest request(QUrl("http://markup.su/api/highlighter?language=YAML&theme=SpaceCadet&source="+damn));
-   reply =m_network_manager.get(request);
-   ui->terminal->append("<span style='color:red'>Editor : </span> highlighting wait...[].<br>");
-   connect(this->reply,SIGNAL(finished()),this,SLOT(request_done()));
+//   QString damn =  QUrl::toPercentEncoding(ui->yaml->toPlainText());
+//   QNetworkRequest request(QUrl("http://markup.su/api/highlighter?language=YAML&theme=SpaceCadet&source="+damn));
+//   reply =m_network_manager.get(request);
+//   ui->terminal->append("<span style='color:red'>Editor : </span> highlighting wait...[].<br>");
+//   connect(this->reply,SIGNAL(finished()),this,SLOT(request_done()));
 
 
-}
-//loaded highlight data
-void MainWindow::request_done(){
-  if(this->reply->error() == QNetworkReply::NoError){
-   QByteArray ans= reply->readAll();
-   QString s_data = QTextCodec::codecForMib(106)->toUnicode(ans);  //106 is textcode for UTF-8 here --- http://www.iana.org/assignments/character-sets/character-sets.xml
-   ui->yaml->setHtml(s_data.replace("background:#0d0d0d;","background:transparent;font-family: Ubuntu;font-size: 15px;"));
-   ui->terminal->append("<span style='color:red'>Editor: </span>Set highlight mode.[process part]."+done_message);
-   ui->highlight->setChecked(true);
-   ui->normal->setChecked(false);
-   }
+//}
+////loaded highlight data
+//void MainWindow::request_done(){
+//  if(this->reply->error() == QNetworkReply::NoError){
+//   QByteArray ans= reply->readAll();
+//   QString s_data = QTextCodec::codecForMib(106)->toUnicode(ans);  //106 is textcode for UTF-8 here --- http://www.iana.org/assignments/character-sets/character-sets.xml
+//   ui->yaml->setHtml(s_data.replace("background:#0d0d0d;","background:transparent;font-family: Ubuntu;font-size: 15px;"));
+//   ui->terminal->append("<span style='color:red'>Editor: </span>Set highlight mode.[process part]."+done_message);
+//   ui->highlight->setChecked(true);
+//   ui->normal->setChecked(false);
+//   }
 
-   else if(this->reply->error()== QNetworkReply::OperationCanceledError){
-       QMessageBox::information(0, QObject::tr("Error !"),
-                                QObject::tr("Cancelled by User."));
-       ui->terminal->append("canceled by user.");
-       ui->highlight->setChecked(false);
-       ui->normal->setChecked(true);
-   }
-   else if(this->reply->error()==QNetworkReply::NetworkSessionFailedError )
-   {
-      QMessageBox::critical(0, QObject::tr("Error !"),
-                                QObject::tr("Please try again , you need a working internet connection to highlight file YAML file"
-                                            "."));
-      ui->highlight->setChecked(false);
-      ui->normal->setChecked(true);
-   }
-   else{
-       QMessageBox::critical(this, QObject::tr("Error !"),
-                                tr("Network Error !<br><br><i>Currently Snapcraft-gui uses online service to highlight yaml.</i>"));
-       ui->terminal->append("<span style='color:red'>Editor: </span><span style='color:skyblue'>Network Error:</span><i>Currently Snapcraft-gui uses online service to highlight yaml.</i><br>");
-  ui->highlight->setChecked(false);
-  ui->normal->setChecked(true);
+//   else if(this->reply->error()== QNetworkReply::OperationCanceledError){
+//       QMessageBox::information(0, QObject::tr("Error !"),
+//                                QObject::tr("Cancelled by User."));
+//       ui->terminal->append("canceled by user.");
+//       ui->highlight->setChecked(false);
+//       ui->normal->setChecked(true);
+//   }
+//   else if(this->reply->error()==QNetworkReply::NetworkSessionFailedError )
+//   {
+//      QMessageBox::critical(0, QObject::tr("Error !"),
+//                                QObject::tr("Please try again , you need a working internet connection to highlight file YAML file"
+//                                            "."));
+//      ui->highlight->setChecked(false);
+//      ui->normal->setChecked(true);
+//   }
+//   else{
+//       QMessageBox::critical(this, QObject::tr("Error !"),
+//                                tr("Network Error !<br><br><i>Currently Snapcraft-gui uses online service to highlight yaml.</i>"));
+//       ui->terminal->append("<span style='color:red'>Editor: </span><span style='color:skyblue'>Network Error:</span><i>Currently Snapcraft-gui uses online service to highlight yaml.</i><br>");
+//  ui->highlight->setChecked(false);
+//  ui->normal->setChecked(true);
 
-  }
-}
+//  }
+//}
 //end get highlight data read iit-----------------------------
 
 //togle back to normal view (no syntax high_lightning)

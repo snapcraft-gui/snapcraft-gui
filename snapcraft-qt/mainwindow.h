@@ -61,8 +61,8 @@ private slots:
     void on_clear_term_clicked();
     void on_tree_now_clicked();
     void on_open_with_files_clicked();
-     void on_highlight_clicked();
-    void request_done();
+//    void on_highlight_clicked();
+//    void request_done();
     void on_normal_clicked();
     void on_actionNew_triggered();
     void on_actionOpen_triggered();
