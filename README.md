@@ -37,10 +37,10 @@ Currently it will not build any snap, that feature is yet to be implemented.
 ![snapcraft-gui](https://github.com/keshavbhatt/snapcraft-gui/blob/master/screenshots/sc3.png?raw=true)
 
 #Build
-Build on Ubuntu 16.04 (Qt version 5.5.1) Gcc(64bit)
+
+	Build on Ubuntu 16.04 (Qt version 5.5.1) Gcc(64bit)
 
 #dependencies
-tree - sudo apt install tree
 
-snapcraft - sudo apt install snapcraft 
+	See dependencies file in the source tree above
 
