@@ -433,10 +433,10 @@ void Install_local_snap_dialog::on_updatable_clicked(const QModelIndex &index)
 
 void Install_local_snap_dialog::on_tabWidget_currentChanged(int index)
 {
-    qDebug()<<index;
-    if(index==0){
+
+    if(index==0){//install tab
         ui->update->setChecked(false);
-    }else if(index==1){
+    }else if(index==1){//update tab
         ui->update->setChecked(true);
     }
 }
