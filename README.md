@@ -24,6 +24,15 @@ Snapcraft.yaml editor:
 	
 Snap lifecycle commands [not started yet]
 
+Snap Store
+	
+	-search funtionality[Done]
+	
+	-identify snap installed or not[Done]
+	
+	-install remove snaps from inside[target]
+	
+
 #NOTE:
 Am implementing/adding each feature one by one so, all the features will not work. see the commits log to check what will work and what will not.
 
