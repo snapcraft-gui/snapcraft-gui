@@ -48,6 +48,15 @@ Currently it will not build any snap, that feature is yet to be implemented.
 #Build
 
 	Build on Ubuntu 16.04 (Qt version 5.5.1) Gcc(64bit)
+	
+	cd snapcraft-qt/
+	 
+	qmake
+	
+	make
+	
+If Compiled with no errors, type ./snapcraft-qt to run
+Make sure you installed dependencies listed in dependencies file. 
 
 #dependencies
 
