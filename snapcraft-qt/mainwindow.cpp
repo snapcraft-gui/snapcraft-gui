@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include "highlighter.h"
 #include "install_local_snap_dialog.h"
+#include "store.h"
 #include <QFile>
 #include <QFileDialog>
 #include <QTextStream>
@@ -15,6 +16,7 @@
 #include <QSplitter>
 #include <QSettings>
 #include <QClipboard>
+#include <QDateTime>
 
 
 
@@ -209,7 +211,6 @@ void MainWindow::on_open_snap_clicked()
        ui->yaml->setText("This is snapcraft.yaml editor with snapcraft's specific yaml syntax highlight support.<br> An online syntax highlighter backend is also integrated which support lots of themes.<br>Click New to create new Snapcraft project or click Open to load existing snapcraft project.<br><br>#This tool is Developed by - Keshav Bhatt [keshavnrj@gmail.com].");
        //some info in ui->tree
        ui->tree->setText("Here you can see contents of loaded project directory where snapcraft.yaml is located in a tree-like format.<br>You can see size of Files and Directories, Directories are identified by '/' sign while Executable files are by '*' sign.<br><br>NOTE:<span style='color:grey;font-size:14px;'> Max display depth of the directory tree is 3 to generate tree faster !</span>");
-
        hide_current_snap_options();
   }
 
@@ -684,6 +685,7 @@ void MainWindow::on_pastebin_it_clicked()
     QString o = "cat "+ui->snapcraft_path->text()+"| pastebinit";
     pastebin_it->start("bash", QStringList()<<"-c"<< o);
     ui->pastebin_it->setText("Wait..");
+    ui->terminal->append("<span style='color:red'>Editor: </span>Uploading paste please wait... <br>");
     ui->pastebin_it->setDisabled(true);
 }
 
@@ -691,8 +693,8 @@ void MainWindow::pastebin_it_finished(int k){
 
     if(k==0){
         QString url = pastebin_it->readAll();
-        ui->terminal->append("<span style='color:red'>Editor: </span>"+url);
-        ui->terminal->append("<span style='color:red'>Editor: </span>pastebin url copied to clipboard.");
+        ui->terminal->append("<span style='color:red'>Editor: </span>"+url+" @ "+QDateTime::currentDateTime().toString()+"<br>");
+        ui->terminal->append("<span style='color:red'>Editor: </span>pastebin url copied to clipboard. <br>");
         ui->pastebin_it->setText("Pastebin-it");
         ui->pastebin_it->setDisabled(false);
         QClipboard *clipboard = QApplication::clipboard();
@@ -703,4 +705,11 @@ void MainWindow::pastebin_it_finished(int k){
          ui->pastebin_it->setText("Pastebin-it");
          ui->pastebin_it->setDisabled(false);
     }
+}
+
+//initiate store
+void MainWindow::on_search_store_clicked()
+{
+    store *Store = new store(this);
+    Store->exec();
 }

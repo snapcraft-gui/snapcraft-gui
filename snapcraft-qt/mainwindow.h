@@ -78,6 +78,7 @@ private slots:
     void on_package_manager_clicked();
     void on_pastebin_it_clicked();
     void pastebin_it_finished(int k);
+    void on_search_store_clicked();
 };
 
 #endif // MAINWINDOW_H
