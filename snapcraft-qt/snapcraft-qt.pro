@@ -15,14 +15,17 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     highlighter.cpp \
-    install_local_snap_dialog.cpp
+    install_local_snap_dialog.cpp \
+    store.cpp
 
 HEADERS  += mainwindow.h \
     highlighter.h \
-    install_local_snap_dialog.h
+    install_local_snap_dialog.h \
+    store.h
 
 FORMS    += mainwindow.ui \
-    install_local_snap_dialog.ui
+    install_local_snap_dialog.ui \
+    store.ui
 
 RESOURCES += \
     rc.qrc
