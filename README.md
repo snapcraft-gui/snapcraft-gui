@@ -2,7 +2,7 @@
 Graphical user interface to create snaps using snapcraft as backend , written in qt.
 
 #Current task:
-Snap package Manager (click package manager in file menu to see):
+Snap package Manager (click package manager in file menu to see): [Started]
 
 	-with local snap installation capabilities [Done]
 
@@ -12,9 +12,9 @@ Snap package Manager (click package manager in file menu to see):
 
 	-allow check for snaps updates [Done]
 
-	-allow update updatable snaps [Current target]
+	-allow update updatable snaps [target] //waiting for updatable packages in store
 
-Snapcraft.yaml editor:
+Snapcraft.yaml editor: [Started]
 	
 	-snapcraft's styled Yaml syntax highlightning [Done]
 	
@@ -22,9 +22,9 @@ Snapcraft.yaml editor:
 	
 	-pastebin integration [Done]
 	
-Snap lifecycle commands [not started yet]
+Snap lifecycle commands: [not started yet]
 
-Snap Store
+Snap Store: [Started]
 	
 	-search funtionality[Done]
 	
