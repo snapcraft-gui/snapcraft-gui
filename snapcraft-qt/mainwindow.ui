@@ -353,6 +353,22 @@
        </widget>
       </item>
       <item>
+       <widget class="QLabel" name="doc_stats">
+        <property name="font">
+         <font>
+          <pointsize>10</pointsize>
+          <italic>true</italic>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: silver;</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QFrame" name="frame_4">
         <property name="minimumSize">
          <size>
@@ -373,14 +389,17 @@
          <property name="spacing">
           <number>4</number>
          </property>
-         <property name="topMargin">
+         <property name="leftMargin">
           <number>3</number>
+         </property>
+         <property name="topMargin">
+          <number>2</number>
          </property>
          <property name="rightMargin">
           <number>3</number>
          </property>
          <property name="bottomMargin">
-          <number>3</number>
+          <number>2</number>
          </property>
          <item>
           <widget class="QPushButton" name="zoom_out">
@@ -393,7 +412,7 @@
            <property name="maximumSize">
             <size>
              <width>20</width>
-             <height>20</height>
+             <height>18</height>
             </size>
            </property>
            <property name="font">
@@ -438,7 +457,7 @@
            <property name="maximumSize">
             <size>
              <width>20</width>
-             <height>20</height>
+             <height>18</height>
             </size>
            </property>
            <property name="text">
@@ -447,22 +466,6 @@
           </widget>
          </item>
         </layout>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="doc_stats">
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-          <italic>true</italic>
-         </font>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">color: silver;</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
        </widget>
       </item>
       <item>
