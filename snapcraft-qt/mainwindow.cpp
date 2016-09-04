@@ -1094,3 +1094,18 @@ void MainWindow::on_redo_btn_clicked()
 {
     ui->yaml->redo();
 }
+
+void MainWindow::on_pull_clicked()
+{
+    ui->terminal->setText("NOT IMPLIMENTED YET<br>");
+}
+
+void MainWindow::on_stage_clicked()
+{
+    ui->terminal->setText("NOT IMPLIMENTED YET<br>");
+}
+
+void MainWindow::on_prime_clicked()
+{
+    ui->terminal->setText("NOT IMPLIMENTED YET<br>");
+}

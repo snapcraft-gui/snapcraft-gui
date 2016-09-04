@@ -127,6 +127,9 @@ private slots:
     void on_zoom_out_clicked();
     void on_undo_btn_clicked();
     void on_redo_btn_clicked();
+    void on_pull_clicked();
+    void on_stage_clicked();
+    void on_prime_clicked();
 };
 
 #endif // MAINWINDOW_H
