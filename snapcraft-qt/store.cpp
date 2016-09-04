@@ -59,12 +59,12 @@ void store::search_finished(int j){
        ui->search->setDisabled(false);
 
               if(s.contains("not found")||e.contains("not found")||o.contains("not found")){
-                  qDebug()<<"stdout  "+e<<"readall "+s<<"error "+o;
+//                  qDebug()<<"stdout  "+e<<"readall "+s<<"error "+o;
                   ui->info_terminal->setText("<span style='color:red'>Snap Store: </span>No Snap found for the searched term.");
                  ui->search->setDisabled(false);
              }
              else if(s.contains("https:")||e.contains("https:")||o.contains("https:")){
-                  qDebug()<<"stdout  "+e<<"readall "+s<<"errorline"+o;
+//                  qDebug()<<"stdout  "+e<<"readall "+s<<"errorline"+o;
                  ui->info_terminal->setText("<span style='color:red'>Snap Store: </span>Cannot connect to store.");
                  ui->search->setDisabled(false);
              }
@@ -76,12 +76,12 @@ else if(j==1){
       qDebug()<<"stdout  "+e<<"readall "+s<<"error "+o;
 
       if(o.contains("not found")){
-          qDebug()<<"stdout  "+e<<"readall "+s<<"error "+o;
+//          qDebug()<<"stdout  "+e<<"readall "+s<<"error "+o;
           ui->info_terminal->setText("<span style='color:red'>Snap Store: </span>No Snap found for the searched term.");
          ui->search->setDisabled(false);
      }
      else if(s.contains("https:")||e.contains("https:")||o.contains("https:")){
-          qDebug()<<"stdout  "+e<<"readall "+s<<"errorline"+o;
+//          qDebug()<<"stdout  "+e<<"readall "+s<<"errorline"+o;
          ui->info_terminal->setText("<span style='color:red'>Snap Store: </span>Cannot connect to store.");
          ui->search->setDisabled(false);
      }
