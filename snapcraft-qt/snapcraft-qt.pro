@@ -25,7 +25,8 @@ HEADERS  += mainwindow.h \
 
 FORMS    += mainwindow.ui \
     install_local_snap_dialog.ui \
-    store.ui
+    store.ui \
+    clean_dialog.ui
 
 RESOURCES += \
     rc.qrc
