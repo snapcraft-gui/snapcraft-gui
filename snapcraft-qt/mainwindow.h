@@ -49,6 +49,7 @@ private:
 
 
 private slots:
+    bool saveFile();
     void documentWasModified();
     void setStyle(QString fname);//set style of player from CSS file
     void hide_current_snap_options(); //hide current snap options

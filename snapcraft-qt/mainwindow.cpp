@@ -435,16 +435,10 @@ void MainWindow::on_save_snapcraft_clicked()
 {
     ui->terminal->append("<br>save requested<br>");
      //save snapcraft.yaml
-    QFile file(fileName);
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
-        return;
 
-    QTextStream out(&file);
-    out << ui->yaml->toPlainText();
-
+    //saveFile();
+    if(saveFile()){
     ui->terminal->append("<span style='color:red'>Editor: </span>Saved file"+fileName+done_message);
-
-    file.close();
 
     //disable after save
     ui->save_snapcraft->setDisabled(true);
@@ -453,8 +447,34 @@ void MainWindow::on_save_snapcraft_clicked()
     snapcraft_yaml.clear();
     snapcraft_yaml = ui->yaml->toPlainText();
 
+     }
+
 }
 
+
+bool MainWindow::saveFile()
+{
+    QFile file(fileName);
+    if (!file.open(QFile::WriteOnly | QFile::Text)) {
+        QMessageBox::warning(this, tr("Application"),
+                             tr("Cannot write file %1:\n%2.")
+                             .arg(QDir::toNativeSeparators(fileName),
+                                  file.errorString()));
+        return false;
+    }
+
+    QTextStream out(&file);
+#ifndef QT_NO_CURSOR
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+#endif
+    out << ui->yaml->toPlainText();
+#ifndef QT_NO_CURSOR
+    QApplication::restoreOverrideCursor();
+#endif
+
+
+    return true;
+}
 
 // enable disable widgets if snapcraft.yaml is open or closed
 void MainWindow::on_snapcraft_path_textChanged(const QString &arg1)
