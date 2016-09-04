@@ -1109,3 +1109,8 @@ void MainWindow::on_prime_clicked()
 {
     ui->terminal->setText("NOT IMPLIMENTED YET<br>");
 }
+
+void MainWindow::on_actionSearchStore_triggered()
+{
+    on_search_store_clicked();
+}

@@ -130,6 +130,7 @@ private slots:
     void on_pull_clicked();
     void on_stage_clicked();
     void on_prime_clicked();
+    void on_actionSearchStore_triggered();
 };
 
 #endif // MAINWINDOW_H
