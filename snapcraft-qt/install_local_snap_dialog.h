@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include <QProcess>
+
 namespace Ui {
 class Install_local_snap_dialog;
 }
@@ -71,3 +72,5 @@ public:
 quint64 dir_size(const QString &str);
 
 #endif // INSTALL_LOCAL_SNAP_DIALOG_H
+
+

@@ -179,8 +179,7 @@ background-attachment: fixed;</string>
                    </font>
                   </property>
                   <property name="styleSheet">
-                   <string notr="true">background-color:#0D0D0D;
-background-attachment: fixed;</string>
+                   <string notr="true"/>
                   </property>
                   <property name="alternatingRowColors">
                    <bool>true</bool>
@@ -489,8 +488,7 @@ background-attachment: fixed;</string>
             </font>
            </property>
            <property name="styleSheet">
-            <string notr="true">background-color:#0D0D0D;
-background-attachment: fixed;</string>
+            <string notr="true"/>
            </property>
            <property name="alternatingRowColors">
             <bool>true</bool>

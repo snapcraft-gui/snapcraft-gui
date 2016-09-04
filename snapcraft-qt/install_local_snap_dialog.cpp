@@ -5,6 +5,7 @@
 #include <QDateTime>
 #include <QDebug>
 #include <QSettings>
+#include "store.h"
 
 Install_local_snap_dialog::Install_local_snap_dialog(QWidget *parent) :
     QDialog(parent),
@@ -439,4 +440,5 @@ void Install_local_snap_dialog::on_tabWidget_currentChanged(int index)
     }else if(index==1){//update tab
         ui->update->setChecked(true);
     }
+
 }
