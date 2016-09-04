@@ -32,7 +32,7 @@ Highlighter::Highlighter(QTextDocument *parent)
 //! [3] single line comment
     singleLineCommentFormat.setForeground(Qt::gray);
     singleLineCommentFormat.setFontItalic(true);
-    singleLineCommentFormat.setFontPointSize(10);
+//    singleLineCommentFormat.setFontPointSize(10);
     rule.pattern = QRegExp("#[^\n]*");
     rule.format = singleLineCommentFormat;
     highlightingRules.append(rule);
