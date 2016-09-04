@@ -127,8 +127,10 @@ void store::on_install_clicked()
 {
     if(ui->install->text().contains("Remove")){//remove snap
         qDebug()<<"removing";
+            ui->info_terminal->setText("NOT IMPLIMENTED YET");
     }
     else{//install snap
         qDebug()<<"installing";
+            ui->info_terminal->setText("NOT IMPLIMENTED YET");
     }
 }
