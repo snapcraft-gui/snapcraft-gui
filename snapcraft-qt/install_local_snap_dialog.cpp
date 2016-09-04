@@ -411,6 +411,7 @@ void Install_local_snap_dialog::list_updates_ready(int j){
          ui->info_terminal->setText("<span style='color:red'>Snap Package Manager: </span>Something went wrong, Network connection required.");
      }
      else{//if execution was okay but no updates found
+         ui->last_checked->setText(QDateTime::currentDateTime().toString());
          ui->info_terminal->setText("<span style='color:red'>Snap Package Manager: </span> Updates not found. All Snaps are up to date.");
      }
 
