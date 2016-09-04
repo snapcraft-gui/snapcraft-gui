@@ -22,7 +22,17 @@ Snapcraft.yaml editor: [Started]
 	
 	-pastebin integration [Done]
 	
-Snap lifecycle commands: [not started yet]
+Snap lifecycle commands: [started]
+	
+	-clean [done]
+	
+	-pull[not started]
+	
+	-stage[not started]
+	
+	-prime[not started]
+	
+	-snap[not started]
 
 Snap Store: [Started]
 	
