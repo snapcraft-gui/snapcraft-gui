@@ -20,6 +20,8 @@
 #include <QDateTime>
 #include <QStyle>
 #include <QMenu>
+#include <QTimer>
+#include <QMimeData>
 
 
 
@@ -35,6 +37,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     split1 = new QSplitter(this);
     clean_proc =new QProcess(this);
+    snap=new QProcess(this);
+
 
 
 
@@ -76,10 +80,12 @@ MainWindow::MainWindow(QWidget *parent) :
     //clean command connections
     connect(this->clean_proc,SIGNAL(readyRead()),this,SLOT(clean_proc_readyRead()));
     connect(this->clean_proc,SIGNAL(finished(int)),this,SLOT(clean_proc_finished(int)));
+
+    connect(this->snap,SIGNAL(finished(int)),this,SLOT(snap_finished(int)));
+    connect(this->snap,SIGNAL(readyRead()),this,SLOT(snap_readyRead()));
     connect(ui->yaml->document(), &QTextDocument::contentsChanged,this, &MainWindow::documentWasModified);
 
-
-
+    ui->yaml->setContextMenuPolicy(Qt::CustomContextMenu);//to allow pop custom context menu in yaml editor
     //some info in ui->yaml
     ui->yaml->setText("This is snapcraft.yaml editor with snapcraft's specific yaml syntax highlight support.<br> An online syntax highlighter backend is also integrated which support lots of themes.<br>Click New to create new Snapcraft project or click Open to load existing snapcraft project.<br><br>#This tool is Developed by - Keshav Bhatt [keshavnrj@gmail.com].");//do not chnage this phrase it will breakfunctionality "Keshav Bhatt [keshavnrj@gmail.com]"
     //some info in ui->tree
@@ -207,7 +213,7 @@ void MainWindow::load_snapcraft_yaml(){
      //   on_highlight_clicked();
         on_normal_clicked();
 }
-        }
+}
 
 
 //load snapcraft.yaml to interface-------------------------------
@@ -283,16 +289,16 @@ void MainWindow::on_new_snap_clicked()
                                                  | QFileDialog::DontResolveSymlinks);
     if(fileName.length()>1){//verify we got directory
 
-        fileName=fileName+"/snapcraft.yaml";
+       // fileName=fileName+"/snapcraft.yaml";
 
    // run prog
     QString prog = "snapcraft";
     QStringList args;
     args<<"init";
-    snapcraft->setWorkingDirectory(fileName.remove("/snapcraft.yaml"));
+    snapcraft->setWorkingDirectory(QString(fileName).remove("/snapcraft.yaml"));
 
     snapcraft->start(prog,args);
-    ui->terminal->append("\nInitializing snapcraft in <b>"+fileName.remove("/snapcraft.yaml")+"</b><br>");
+    ui->terminal->append("\nInitializing snapcraft in <b>"+QString(fileName).remove("/snapcraft.yaml")+"</b><br>");
     snapcraft->waitForFinished();
     ui->terminal->append(snapcraft->readAll());
 
@@ -316,6 +322,9 @@ void MainWindow::on_new_snap_clicked()
                                    tr("Unable to init snapcraft !\n\n"
                                     "Directory invalid."),
                                    QMessageBox::Ok);
+        //some info in ui->yaml
+        ui->yaml->setText("This is snapcraft.yaml editor with snapcraft's specific yaml syntax highlight support.<br> An online syntax highlighter backend is also integrated which support lots of themes.<br>Click New to create new Snapcraft project or click Open to load existing snapcraft project.<br><br>#This tool is Developed by - Keshav Bhatt [keshavnrj@gmail.com].");
+
         hide_current_snap_options();
     }
 
@@ -387,6 +396,7 @@ void MainWindow::on_close_current_clicked()
 
 //close the session -------------------------------
 void MainWindow::close_session(){
+ui->yaml->document()->clearUndoRedoStacks();//clear() below can do that but fuck it we doing it with document
 ui->yaml->clear();
 this->setWindowTitle("SnapCraft-Gui");
 ui->snapcraft_path->clear();
@@ -405,6 +415,7 @@ ui->tree->setText("Here you can see contents of loaded project directory where s
 //snapcraft text change events
 void MainWindow::on_yaml_textChanged()
 {
+
 if(snapcraft_yaml == ui->yaml->toPlainText()){
     ui->save_snapcraft->setDisabled(true);
 }
@@ -429,6 +440,10 @@ snapname = snapname.split("#").at(0);
 snapname = snapname.remove("name:");
 ui->current_snap->setText(" Current : <b>"+snapname+"</b>");
 
+//show doc stats
+ui->doc_stats->setText("Word count: "+QString::number(ui->yaml->document()->characterCount())+" "
+                       "Line count: "+QString::number(ui->yaml->document()->lineCount()));
+
 }
 
 void MainWindow::on_save_snapcraft_clicked()
@@ -436,7 +451,7 @@ void MainWindow::on_save_snapcraft_clicked()
     ui->terminal->append("<br>save requested<br>");
      //save snapcraft.yaml
 
-    //saveFile();
+    //if file saved
     if(saveFile()){
     ui->terminal->append("<span style='color:red'>Editor: </span>Saved file"+fileName+done_message);
 
@@ -446,14 +461,16 @@ void MainWindow::on_save_snapcraft_clicked()
     //save the initial content into a string to compare later in yaml text xhanged slot to change state of save btn
     snapcraft_yaml.clear();
     snapcraft_yaml = ui->yaml->toPlainText();
-
-     }
+    }
 
 }
 
-
+//save snapcraft.yaml return
 bool MainWindow::saveFile()
 {
+    if(!fileName.contains("snapcraft.yaml")){
+        fileName=fileName+"/snapcraft.yaml";
+    }   //to avoid requesting filesave as a directory (in some cases) , so wrote this new save file function to output what going on
     QFile file(fileName);
     if (!file.open(QFile::WriteOnly | QFile::Text)) {
         QMessageBox::warning(this, tr("Application"),
@@ -471,8 +488,6 @@ bool MainWindow::saveFile()
 #ifndef QT_NO_CURSOR
     QApplication::restoreOverrideCursor();
 #endif
-
-
     return true;
 }
 
@@ -734,6 +749,11 @@ void MainWindow::on_package_manager_clicked()
     ui->actionInstall_a_snap->trigger();
 }
 
+void MainWindow::on_actionClean_triggered()
+{
+    clean_custom();
+}
+
 
 //pastebin-it function
 void MainWindow::on_pastebin_it_clicked()
@@ -789,7 +809,7 @@ void MainWindow::clean_custom(){
   clean_widget=new QWidget();
   cui.setupUi(clean_widget);
   clean_widget->setWindowFlags(Qt::Popup);
-  clean_widget->move(ui->clean_toolButton->mapToGlobal(QPoint(-clean_widget->width()+20,40)));
+  clean_widget->move(ui->clean_toolButton->mapToGlobal(QPoint(-clean_widget->width()+20,30)));
   cui.clean_button->setDisabled(true);
   clean_widget->showNormal();
 
@@ -814,8 +834,8 @@ void MainWindow::custom_clean(){
 
     QStringList arg;
     arg<<"clean"<<part_str<<"--step"<<step_str;
-    qDebug()<<fileName.remove("/snapcraft.yaml");
-    clean_proc->setWorkingDirectory(fileName.remove("/snapcraft.yaml"));
+    qDebug()<<QString(fileName).remove("/snapcraft.yaml");
+    clean_proc->setWorkingDirectory(QString(fileName).remove("/snapcraft.yaml"));
     clean_proc->start("snapcraft",arg);
 }
     }
@@ -823,7 +843,7 @@ void MainWindow::custom_clean(){
         ui->terminal->setText("<span style='color:red'>Cleaning - </span>"+step_str+"\n<br>");
         QStringList arg;
         arg<<"clean";
-        clean_proc->setWorkingDirectory(fileName.remove("/snapcraft.yaml"));
+        clean_proc->setWorkingDirectory(QString(fileName).remove("/snapcraft.yaml"));
         clean_proc->start("snapcraft",arg);
     }
 
@@ -873,7 +893,7 @@ void MainWindow::clean_all(){
     ui->terminal->setText("<span style='color:red'>Cleaning - </span>"+step_str+"\n<br>");
     QStringList arg;
     arg<<"clean";
-    clean_proc->setWorkingDirectory(fileName.remove("/snapcraft.yaml"));
+    clean_proc->setWorkingDirectory(QString(fileName).remove("/snapcraft.yaml"));
     clean_proc->start("snapcraft",arg);
 }
 
@@ -907,3 +927,137 @@ void MainWindow::part_text_changed(QString part){
         cui.clean_button->setDisabled(true);
     }
 }
+
+
+// snap command
+void MainWindow::on_snap_clicked()
+{
+    if(ui->save_snapcraft->isEnabled()){  //changes are made by user
+        QMessageBox msgBox;
+        msgBox.setText("Snapcraft.yaml has been modified.");
+        msgBox.setInformativeText("Do you want to save your\n\nchanges before building ?");
+        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+        msgBox.setDefaultButton(QMessageBox::Yes);
+        msgBox.buttons().at(0)->setText("Save and Snap");
+        msgBox.buttons().at(1)->setText("Snap without Saving");
+        ret = msgBox.exec(); //return code
+
+
+        switch (ret){
+          case QMessageBox::Yes:
+            //save craft file
+            on_save_snapcraft_clicked();
+            //snap the craft file
+            snap_snapcraft();
+              break;
+          case QMessageBox::No:
+               //snap the craft file
+                snap_snapcraft();
+              break;
+          default:
+              // should never be reached
+              break;
+        }
+    }
+    else{
+        snap_snapcraft();
+    }
+}
+
+void MainWindow::snap_snapcraft(){
+    if(ui->snap->text()=="Snap"){
+    snap->setWorkingDirectory(QString(fileName).remove("/snapcraft.yaml"));
+    snap->start("snapcraft",QStringList()<<"snap");
+
+    ui->snap->setText("Cancel");
+    ui->snap->setDisabled(false);
+
+    ui->terminal->setText("<span style='color:red'>Snapcraft: </span>snapping"+fileName+"<br>");
+}
+    else{
+        ui->snap->setText("Snap");//instantly
+        snap->kill();
+    }
+}
+
+void MainWindow::snap_finished(int i){
+
+    if(i==0){
+        ui->terminal->append("<span style='color:red'>Snapcraft: </span>Finished.");
+        show_tree();
+    }
+    else{
+        if(ui->snap->text()=="Snap"){
+           ui->terminal->append("<span style='color:red'>Snapcraft: </span>Cancelled on user request");
+        }else{
+        ui->terminal->append("<span style='color:red'>Snapcraft: </span>Something went wrong.<br><span style='color:green'>Suggestions: </span>check syntax errors in yaml file.<br><span style='color:green'>Suggestion: </span>This may happen due to internet connectivity issues.<br>");
+        }
+    }
+
+    QTimer::singleShot(500,this,SLOT(set_name_snap()));  //timer to output "Something went wrong." by changing name after a while
+    ui->snap->setDisabled(false);
+}
+
+void MainWindow::set_name_snap(){ //this is lol
+    ui->snap->setText("Snap");
+}
+void MainWindow::snap_readyRead(){
+
+    ui->terminal->append(snap->readAll());
+}
+
+void MainWindow::on_yaml_customContextMenuRequested(const QPoint &pos)
+{
+
+
+//       QMenu *menu =  new QMenu(this);//= ui->yaml->createStandardContextMenu();
+       editor_menu=new QMenu(this);
+
+
+       editor_menu->addAction(QString("Copy"),ui->yaml,SLOT(copy()) );
+       editor_menu->addAction(QString("Cut"),ui->yaml,SLOT(cut()) );
+       editor_menu->addAction(QString("Paste"),this,SLOT(insertPlainText()));
+       editor_menu->addAction(QString("Select All"),ui->yaml,SLOT(selectAll()) );
+       editor_menu->addSeparator();
+       editor_menu->addAction(QString("Undo ("+QString::number(ui->yaml->document()->availableUndoSteps())+")"),ui->yaml,SLOT(undo()) );
+       editor_menu->addAction(QString("Redo("+QString::number(ui->yaml->document()->availableRedoSteps())+")"),ui->yaml,SLOT(redo()) );
+
+
+        //copy
+       QString d = ui->yaml->textCursor().selectedText();
+       bool text_available;
+       if(d.length()>0){
+        text_available=false;
+       }else{text_available=true;}
+       editor_menu->actions().at(0)->setDisabled(text_available);
+       editor_menu->actions().at(1)->setDisabled(text_available);
+
+       //paste
+       if (const QMimeData *md = QApplication::clipboard()->mimeData()){
+                 editor_menu->actions().at(2)->setEnabled(md->hasText());
+       }
+
+       //Select All
+       bool has_text;
+       if(ui->yaml->document()->blockCount()>0){
+           has_text=true;
+       }else{has_text=false;}
+        editor_menu->actions().at(3)->setEnabled(has_text);
+        //undo
+       editor_menu->actions().at(5)->setEnabled(ui->yaml->document()->isUndoAvailable());
+       //redo
+       editor_menu->actions().at(6)->setEnabled(ui->yaml->document()->isRedoAvailable());
+
+
+       editor_menu->exec(ui->yaml->viewport()->mapToGlobal(pos));
+       delete editor_menu;
+}
+
+
+void MainWindow::insertPlainText(){
+    const QClipboard *clipboard = QApplication::clipboard();
+    QString clip =clipboard->text();
+    ui->yaml->textCursor().insertText(clip);
+}
+
+

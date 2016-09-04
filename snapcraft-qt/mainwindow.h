@@ -6,6 +6,7 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QTextCodec>
+#include <QMenu>
 #include <QSplitter>
 #include "highlighter.h"
 #include "ui_clean_dialog.h"
@@ -47,9 +48,16 @@ private:
     QString part_str;
     QString step_str;
 
+    //snap commands
+    QProcess *snap;
+
+    //yaml editor menu
+    QMenu *editor_menu;
+
 
 private slots:
     bool saveFile();
+
     void documentWasModified();
     void setStyle(QString fname);//set style of player from CSS file
     void hide_current_snap_options(); //hide current snap options
@@ -103,6 +111,16 @@ private slots:
     void custom_clean(); //slot to perform custom clean process
     void clean_proc_readyRead();
     void clean_proc_finished(int);
+
+    void on_actionClean_triggered();
+    void on_snap_clicked();
+    void snap_finished(int);
+    void snap_snapcraft();
+    void snap_readyRead();
+    void set_name_snap();
+    void on_yaml_customContextMenuRequested(const QPoint &pos);
+
+    void insertPlainText();
 
 };
 
