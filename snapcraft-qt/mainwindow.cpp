@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include "highlighter.h"
 #include "install_local_snap_dialog.h"
+#include "ui_clean_dialog.h"
 #include "store.h"
 #include <QFile>
 #include <QFileDialog>
@@ -17,6 +18,9 @@
 #include <QSettings>
 #include <QClipboard>
 #include <QDateTime>
+#include <QStyle>
+#include <QMenu>
+
 
 
 
@@ -29,7 +33,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     on_actionSnapcraft_Plugins_Help_triggered();
 
-    split1 = new QSplitter(0);
+    split1 = new QSplitter(this);
+    clean_proc =new QProcess(this);
+
+
 
     split1->addWidget(ui->yaml);
     split1->addWidget(ui->tree);
@@ -66,6 +73,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(this->pastebin_it,SIGNAL(finished(int)),this,SLOT(pastebin_it_finished(int)));
 
+    //clean command connections
+    connect(this->clean_proc,SIGNAL(readyRead()),this,SLOT(clean_proc_readyRead()));
+    connect(this->clean_proc,SIGNAL(finished(int)),this,SLOT(clean_proc_finished(int)));
+    connect(ui->yaml->document(), &QTextDocument::contentsChanged,this, &MainWindow::documentWasModified);
+
+
 
     //some info in ui->yaml
     ui->yaml->setText("This is snapcraft.yaml editor with snapcraft's specific yaml syntax highlight support.<br> An online syntax highlighter backend is also integrated which support lots of themes.<br>Click New to create new Snapcraft project or click Open to load existing snapcraft project.<br><br>#This tool is Developed by - Keshav Bhatt [keshavnrj@gmail.com].");//do not chnage this phrase it will breakfunctionality "Keshav Bhatt [keshavnrj@gmail.com]"
@@ -73,7 +86,23 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->tree->setText("Here you can see contents of loaded project directory where snapcraft.yaml is located in a tree-like format.<br>You can see size of Files and Directories, Directories are identified by '/' sign while Executable files are by '*' sign.<br><br>NOTE:<span style='color:grey;font-size:14px;'> Max display depth of the directory tree is 3 to generate tree faster !</span>");
 
 
+    //style
+    QString style ="QPushButton{color: #000000; background-color: #B5B8B7; border-width: 1px; border-color: #302F2F; border-style: solid; padding-top: 3px; padding-bottom: 3px; padding-left: 3px; padding-right: 3px; border-radius: 2px; outline: none;}"
+                                        "QPushButton:disabled { background-color: #302F2F; border-width: 1px; border-color: #302F2F; border-style: solid; padding-top: 3px; padding-bottom: 3px; padding-left: 5px; padding-right: 5px; /*border-radius: 2px;*/ color: #454545;}"
+                                        "QPushButton:focus { background-color: #B5B8B7; color: #000000;}"
+                                        "QPushButton:hover{border: 1px solid #302F2F;color: #000000;}"
+                                        "QPushButton:pressed { background-color: #484846;color: silver;}";
 
+    //styling command buttons
+    ui->snap->setStyleSheet(style.toUtf8());
+    ui->pull->setStyleSheet(style.toUtf8());
+    ui->stage->setStyleSheet(style.toUtf8());
+    ui->prime->setStyleSheet(style.toUtf8());
+}
+
+void MainWindow::documentWasModified(){
+//    setWindowModified(ui->yaml->document()->isModified());
+    ui->save_snapcraft->setEnabled(true);
 }
 
 
@@ -149,6 +178,7 @@ void MainWindow::load_snapcraft_yaml(){
         //add data to editor
         for(int i= 0; i<napname.size() ;i++){
         ui->yaml->append(napname.at(i));
+        ui->yaml->setText(ui->yaml->toPlainText());
         }
 
         firstline = napname.at(0); //save first line to watch snap name changes, to chnage name throughout the session
@@ -172,6 +202,7 @@ void MainWindow::load_snapcraft_yaml(){
         }
 
         //save the initial content into a string to compare later in yaml text xhanged slot to change state of save btn
+        snapcraft_yaml.clear();
         snapcraft_yaml = ui->yaml->toPlainText();
      //   on_highlight_clicked();
         on_normal_clicked();
@@ -213,8 +244,6 @@ void MainWindow::on_open_snap_clicked()
        ui->tree->setText("Here you can see contents of loaded project directory where snapcraft.yaml is located in a tree-like format.<br>You can see size of Files and Directories, Directories are identified by '/' sign while Executable files are by '*' sign.<br><br>NOTE:<span style='color:grey;font-size:14px;'> Max display depth of the directory tree is 3 to generate tree faster !</span>");
        hide_current_snap_options();
   }
-
-
 }
 
 void MainWindow::show_tree(){ //create tree
@@ -358,7 +387,7 @@ void MainWindow::on_close_current_clicked()
 
 //close the session -------------------------------
 void MainWindow::close_session(){
-
+ui->yaml->clear();
 this->setWindowTitle("SnapCraft-Gui");
 ui->snapcraft_path->clear();
 ui->actionOpen->setDisabled(false); //to allow user open new snapcraft.yaml
@@ -379,7 +408,7 @@ void MainWindow::on_yaml_textChanged()
 if(snapcraft_yaml == ui->yaml->toPlainText()){
     ui->save_snapcraft->setDisabled(true);
 }
-else{
+else if(snapcraft_yaml != ui->yaml->toPlainText()){
     ui->save_snapcraft->setDisabled(false);
 }
 
@@ -391,7 +420,7 @@ if(ui->yaml->toPlainText().contains("Keshav Bhatt [keshavnrj@gmail.com]")){//do 
 //QString fst = firstline;
 
 if(ui->yaml->toPlainText().length()>1&&ui->yaml->toPlainText().split(QRegExp("[\r\n]"),QString::SkipEmptyParts).at(0) !=firstline){
-    ui->terminal->append("<b style='color:red'>Project warning:</b> snapname changed <b style='color:green'>[Suggestion] :</b>Please Click Save before performing build.<br>");
+//    ui->terminal->append("<b style='color:red'>Project warning:</b> snapname changed <b style='color:green'>[Suggestion] :</b>Please Click Save before performing build.<br>");
   //  qDebug()<<ui->yaml->toPlainText().split("\n").at(0);
 
 }
@@ -404,6 +433,7 @@ ui->current_snap->setText(" Current : <b>"+snapname+"</b>");
 
 void MainWindow::on_save_snapcraft_clicked()
 {
+    ui->terminal->append("<br>save requested<br>");
      //save snapcraft.yaml
     QFile file(fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
@@ -412,13 +442,16 @@ void MainWindow::on_save_snapcraft_clicked()
     QTextStream out(&file);
     out << ui->yaml->toPlainText();
 
-    //save the initial content into a string to compare later in yaml text xhanged slot to change state of save btn
-    snapcraft_yaml = ui->yaml->toPlainText();
-
     ui->terminal->append("<span style='color:red'>Editor: </span>Saved file"+fileName+done_message);
+
+    file.close();
 
     //disable after save
     ui->save_snapcraft->setDisabled(true);
+
+    //save the initial content into a string to compare later in yaml text xhanged slot to change state of save btn
+    snapcraft_yaml.clear();
+    snapcraft_yaml = ui->yaml->toPlainText();
 
 }
 
@@ -442,6 +475,7 @@ void MainWindow::on_snapcraft_path_textChanged(const QString &arg1)
         ui->open_with_files->setDisabled(true);
 
         ui->pastebin_it->setDisabled(true);
+        ui->actionUbuntu_Paste->setDisabled(true);
 
         ui->open_with_gedit->setDisabled(true);
 
@@ -456,6 +490,7 @@ void MainWindow::on_snapcraft_path_textChanged(const QString &arg1)
 
         ui->open_with_files->setDisabled(false);
 
+        ui->actionUbuntu_Paste->setDisabled(false);
         ui->pastebin_it->setDisabled(false);
 
         ui->open_with_gedit->setDisabled(false);
@@ -662,7 +697,6 @@ void MainWindow::on_actionSnapcraft_Plugins_Help_triggered()
 
         ui->terminal->setText(out);
 
-
 }
 
 void MainWindow::on_actionWebsite_triggered()
@@ -680,6 +714,8 @@ void MainWindow::on_package_manager_clicked()
     ui->actionInstall_a_snap->trigger();
 }
 
+
+//pastebin-it function
 void MainWindow::on_pastebin_it_clicked()
 {
     QString o = "cat "+ui->snapcraft_path->text()+"| pastebinit";
@@ -701,7 +737,7 @@ void MainWindow::pastebin_it_finished(int k){
         clipboard->setText(url);
     }
     else if(k==1){
-         ui->terminal->append("<span style='color:red'>"+pastebin_it->readAllStandardError()+"</span>");
+         ui->terminal->append("<span style='color:red'>"+pastebin_it->readAllStandardError()+"</span><br>");
          ui->pastebin_it->setText("Pastebin-it");
          ui->pastebin_it->setDisabled(false);
     }
@@ -712,4 +748,142 @@ void MainWindow::on_search_store_clicked()
 {
     store *Store = new store(this);
     Store->exec();
+}
+
+void MainWindow::on_actionUbuntu_Paste_triggered()
+{
+    on_pastebin_it_clicked();
+}
+
+//the clean toolbutton
+void MainWindow::on_clean_toolButton_clicked()
+{
+        QMenu *menu=new QMenu(this);
+        menu->addAction(QIcon(":/rc/rc/branch_closed.png"),QString("Custom"),this,SLOT(clean_custom()));
+        menu->addAction(QIcon(":/rc/rc/branch_closed.png"),QString("All"), this,SLOT(clean_all()));
+        menu->popup(ui->clean_toolButton->mapToGlobal(QPoint(0,30)));
+}
+
+void MainWindow::clean_custom(){
+
+  clean_widget=new QWidget();
+  cui.setupUi(clean_widget);
+  clean_widget->setWindowFlags(Qt::Popup);
+  clean_widget->move(ui->clean_toolButton->mapToGlobal(QPoint(-clean_widget->width()+20,40)));
+  cui.clean_button->setDisabled(true);
+  clean_widget->showNormal();
+
+
+  //connections to cui
+  connect(cui.step_combo,SIGNAL(currentIndexChanged(QString)),this,SLOT(step_changed(QString)));
+  connect(cui.clean_button,SIGNAL(clicked(bool)),this,SLOT(custom_clean()));
+  connect(cui.part_name,SIGNAL(textChanged(QString)),this,SLOT(part_text_changed(QString)));
+  connect(cui.part_name,SIGNAL(returnPressed()),this,SLOT(custom_clean()));
+
+  cui.step_combo->setCurrentIndex(1);
+  cui.step_combo->setCurrentIndex(0);
+
+}
+
+//slots to cui
+void MainWindow::custom_clean(){
+    menuaction="custom";//work around to prevent crash due to clean_dialog initialization when process finished by cleanall menu action
+    if(part_str.length()>0){
+    if(step_str!="all"||step_str!="All"){
+    ui->terminal->setText("<span style='color:red'>Cleaning - </span>"+step_str+" of "+part_str+"\n<br>");
+
+    QStringList arg;
+    arg<<"clean"<<part_str<<"--step"<<step_str;
+    qDebug()<<fileName.remove("/snapcraft.yaml");
+    clean_proc->setWorkingDirectory(fileName.remove("/snapcraft.yaml"));
+    clean_proc->start("snapcraft",arg);
+}
+    }
+    else if(step_str=="all"||step_str=="All"){ // when part is nothing i.e cleaning all
+        ui->terminal->setText("<span style='color:red'>Cleaning - </span>"+step_str+"\n<br>");
+        QStringList arg;
+        arg<<"clean";
+        clean_proc->setWorkingDirectory(fileName.remove("/snapcraft.yaml"));
+        clean_proc->start("snapcraft",arg);
+    }
+
+
+}
+
+void MainWindow::clean_proc_finished(int i){
+
+    if(i==0){
+        if(menuaction!="All_"){ //this will only happen when commands come from custom clean dialog
+        if(clean_widget->isVisible()){
+        clean_widget->close();}
+        }
+        ui->terminal->append("<span style='color:red'>Cleaning - </span>Finished.");
+        show_tree(); //tree as/maybe the structure changed
+        part_str.clear();
+        step_str.clear();
+    }
+    else{
+        if(menuaction!="All_"){//this will only happen when commands come from custom clean dialog
+        if(clean_widget->isVisible()){
+        clean_widget->close();}
+        }
+        //check if snapcraft.yaml exists in dir or not
+        bool n = QFileInfo(ui->snapcraft_path->text()).exists();
+        if(!n){//to check if yaml file is there or not
+         ui->terminal->append("snapcraft.yaml file not in directory.\n");
+        }
+        else{//when snapcraft cant perform clean step
+         //no need to tree since nothing changed
+         ui->terminal->append("<span style='color:red'>Error: </span>Something went wrong. Maybe part is not defined in snapcraft.yaml.\n");
+         part_str.clear();
+         step_str.clear();
+        }
+    }
+}
+
+void MainWindow::clean_proc_readyRead(){
+     ui->terminal->append(clean_proc->readAll());
+}
+
+void MainWindow::clean_all(){
+
+    menuaction="All_";//work around to prevent crash due to clean_dialog initialization when process finished by cleanall menu action
+
+    step_str="all";
+    ui->terminal->setText("<span style='color:red'>Cleaning - </span>"+step_str+"\n<br>");
+    QStringList arg;
+    arg<<"clean";
+    clean_proc->setWorkingDirectory(fileName.remove("/snapcraft.yaml"));
+    clean_proc->start("snapcraft",arg);
+}
+
+void MainWindow::step_changed(QString step){
+    if(step!="All"){
+    step_str=step.toLower(); //lower case the steps to make them good for snapcraft command in future
+    if(part_str.isEmpty()){
+        cui.clean_button->setDisabled(true);
+    }
+    cui.part_name->setDisabled(false);
+    }
+    else{ //step is all
+     step_str=step.toLower();
+     cui.part_name->clear();
+     part_str.clear();
+     cui.part_name->setDisabled(true);
+     cui.clean_button->setDisabled(false);
+    }
+}
+void MainWindow::part_text_changed(QString part){
+     if(cui.step_combo->currentText()!="All"){
+    if(part.length()>0){
+        cui.clean_button->setDisabled(false);
+        part_str=part;
+    }
+    else{
+    cui.clean_button->setDisabled(true);
+    }
+     }
+    else{
+        cui.clean_button->setDisabled(true);
+    }
 }

@@ -8,6 +8,7 @@
 #include <QTextCodec>
 #include <QSplitter>
 #include "highlighter.h"
+#include "ui_clean_dialog.h"
 
 namespace Ui {
 class MainWindow;
@@ -23,6 +24,8 @@ public:
 
 private:
     Ui::MainWindow *ui;
+    Ui::clean_dialog cui;
+    QWidget *clean_widget;
     QString fileName;
     QString snapname;  //name of snap
     QString firstline; //first line which should conatin "name:"
@@ -36,8 +39,17 @@ private:
     Highlighter *highlighter;
     QProcess *pastebin_it;
 
+    //command process
+    QProcess *clean_proc;
+
+    //cui vars
+    QString menuaction;
+    QString part_str;
+    QString step_str;
+
 
 private slots:
+    void documentWasModified();
     void setStyle(QString fname);//set style of player from CSS file
     void hide_current_snap_options(); //hide current snap options
     void show_current_snap_options();//show current snap options
@@ -79,6 +91,18 @@ private slots:
     void on_pastebin_it_clicked();
     void pastebin_it_finished(int k);
     void on_search_store_clicked();
+    void on_actionUbuntu_Paste_triggered();
+    void on_clean_toolButton_clicked();
+
+    //clean steps slots
+    void clean_custom();
+    void clean_all();
+    void  step_changed(QString);
+    void part_text_changed(QString);
+    void custom_clean(); //slot to perform custom clean process
+    void clean_proc_readyRead();
+    void clean_proc_finished(int);
+
 };
 
 #endif // MAINWINDOW_H
