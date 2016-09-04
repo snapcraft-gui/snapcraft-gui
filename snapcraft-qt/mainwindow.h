@@ -122,6 +122,11 @@ private slots:
 
     void insertPlainText();
 
+
+    void on_zoom_in_clicked();
+    void on_zoom_out_clicked();
+    void on_undo_btn_clicked();
+    void on_redo_btn_clicked();
 };
 
 #endif // MAINWINDOW_H

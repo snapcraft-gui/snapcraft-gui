@@ -33,13 +33,12 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+
     on_actionSnapcraft_Plugins_Help_triggered();
 
     split1 = new QSplitter(this);
     clean_proc =new QProcess(this);
     snap=new QProcess(this);
-
-
 
 
     split1->addWidget(ui->yaml);
@@ -69,6 +68,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->terminal->setText("test");
     ui->terminal->clear();
     ui->highlight->hide();//temperory
+    ui->zoom->setText(QString::number(ui->yaml->fontInfo().pixelSize()));
+
 
     snapcraft=new QProcess(this);
     pastebin_it=new QProcess(this);
@@ -415,6 +416,8 @@ ui->tree->setText("Here you can see contents of loaded project directory where s
 //snapcraft text change events
 void MainWindow::on_yaml_textChanged()
 {
+    ui->undo_btn->setEnabled(ui->yaml->document()->isUndoAvailable());
+    ui->redo_btn->setEnabled(ui->yaml->document()->isRedoAvailable());
 
 if(snapcraft_yaml == ui->yaml->toPlainText()){
     ui->save_snapcraft->setDisabled(true);
@@ -929,9 +932,10 @@ void MainWindow::part_text_changed(QString part){
 }
 
 
-// snap command
+//snap clicked
 void MainWindow::on_snap_clicked()
 {
+    if(ui->snap->text()=="Snap"){
     if(ui->save_snapcraft->isEnabled()){  //changes are made by user
         QMessageBox msgBox;
         msgBox.setText("Snapcraft.yaml has been modified.");
@@ -962,8 +966,12 @@ void MainWindow::on_snap_clicked()
     else{
         snap_snapcraft();
     }
+ }else{
+        ui->snap->setText("Snap");//instantly
+        snap->kill();
+    }
 }
-
+// snap command
 void MainWindow::snap_snapcraft(){
     if(ui->snap->text()=="Snap"){
     snap->setWorkingDirectory(QString(fileName).remove("/snapcraft.yaml"));
@@ -1061,3 +1069,28 @@ void MainWindow::insertPlainText(){
 }
 
 
+
+
+
+
+void MainWindow::on_zoom_in_clicked()
+{
+     ui->yaml->zoomIn(1);
+     ui->zoom->setText(QString::number(ui->yaml->fontInfo().pixelSize()));
+}
+
+void MainWindow::on_zoom_out_clicked()
+{
+    ui->yaml->zoomOut(1);
+    ui->zoom->setText(QString::number(ui->yaml->fontInfo().pixelSize()));
+}
+
+void MainWindow::on_undo_btn_clicked()
+{
+    ui->yaml->undo();
+}
+
+void MainWindow::on_redo_btn_clicked()
+{
+    ui->yaml->redo();
+}
