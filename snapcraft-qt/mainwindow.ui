@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>924</width>
+    <width>933</width>
     <height>524</height>
    </rect>
   </property>
@@ -315,6 +315,22 @@
        </widget>
       </item>
       <item>
+       <widget class="QLabel" name="doc_stats">
+        <property name="font">
+         <font>
+          <pointsize>10</pointsize>
+          <italic>true</italic>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: silver;</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="open_with_files">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
@@ -426,7 +442,7 @@ color: rgb(10,92,179);
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>924</width>
+     <width>933</width>
      <height>19</height>
     </rect>
    </property>
