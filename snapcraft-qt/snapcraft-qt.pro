@@ -8,9 +8,11 @@ QT       += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = snapcraft-qt
+TARGET = snapcraft-gui
 TEMPLATE = app
 
+target.path = /opt/snapcraft-gui/
+INSTALLS += target
 
 SOURCES += main.cpp\
         mainwindow.cpp \
