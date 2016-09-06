@@ -26,13 +26,13 @@ Snap lifecycle commands: [started]
 	
 	-clean [done]
 	
-	-pull[not started]
+	-pull[done]
 	
 	-stage[not started]
 	
 	-prime[not started]
 	
-	-snap[not started]
+	-snap[done]
 
 Snap Store: [Started]
 	
