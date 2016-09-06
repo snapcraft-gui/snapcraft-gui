@@ -12,6 +12,7 @@
 
 #include "ui_clean_dialog.h"
 #include "ui_pull_dialog.h"
+#include "ui_stage_dialog.h"
 
 namespace Ui {
 class MainWindow;
@@ -30,6 +31,8 @@ private:
     Ui::MainWindow *ui;
     Ui::clean_dialog cui;
     Ui::pull_dialog pui;
+    Ui::stage_dialog sui;
+
     QWidget *command_widget;
     QString fileName;
     QString snapname;  //name of snap
@@ -56,6 +59,10 @@ private:
     QProcess *snap;
     //pull commands
     QProcess *pull;
+    //stage commands
+    QProcess *stage;
+    //prime commands
+    QProcess *prime;
 
     //yaml editor menu
     QMenu *editor_menu;
@@ -146,6 +153,15 @@ private slots:
    void pull_finished(int);
    void pull_readyRead();
    void set_name_pull();
+
+   //stage command
+   void stage_all_radio_toggled(bool);
+   void change_suis_stagebtn_text(QString);
+   void stage_command_requested();
+  void stage_finished(int);
+  void stage_readyRead();
+  void set_name_stage();
+
 };
 
 #endif // MAINWINDOW_H

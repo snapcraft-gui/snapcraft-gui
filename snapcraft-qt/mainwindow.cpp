@@ -41,6 +41,8 @@ MainWindow::MainWindow(QWidget *parent) :
     clean_proc =new QProcess(this);
     snap=new QProcess(this);
     pull=new QProcess(this);
+    stage=new QProcess(this);
+    prime=new QProcess(this);
 
 
     split1->addWidget(ui->yaml);
@@ -88,6 +90,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this->snap,SIGNAL(readyRead()),this,SLOT(snap_readyRead()));
     connect(this->pull,SIGNAL(finished(int)),this,SLOT(pull_finished(int)));
     connect(this->pull,SIGNAL(readyRead()),this,SLOT(pull_readyRead()));
+    connect(this->stage,SIGNAL(finished(int)),this,SLOT(stage_finished(int)));
+    connect(this->stage,SIGNAL(readyRead()),this,SLOT(stage_readyRead()));
 
     connect(ui->yaml->document(), &QTextDocument::contentsChanged,this, &MainWindow::documentWasModified);
 
@@ -845,6 +849,11 @@ void MainWindow::custom_clean(){
     qDebug()<<QString(fileName).remove("/snapcraft.yaml");
     clean_proc->setWorkingDirectory(QString(fileName).remove("/snapcraft.yaml"));
     clean_proc->start("snapcraft",arg);
+
+    ui->stage->setDisabled(true);
+    ui->snap->setDisabled(true);
+    ui->pull->setDisabled(true);
+    ui->prime->setDisabled(true);
 }
     }
     else if(step_str=="all"||step_str=="All"){ // when part is nothing i.e cleaning all
@@ -853,6 +862,11 @@ void MainWindow::custom_clean(){
         arg<<"clean";
         clean_proc->setWorkingDirectory(QString(fileName).remove("/snapcraft.yaml"));
         clean_proc->start("snapcraft",arg);
+
+        ui->stage->setDisabled(true);
+        ui->snap->setDisabled(true);
+        ui->pull->setDisabled(true);
+        ui->prime->setDisabled(true);
     }
 
 
@@ -887,6 +901,10 @@ void MainWindow::clean_proc_finished(int i){
          step_str.clear();
         }
     }
+    ui->stage->setDisabled(false);
+    ui->snap->setDisabled(false);
+    ui->pull->setDisabled(false);
+    ui->prime->setDisabled(false);
 }
 
 void MainWindow::clean_proc_readyRead(){
@@ -903,6 +921,11 @@ void MainWindow::clean_all(){
     arg<<"clean";
     clean_proc->setWorkingDirectory(QString(fileName).remove("/snapcraft.yaml"));
     clean_proc->start("snapcraft",arg);
+
+    ui->stage->setDisabled(true);
+    ui->snap->setDisabled(true);
+    ui->pull->setDisabled(true);
+    ui->prime->setDisabled(true);
 }
 
 void MainWindow::step_changed(QString step){
@@ -1108,10 +1131,7 @@ void MainWindow::on_redo_btn_clicked()
 {
     ui->yaml->redo();
 }
-void MainWindow::on_stage_clicked()
-{
-    ui->terminal->setText("NOT IMPLIMENTED YET<br>");
-}
+
 
 void MainWindow::on_prime_clicked()
 {
@@ -1130,6 +1150,8 @@ void MainWindow::on_actionAbout_triggered()
 }
 
 
+
+//pull commands
 void MainWindow::on_pull_clicked()
 {
     if(ui->pull->text()=="Cancel"){
@@ -1247,5 +1269,126 @@ void MainWindow::all_radio_toggled(bool checked)
         pui.pull_button->setText("Pull");
         pui.part_name->setDisabled(false);
         pui.pull_button->setDisabled(true);
+    }
+}
+
+
+//stage command
+void MainWindow::on_stage_clicked()
+{
+    if(ui->stage->text()=="Cancel"){
+        ui->stage->setText("Stage");//instantly , so that we can detect user cliked cancel
+        stage->kill();
+        show_tree();
+    }
+    else
+    {
+    command_widget=new QWidget();
+    sui.setupUi(command_widget);
+
+    //toggle sui radios
+    sui.all_radio->setChecked(true);
+    sui.part_name->setDisabled(true);
+
+    command_widget->setWindowFlags(Qt::Popup);
+    command_widget->move(ui->stage->mapToGlobal(QPoint(-command_widget->width()+100,30)));
+    command_widget->showNormal();
+
+    connect(sui.all_radio,SIGNAL(toggled(bool)),this,SLOT(stage_all_radio_toggled(bool)));
+    connect(sui.part_name,SIGNAL(textChanged(QString)),this,SLOT(change_suis_stagebtn_text(QString)));
+    connect(sui.stage_button,SIGNAL(clicked(bool)),this,SLOT(stage_command_requested()));
+
+    }
+}
+
+void MainWindow::stage_command_requested(){
+
+    if(sui.stage_button->text()=="Stage All Parts"){
+        stage->setWorkingDirectory(QString(fileName).remove("/snapcraft.yaml"));
+        stage->start("snapcraft",QStringList()<<"stage");
+
+        ui->snap->setDisabled(true);
+        ui->pull->setDisabled(true);
+        ui->prime->setDisabled(true);
+
+        ui->stage->setText("Cancel");
+        sui.stage_button->setDisabled(true);
+        ui->stage->setDisabled(false);
+
+        ui->terminal->setText("<span style='color:red'>Snapcraft: </span>stagging parts of "+fileName+"<br>");
+
+    }
+    else{
+        stage->setWorkingDirectory(QString(fileName).remove("/snapcraft.yaml"));
+        stage->start("snapcraft",QStringList()<<"stage"<<sui.part_name->text());
+
+        ui->snap->setDisabled(true);
+        ui->pull->setDisabled(true);
+        ui->prime->setDisabled(true);
+
+        ui->stage->setText("Cancel");
+        sui.stage_button->setDisabled(true);
+        ui->stage->setDisabled(false);
+
+        ui->terminal->setText("<span style='color:red'>Snapcraft: </span>stagging "+sui.part_name->text()+" part of "+fileName+"<br>");
+
+    }
+
+}
+void MainWindow::change_suis_stagebtn_text(QString txt){
+
+    if(txt.length()>0){
+        sui.stage_button->setEnabled(true);
+        sui.stage_button->setText("Stage "+txt);
+    }else{
+        sui.stage_button->setEnabled(false);
+    }
+}
+
+void MainWindow::stage_finished(int i){
+    if(i==0){
+        ui->terminal->append("<span style='color:red'>Snapcraft: </span>Finished.");
+        show_tree();
+    }
+    else{
+        if(ui->stage->text()=="Pull"){
+           ui->terminal->append("<span style='color:red'>Snapcraft: </span>Stage Cancelled on user request");
+        }else{
+        ui->terminal->append("<span style='color:red'>Snapcraft: </span>Something went wrong. Maybe part is not defined in snapcraft.yaml<br><span style='color:green'>Suggestions: </span>check syntax errors in yaml file.<br><span style='color:green'>Suggestion: </span>This may happen due to internet connectivity issues.<br>");
+        }
+    }
+
+    QTimer::singleShot(500,this,SLOT(set_name_stage()));  //timer to output "Something went wrong." by changing name after a while
+    ui->stage->setDisabled(false);
+
+    ui->snap->setDisabled(false);
+    ui->pull->setDisabled(false);
+    ui->prime->setDisabled(false);
+
+    if(command_widget->isVisible()){
+    command_widget->close();
+    }
+}
+
+void MainWindow::set_name_stage(){
+ui->stage->setText("Stage");
+}
+void MainWindow::stage_readyRead(){
+ui->terminal->append(stage->readAll());
+}
+
+void MainWindow::stage_all_radio_toggled(bool checked)
+{
+    if(checked){
+        sui.part_name->setDisabled(true);
+        sui.stage_button->setDisabled(false);
+        sui.stage_button->setText("Stage All Parts");
+        sui.part_name->clear();
+    }
+    else if(!checked){
+        if(sui.part_name->text().length()<0)
+        sui.stage_button->setText("Stage");
+        sui.part_name->setDisabled(false);
+        sui.stage_button->setDisabled(true);
     }
 }

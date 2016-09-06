@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>pull_dialog</class>
- <widget class="QWidget" name="pull_dialog">
+ <class>stage_dialog</class>
+ <widget class="QWidget" name="stage_dialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -29,7 +29,7 @@
      <item row="0" column="1">
       <widget class="QRadioButton" name="all_radio">
        <property name="text">
-        <string>Pull all Parts</string>
+        <string>Stage all Parts</string>
        </property>
        <property name="checked">
         <bool>true</bool>
@@ -37,18 +37,18 @@
       </widget>
      </item>
      <item row="0" column="0">
-      <widget class="QRadioButton" name="specific_pull_radio">
+      <widget class="QRadioButton" name="specific_stage_radio">
        <property name="text">
-        <string>Pull specific Part</string>
+        <string>Stage specific Part</string>
        </property>
       </widget>
      </item>
     </layout>
    </item>
    <item>
-    <widget class="QPushButton" name="pull_button">
+    <widget class="QPushButton" name="stage_button">
      <property name="text">
-      <string>Pull All Parts</string>
+      <string>Stage All Parts</string>
      </property>
     </widget>
    </item>
