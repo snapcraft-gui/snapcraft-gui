@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Snapcraft-gui
+Icon=Snapcraft-gui
+Exec=/opt/snapcraft-gui/snapcraft-gui
+Comment=Build and create snaps
+Categories=Qt;System;Utility;
+Terminal=false
+Name[en_IN]=Snapcraft-gui

@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# Link to the binary
+rm -f /usr/local/bin/snapcraft-gui
+# Launcher files
+rm -f /usr/share/applications/Snapcraft-gui.desktop

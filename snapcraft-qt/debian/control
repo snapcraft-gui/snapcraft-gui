@@ -1,0 +1,13 @@
+Source: snapcraft-gui
+Section: devel
+Priority: extra
+Maintainer: Keshav Bhatt <keshavnrj@gmail.com>
+Build-Depends: debhelper (>= 8.0.0), qt5-default, qttools5-dev-tools, qttools5-dev
+Standards-Version: 3.9.4
+Homepage: http://ktechpit.com
+
+Package: snapcraft-gui
+Architecture: amd64
+Depends:${misc:Depends},libc6 (>= 2.4), libgcc1 (>= 1:3.0), libqt5core5a (>= 5.5.0), libqt5gui5 (>= 5.0.2) | libqt5gui5-gles (>= 5.0.2), libqt5network5 (>= 5.0.2), libqt5widgets5 (>= 5.4.0), libstdc++6 (>= 4.1.1), tree, pastebinit, snapcraft, snapd
+Description: Snapcarft gui is frontend for building and managing snaps on Linux/Ubuntu Desktop. 
+ Package any app for every Linux desktop, server, cloud or device, and deliver updates directly.

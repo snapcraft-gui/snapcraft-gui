@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# Link to the binary
+ln -sf /opt/snapcraft-gui/snapcraft-gui /usr/local/bin/snapcraft-gui
+# Launcher icon
+desktop-file-install /opt/snapcraft-gui/Snapcraft-gui.desktop
