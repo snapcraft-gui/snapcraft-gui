@@ -28,7 +28,7 @@ Snap lifecycle commands: [started]
 	
 	-pull[done]
 	
-	-stage[not started]
+	-stage[done]
 	
 	-prime[not started]
 	
