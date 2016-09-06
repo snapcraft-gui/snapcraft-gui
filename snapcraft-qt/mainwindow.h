@@ -13,6 +13,7 @@
 #include "ui_clean_dialog.h"
 #include "ui_pull_dialog.h"
 #include "ui_stage_dialog.h"
+#include "ui_prime_dialog.h"
 
 namespace Ui {
 class MainWindow;
@@ -32,6 +33,7 @@ private:
     Ui::clean_dialog cui;
     Ui::pull_dialog pui;
     Ui::stage_dialog sui;
+    Ui::prime_dialog prui;
 
     QWidget *command_widget;
     QString fileName;
@@ -150,17 +152,25 @@ private slots:
     void all_radio_toggled(bool);
     void change_puis_pullbtn_text(QString);
     void pull_command_requested();
-   void pull_finished(int);
-   void pull_readyRead();
-   void set_name_pull();
+    void pull_finished(int);
+    void pull_readyRead();
+    void set_name_pull();
 
    //stage command
    void stage_all_radio_toggled(bool);
    void change_suis_stagebtn_text(QString);
    void stage_command_requested();
-  void stage_finished(int);
-  void stage_readyRead();
-  void set_name_stage();
+   void stage_finished(int);
+   void stage_readyRead();
+   void set_name_stage();
+
+   //prime command
+   void prime_all_radio_toggled(bool);
+   void change_prime_uis_stagebtn_text(QString);
+   void prime_command_requested();
+   void prime_finished(int);
+   void prime_readyRead();
+   void set_name_prime();
 
 };
 
