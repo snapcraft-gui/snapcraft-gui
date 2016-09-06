@@ -27,6 +27,8 @@ private slots:
 
     void on_install_clicked();
 
+
+
 private:
     Ui::store *ui;
     QProcess *search_process;

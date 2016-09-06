@@ -9,12 +9,14 @@ store::store(QWidget *parent) :
     ui(new Ui::store)
 {
     ui->setupUi(this);
+
     ui->search->setDisabled(true);
     ui->install->setDisabled(true);
     search_process = new QProcess(this);
     install_remove_process = new QProcess(this);
     connect(this->search_process,SIGNAL(finished(int)),this,SLOT(search_finished(int)));
-}
+ }
+
 
 store::~store()
 {
