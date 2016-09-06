@@ -41,6 +41,7 @@
         <file>rc/Vmovetoolbar.png</file>
         <file>rc/Vsepartoolbar.png</file>
         <file>style.qss</file>
+        <file>rc/have_child.png</file>
     </qresource>
     <qresource prefix="/images">
         <file>images/logo.png</file>
