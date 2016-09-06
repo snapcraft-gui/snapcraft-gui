@@ -149,6 +149,9 @@ color: rgb(128, 89, 120);
 background-image: url(:/images/images/grid.png);
 background-attachment: fixed;</string>
                   </property>
+                  <property name="readOnly">
+                   <bool>true</bool>
+                  </property>
                  </widget>
                 </item>
                </layout>
