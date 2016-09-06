@@ -1,6 +1,14 @@
 # snapcraft-gui (development)
 Graphical user interface to create snaps using snapcraft as backend , written in qt.
 
+#install on Ubuntu 16.04 and above
+
+	sudo add-apt-repository ppa:keshavnrj/snpacraft-gui
+
+	sudo apt-get update
+	
+	sudo apt install snapcraft-gui
+
 #Current task:
 Snap package Manager (click package manager in file menu to see): [Started]
 
