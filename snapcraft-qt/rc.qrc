@@ -45,5 +45,6 @@
     <qresource prefix="/images">
         <file>images/logo.png</file>
         <file>images/grid.png</file>
+        <file>images/logo2.png</file>
     </qresource>
 </RCC>
