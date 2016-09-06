@@ -16,17 +16,21 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     highlighter.cpp \
     install_local_snap_dialog.cpp \
-    store.cpp
+    store.cpp \
+    aboutdialog.cpp
 
 HEADERS  += mainwindow.h \
     highlighter.h \
     install_local_snap_dialog.h \
-    store.h
+    store.h \
+    aboutdialog.h
 
 FORMS    += mainwindow.ui \
     install_local_snap_dialog.ui \
     store.ui \
-    clean_dialog.ui
+    clean_dialog.ui \
+    aboutdialog.ui \
+    pull_dialog.ui
 
 RESOURCES += \
     rc.qrc
