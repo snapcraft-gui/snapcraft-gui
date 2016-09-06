@@ -9,7 +9,9 @@
 #include <QMenu>
 #include <QSplitter>
 #include "highlighter.h"
+
 #include "ui_clean_dialog.h"
+#include "ui_pull_dialog.h"
 
 namespace Ui {
 class MainWindow;
@@ -23,10 +25,12 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+
 private:
     Ui::MainWindow *ui;
     Ui::clean_dialog cui;
-    QWidget *clean_widget;
+    Ui::pull_dialog pui;
+    QWidget *command_widget;
     QString fileName;
     QString snapname;  //name of snap
     QString firstline; //first line which should conatin "name:"
@@ -50,6 +54,8 @@ private:
 
     //snap commands
     QProcess *snap;
+    //pull commands
+    QProcess *pull;
 
     //yaml editor menu
     QMenu *editor_menu;
@@ -106,7 +112,7 @@ private slots:
     //clean steps slots
     void clean_custom();
     void clean_all();
-    void  step_changed(QString);
+    void step_changed(QString);
     void part_text_changed(QString);
     void custom_clean(); //slot to perform custom clean process
     void clean_proc_readyRead();
@@ -131,6 +137,15 @@ private slots:
     void on_stage_clicked();
     void on_prime_clicked();
     void on_actionSearchStore_triggered();
+    void on_actionAbout_triggered();
+
+    //pull command
+    void all_radio_toggled(bool);
+    void change_puis_pullbtn_text(QString);
+    void pull_command_requested();
+   void pull_finished(int);
+   void pull_readyRead();
+   void set_name_pull();
 };
 
 #endif // MAINWINDOW_H

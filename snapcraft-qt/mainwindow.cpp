@@ -4,6 +4,7 @@
 #include "install_local_snap_dialog.h"
 #include "ui_clean_dialog.h"
 #include "store.h"
+#include "aboutdialog.h"
 #include <QFile>
 #include <QFileDialog>
 #include <QTextStream>
@@ -39,6 +40,7 @@ MainWindow::MainWindow(QWidget *parent) :
     split1 = new QSplitter(this);
     clean_proc =new QProcess(this);
     snap=new QProcess(this);
+    pull=new QProcess(this);
 
 
     split1->addWidget(ui->yaml);
@@ -84,6 +86,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(this->snap,SIGNAL(finished(int)),this,SLOT(snap_finished(int)));
     connect(this->snap,SIGNAL(readyRead()),this,SLOT(snap_readyRead()));
+    connect(this->pull,SIGNAL(finished(int)),this,SLOT(pull_finished(int)));
+    connect(this->pull,SIGNAL(readyRead()),this,SLOT(pull_readyRead()));
+
     connect(ui->yaml->document(), &QTextDocument::contentsChanged,this, &MainWindow::documentWasModified);
 
     ui->yaml->setContextMenuPolicy(Qt::CustomContextMenu);//to allow pop custom context menu in yaml editor
@@ -809,12 +814,12 @@ void MainWindow::on_clean_toolButton_clicked()
 
 void MainWindow::clean_custom(){
 
-  clean_widget=new QWidget();
-  cui.setupUi(clean_widget);
-  clean_widget->setWindowFlags(Qt::Popup);
-  clean_widget->move(ui->clean_toolButton->mapToGlobal(QPoint(-clean_widget->width()+20,30)));
+  command_widget=new QWidget();
+  cui.setupUi(command_widget);
+  command_widget->setWindowFlags(Qt::Popup);
+  command_widget->move(ui->clean_toolButton->mapToGlobal(QPoint(-command_widget->width()+60,30)));
   cui.clean_button->setDisabled(true);
-  clean_widget->showNormal();
+  command_widget->showNormal();
 
 
   //connections to cui
@@ -857,8 +862,8 @@ void MainWindow::clean_proc_finished(int i){
 
     if(i==0){
         if(menuaction!="All_"){ //this will only happen when commands come from custom clean dialog
-        if(clean_widget->isVisible()){
-        clean_widget->close();}
+        if(command_widget->isVisible()){
+        command_widget->close();}
         }
         ui->terminal->append("<span style='color:red'>Cleaning - </span>Finished.");
         show_tree(); //tree as/maybe the structure changed
@@ -867,8 +872,8 @@ void MainWindow::clean_proc_finished(int i){
     }
     else{
         if(menuaction!="All_"){//this will only happen when commands come from custom clean dialog
-        if(clean_widget->isVisible()){
-        clean_widget->close();}
+        if(command_widget->isVisible()){
+        command_widget->close();}
         }
         //check if snapcraft.yaml exists in dir or not
         bool n = QFileInfo(ui->snapcraft_path->text()).exists();
@@ -907,6 +912,7 @@ void MainWindow::step_changed(QString step){
         cui.clean_button->setDisabled(true);
     }
     cui.part_name->setDisabled(false);
+    cui.clean_button->setText("Clean "+step_str+" of "+part_str);
     }
     else{ //step is all
      step_str=step.toLower();
@@ -914,6 +920,7 @@ void MainWindow::step_changed(QString step){
      part_str.clear();
      cui.part_name->setDisabled(true);
      cui.clean_button->setDisabled(false);
+     cui.clean_button->setText("Clean "+step_str);
     }
 }
 void MainWindow::part_text_changed(QString part){
@@ -921,6 +928,8 @@ void MainWindow::part_text_changed(QString part){
     if(part.length()>0){
         cui.clean_button->setDisabled(false);
         part_str=part;
+        cui.clean_button->setText("Clean "+step_str+" of "+part_str);
+
     }
     else{
     cui.clean_button->setDisabled(true);
@@ -971,8 +980,13 @@ void MainWindow::on_snap_clicked()
         snap->kill();
     }
 }
-// snap command
+// snap command via Qprocess
 void MainWindow::snap_snapcraft(){
+
+    ui->pull->setDisabled(true);
+    ui->stage->setDisabled(true);
+    ui->prime->setDisabled(true);
+
     if(ui->snap->text()=="Snap"){
     snap->setWorkingDirectory(QString(fileName).remove("/snapcraft.yaml"));
     snap->start("snapcraft",QStringList()<<"snap");
@@ -985,6 +999,7 @@ void MainWindow::snap_snapcraft(){
     else{
         ui->snap->setText("Snap");//instantly
         snap->kill();
+        show_tree();
     }
 }
 
@@ -1004,6 +1019,10 @@ void MainWindow::snap_finished(int i){
 
     QTimer::singleShot(500,this,SLOT(set_name_snap()));  //timer to output "Something went wrong." by changing name after a while
     ui->snap->setDisabled(false);
+
+    ui->pull->setDisabled(false);
+    ui->stage->setDisabled(false);
+    ui->prime->setDisabled(false);
 }
 
 void MainWindow::set_name_snap(){ //this is lol
@@ -1068,11 +1087,6 @@ void MainWindow::insertPlainText(){
     ui->yaml->textCursor().insertText(clip);
 }
 
-
-
-
-
-
 void MainWindow::on_zoom_in_clicked()
 {
      ui->yaml->zoomIn(1);
@@ -1094,12 +1108,6 @@ void MainWindow::on_redo_btn_clicked()
 {
     ui->yaml->redo();
 }
-
-void MainWindow::on_pull_clicked()
-{
-    ui->terminal->setText("NOT IMPLIMENTED YET<br>");
-}
-
 void MainWindow::on_stage_clicked()
 {
     ui->terminal->setText("NOT IMPLIMENTED YET<br>");
@@ -1113,4 +1121,131 @@ void MainWindow::on_prime_clicked()
 void MainWindow::on_actionSearchStore_triggered()
 {
     on_search_store_clicked();
+}
+
+void MainWindow::on_actionAbout_triggered()
+{
+    AboutDialog abt;
+    abt.exec();
+}
+
+
+void MainWindow::on_pull_clicked()
+{
+    if(ui->pull->text()=="Cancel"){
+        ui->pull->setText("Pull");//instantly , so that we can detect user cliked cancel
+        pull->kill();
+        show_tree();
+    }
+    else
+    {
+    command_widget=new QWidget();
+    pui.setupUi(command_widget);
+
+    //toggle pui radios
+    pui.all_radio->setChecked(true);
+    pui.part_name->setDisabled(true);
+
+    command_widget->setWindowFlags(Qt::Popup);
+    command_widget->move(ui->pull->mapToGlobal(QPoint(-command_widget->width()+100,30)));
+    command_widget->showNormal();
+
+    connect(pui.all_radio,SIGNAL(toggled(bool)),this,SLOT(all_radio_toggled(bool)));
+    connect(pui.part_name,SIGNAL(textChanged(QString)),this,SLOT(change_puis_pullbtn_text(QString)));
+    connect(pui.pull_button,SIGNAL(clicked(bool)),this,SLOT(pull_command_requested()));
+
+    }
+}
+
+void MainWindow::pull_command_requested(){
+
+    if(pui.pull_button->text()=="Pull All Parts"){
+        pull->setWorkingDirectory(QString(fileName).remove("/snapcraft.yaml"));
+        pull->start("snapcraft",QStringList()<<"pull");
+
+        ui->snap->setDisabled(true);
+        ui->stage->setDisabled(true);
+        ui->prime->setDisabled(true);
+
+        ui->pull->setText("Cancel");
+        pui.pull_button->setDisabled(true);
+        ui->pull->setDisabled(false);
+
+        ui->terminal->setText("<span style='color:red'>Snapcraft: </span>pulling parts in "+fileName+"<br>");
+
+    }
+    else{
+        pull->setWorkingDirectory(QString(fileName).remove("/snapcraft.yaml"));
+        pull->start("snapcraft",QStringList()<<"pull"<<pui.part_name->text());
+
+        ui->snap->setDisabled(true);
+        ui->stage->setDisabled(true);
+        ui->prime->setDisabled(true);
+
+        ui->pull->setText("Cancel");
+        pui.pull_button->setDisabled(true);
+        ui->pull->setDisabled(false);
+
+        ui->terminal->setText("<span style='color:red'>Snapcraft: </span>pulling "+pui.part_name->text()+" part of "+fileName+"<br>");
+
+    }
+
+}
+
+void MainWindow::change_puis_pullbtn_text(QString txt){
+
+    if(txt.length()>0){
+        pui.pull_button->setEnabled(true);
+        pui.pull_button->setText("Pull "+txt);
+    }else{
+        pui.pull_button->setEnabled(false);
+    }
+}
+
+void MainWindow::pull_finished(int i){
+    if(i==0){
+        ui->terminal->append("<span style='color:red'>Snapcraft: </span>Finished.");
+        show_tree();
+    }
+    else{
+        if(ui->pull->text()=="Pull"){
+           ui->terminal->append("<span style='color:red'>Snapcraft: </span>Pull Cancelled on user request");
+        }else{
+        ui->terminal->append("<span style='color:red'>Snapcraft: </span>Something went wrong. Maybe part is not defined in snapcraft.yaml<br><span style='color:green'>Suggestions: </span>check syntax errors in yaml file.<br><span style='color:green'>Suggestion: </span>This may happen due to internet connectivity issues.<br>");
+        }
+    }
+
+    QTimer::singleShot(500,this,SLOT(set_name_pull()));  //timer to output "Something went wrong." by changing name after a while
+    ui->pull->setDisabled(false);
+
+    ui->snap->setDisabled(false);
+    ui->stage->setDisabled(false);
+    ui->prime->setDisabled(false);
+
+    if(command_widget->isVisible()){
+    command_widget->close();
+    }
+}
+
+void MainWindow::set_name_pull(){
+ui->pull->setText("Pull");
+}
+void MainWindow::pull_readyRead(){
+ui->terminal->append(pull->readAll());
+}
+
+void MainWindow::all_radio_toggled(bool checked)
+{
+    if(checked){
+        pui.part_name->setDisabled(true);
+        pui.pull_button->setDisabled(false);
+        pui.pull_button->setText("Pull All Parts");
+        pui.part_name->clear();
+    }
+    else if(!checked){
+        if(pui.part_name->text().length()<0)
+        pui.pull_button->setText("Pull");
+        pui.part_name->setDisabled(false);
+        pui.pull_button->setDisabled(true);
+    }
 }

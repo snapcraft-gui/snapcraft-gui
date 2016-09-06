@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>933</width>
+    <width>1024</width>
     <height>524</height>
    </rect>
   </property>
@@ -580,7 +580,7 @@ color: rgb(10,92,179);
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>933</width>
+     <width>1024</width>
      <height>19</height>
     </rect>
    </property>
@@ -646,18 +646,10 @@ color: rgb(10,92,179);
     <addaction name="separator"/>
     <addaction name="actionSearchStore"/>
    </widget>
-   <widget class="QMenu" name="menuDebug">
-    <property name="title">
-     <string>Debug</string>
-    </property>
-    <addaction name="actionInstall_snappy_debug"/>
-    <addaction name="actionConnect_to_Snappy_Debug"/>
-   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuPackae_manager"/>
    <addaction name="menuTools"/>
    <addaction name="menuHelp"/>
-   <addaction name="menuDebug"/>
   </widget>
   <widget class="QDockWidget" name="dockWidget_2">
    <property name="statusTip">
@@ -874,7 +866,7 @@ color: rgb(10,92,179);
   </action>
   <action name="actionHttp_developer_ubuntu_com_snappy_snapcraft">
    <property name="text">
-    <string>Developer website</string>
+    <string>Ubuntu Developer website</string>
    </property>
   </action>
   <action name="actionSearchStore">
