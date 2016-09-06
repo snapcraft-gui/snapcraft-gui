@@ -175,7 +175,9 @@ background-attachment: fixed;</string>
                  <widget class="QListWidget" name="installed_package">
                   <property name="font">
                    <font>
-                    <pointsize>11</pointsize>
+                    <pointsize>12</pointsize>
+                    <weight>75</weight>
+                    <bold>true</bold>
                    </font>
                   </property>
                   <property name="styleSheet">
