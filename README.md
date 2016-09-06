@@ -22,7 +22,7 @@ Snapcraft.yaml editor: [Started]
 	
 	-pastebin integration [Done]
 	
-Snap lifecycle commands: [started]
+Snap lifecycle commands: [Started]
 	
 	-clean [done]
 	
@@ -30,7 +30,7 @@ Snap lifecycle commands: [started]
 	
 	-stage[done]
 	
-	-prime[not started]
+	-prime[done]
 	
 	-snap[done]
 
