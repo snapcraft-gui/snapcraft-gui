@@ -15,6 +15,7 @@ script:
   - qmake -r
   - make
   - make check
+  - qmake --version
 
 notifications:
   email: false
