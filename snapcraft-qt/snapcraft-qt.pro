@@ -34,7 +34,8 @@ FORMS    += mainwindow.ui \
     aboutdialog.ui \
     pull_dialog.ui \
     stage_dialog.ui \
-    prime_dialog.ui
+    prime_dialog.ui \
+    build_dialog.ui
 
 RESOURCES += \
     rc.qrc
