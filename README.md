@@ -1,11 +1,11 @@
-# snapcraft-gui (development)
+# Snapcraft-gui (development)
 Graphical user interface to create snaps using snapcraft as backend , written in qt.
 
-#Travis-CI build status for Ubuntu 16.04.1 LTS codename - xenial
+#Travis-CI build status for Ubuntu 16.04.1 LTS xenial
 
 ![travis-ci](https://travis-ci.org/keshavbhatt/snapcraft-gui.svg?branch=master)
 
-#install on Ubuntu 16.04 and above
+#Install on Ubuntu 16.04 and above
 
 	sudo add-apt-repository ppa:keshavnrj/snapcraft-gui-nightly
 
@@ -68,14 +68,18 @@ Am implementing/adding each feature one by one so, all the features will not wor
 ![snapcraft-gui](https://github.com/keshavbhatt/snapcraft-gui/blob/master/screenshots/sc3.png?raw=true)
 
 #Build
-
-	Build on Ubuntu 16.04 (Qt version 5.5.1) Gcc(64bit)
+	
+	Built on Ubuntu 16.04 using Qt version 5.5.1 in /usr/lib/x86_64-linux-gnu
+	
+	git clone https://github.com/keshavbhatt/snapcraft-gui.git
 	
 	cd snapcraft-qt/
 	 
 	qmake
 	
 	make
+	
+	./snapcraft.gui
 	
 If Compiled with no errors, type ./snapcraft-qt to run
 Make sure you installed dependencies listed in dependencies file. 
