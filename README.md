@@ -3,7 +3,7 @@ Graphical user interface to create snaps using snapcraft as backend , written in
 
 #install on Ubuntu 16.04 and above
 
-	sudo add-apt-repository ppa:keshavnrj/snpacraft-gui
+	sudo add-apt-repository ppa:keshavnrj/snapcraft-gui-nightly
 
 	sudo apt-get update
 	
