@@ -28,6 +28,7 @@
 
 
 
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -44,7 +45,9 @@ MainWindow::MainWindow(QWidget *parent) :
     pull=new QProcess(this);
     stage=new QProcess(this);
     prime=new QProcess(this);
+    build=new QProcess(this);
 
+    login = new QProcess(this);
 
     split1->addWidget(ui->yaml);
     split1->addWidget(ui->tree);
@@ -60,7 +63,7 @@ MainWindow::MainWindow(QWidget *parent) :
     split1->restoreState(settings.value("split1_state").toByteArray());
 
     setStyle(":/rc/style.qss");
-    ui->clean_toolButton->setPopupMode(QToolButton::InstantPopup);
+//    ui->clean_toolButton->setPopupMode(QToolButton::InstantPopup);
 
     //TODO check if snapcraft is installed
 
@@ -92,6 +95,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this->stage,SIGNAL(readyRead()),this,SLOT(stage_readyRead()));
     connect(this->prime,SIGNAL(finished(int)),this,SLOT(prime_finished(int)));
     connect(this->prime,SIGNAL(readyRead()),this,SLOT(prime_readyRead()));
+    connect(this->build,SIGNAL(finished(int)),this,SLOT(build_finished(int)));
+    connect(this->build,SIGNAL(readyRead()),this,SLOT(build_readyRead()));
 
     connect(ui->yaml->document(), &QTextDocument::contentsChanged,this, &MainWindow::documentWasModified);
 
@@ -114,7 +119,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->pull->setStyleSheet(style.toUtf8());
     ui->stage->setStyleSheet(style.toUtf8());
     ui->prime->setStyleSheet(style.toUtf8());
-
+    ui->build->setStyleSheet(style.toUtf8());
+    ui->clean_toolButton->setStyleSheet(style.toUtf8());
 //    on_actionSnapcraft_Plugins_Help_triggered();
 }
 
@@ -462,7 +468,7 @@ ui->doc_stats->setText("Word count: "+QString::number(ui->yaml->document()->char
 
 void MainWindow::on_save_snapcraft_clicked()
 {
-    ui->terminal->append("<br>save requested<br>");
+    ui->terminal->append("save requested<br>");
      //save snapcraft.yaml
 
     //if file saved
@@ -510,6 +516,8 @@ void MainWindow::on_snapcraft_path_textChanged(const QString &arg1)
 {
     if(arg1.isEmpty()){
 
+        ui->actionOpen_Snapcraft_with_Gedit->setEnabled(false);
+
         ui->yaml->clear();
         ui->yaml->setDisabled(true);
 
@@ -524,12 +532,22 @@ void MainWindow::on_snapcraft_path_textChanged(const QString &arg1)
         ui->open_with_files->setDisabled(true);
 
         ui->pastebin_it->setDisabled(true);
+
         ui->actionUbuntu_Paste->setDisabled(true);
 
         ui->open_with_gedit->setDisabled(true);
 
+        ui->actionBuild->setDisabled(true);
+        ui->actionClean->setDisabled(true);
+        ui->actionPrime->setDisabled(true);
+        ui->actionPull->setDisabled(true);
+        ui->actionSnap->setDisabled(true);
+        ui->actionStage->setDisabled(true);
     }
     else{
+
+        ui->actionOpen_Snapcraft_with_Gedit->setEnabled(true);
+
         ui->yaml->setDisabled(false);
 
         ui->tree->setDisabled(false);
@@ -544,7 +562,12 @@ void MainWindow::on_snapcraft_path_textChanged(const QString &arg1)
 
         ui->open_with_gedit->setDisabled(false);
 
-
+        ui->actionBuild->setDisabled(false);
+        ui->actionClean->setDisabled(false);
+        ui->actionPrime->setDisabled(false);
+        ui->actionPull->setDisabled(false);
+        ui->actionSnap->setDisabled(false);
+        ui->actionStage->setDisabled(false);
     }
 }
 
@@ -772,6 +795,9 @@ void MainWindow::on_actionClean_triggered()
 //pastebin-it function
 void MainWindow::on_pastebin_it_clicked()
 {
+    ui->save_snapcraft->click();
+    ui->terminal->append("<span style='color:red'>Editor: </span>Saved file before uploading as paste.<br>");
+
     QString o = "cat "+ui->snapcraft_path->text()+"| pastebinit";
     pastebin_it->start("bash", QStringList()<<"-c"<< o);
     ui->pastebin_it->setText("Wait..");
@@ -852,6 +878,7 @@ void MainWindow::custom_clean(){
     clean_proc->setWorkingDirectory(QString(fileName).remove("/snapcraft.yaml"));
     clean_proc->start("snapcraft",arg);
 
+    ui->build->setDisabled(false);
     ui->stage->setDisabled(true);
     ui->snap->setDisabled(true);
     ui->pull->setDisabled(true);
@@ -865,6 +892,7 @@ void MainWindow::custom_clean(){
         clean_proc->setWorkingDirectory(QString(fileName).remove("/snapcraft.yaml"));
         clean_proc->start("snapcraft",arg);
 
+        ui->build->setDisabled(true);
         ui->stage->setDisabled(true);
         ui->snap->setDisabled(true);
         ui->pull->setDisabled(true);
@@ -903,6 +931,7 @@ void MainWindow::clean_proc_finished(int i){
          step_str.clear();
         }
     }
+    ui->build->setDisabled(false);
     ui->stage->setDisabled(false);
     ui->snap->setDisabled(false);
     ui->pull->setDisabled(false);
@@ -924,6 +953,7 @@ void MainWindow::clean_all(){
     clean_proc->setWorkingDirectory(QString(fileName).remove("/snapcraft.yaml"));
     clean_proc->start("snapcraft",arg);
 
+    ui->build->setDisabled(true);
     ui->stage->setDisabled(true);
     ui->snap->setDisabled(true);
     ui->pull->setDisabled(true);
@@ -949,6 +979,7 @@ void MainWindow::step_changed(QString step){
     }
 }
 void MainWindow::part_text_changed(QString part){
+    cui.part_name->setText(part.simplified());
      if(cui.step_combo->currentText()!="All"){
     if(part.length()>0){
         cui.clean_button->setDisabled(false);
@@ -1008,6 +1039,7 @@ void MainWindow::on_snap_clicked()
 // snap command via Qprocess
 void MainWindow::snap_snapcraft(){
 
+    ui->build->setDisabled(true);
     ui->pull->setDisabled(true);
     ui->stage->setDisabled(true);
     ui->prime->setDisabled(true);
@@ -1045,6 +1077,7 @@ void MainWindow::snap_finished(int i){
     QTimer::singleShot(500,this,SLOT(set_name_snap()));  //timer to output "Something went wrong." by changing name after a while
     ui->snap->setDisabled(false);
 
+    ui->build->setDisabled(false);
     ui->pull->setDisabled(false);
     ui->stage->setDisabled(false);
     ui->prime->setDisabled(false);
@@ -1184,6 +1217,7 @@ void MainWindow::pull_command_requested(){
         pull->setWorkingDirectory(QString(fileName).remove("/snapcraft.yaml"));
         pull->start("snapcraft",QStringList()<<"pull");
 
+        ui->build->setDisabled(true);
         ui->snap->setDisabled(true);
         ui->stage->setDisabled(true);
         ui->prime->setDisabled(true);
@@ -1200,6 +1234,7 @@ void MainWindow::pull_command_requested(){
         pull->setWorkingDirectory(QString(fileName).remove("/snapcraft.yaml"));
         pull->start("snapcraft",QStringList()<<"pull"<<pui.part_name->text());
 
+        ui->build->setDisabled(true);
         ui->snap->setDisabled(true);
         ui->stage->setDisabled(true);
         ui->prime->setDisabled(true);
@@ -1216,7 +1251,7 @@ void MainWindow::pull_command_requested(){
 }
 
 void MainWindow::change_puis_pullbtn_text(QString txt){
-
+    pui.part_name->setText(txt.simplified());
     if(txt.length()>0){
         pui.pull_button->setEnabled(true);
         pui.pull_button->setText("Pull "+txt);
@@ -1241,6 +1276,7 @@ void MainWindow::pull_finished(int i){
     QTimer::singleShot(500,this,SLOT(set_name_pull()));  //timer to output "Something went wrong." by changing name after a while
     ui->pull->setDisabled(false);
 
+    ui->build->setDisabled(false);
     ui->snap->setDisabled(false);
     ui->stage->setDisabled(false);
     ui->prime->setDisabled(false);
@@ -1309,6 +1345,7 @@ void MainWindow::stage_command_requested(){
         stage->setWorkingDirectory(QString(fileName).remove("/snapcraft.yaml"));
         stage->start("snapcraft",QStringList()<<"stage");
 
+        ui->build->setDisabled(true);
         ui->snap->setDisabled(true);
         ui->pull->setDisabled(true);
         ui->prime->setDisabled(true);
@@ -1325,6 +1362,7 @@ void MainWindow::stage_command_requested(){
         stage->setWorkingDirectory(QString(fileName).remove("/snapcraft.yaml"));
         stage->start("snapcraft",QStringList()<<"stage"<<sui.part_name->text());
 
+        ui->build->setDisabled(true);
         ui->snap->setDisabled(true);
         ui->pull->setDisabled(true);
         ui->prime->setDisabled(true);
@@ -1341,6 +1379,7 @@ void MainWindow::stage_command_requested(){
 }
 void MainWindow::change_suis_stagebtn_text(QString txt){
 
+    sui.part_name->setText(txt.simplified());
     if(txt.length()>0){
         sui.stage_button->setEnabled(true);
         sui.stage_button->setText("Stage "+txt);
@@ -1365,6 +1404,7 @@ void MainWindow::stage_finished(int i){
     QTimer::singleShot(500,this,SLOT(set_name_stage()));  //timer to output "Something went wrong." by changing name after a while
     ui->stage->setDisabled(false);
 
+    ui->build->setDisabled(false);
     ui->snap->setDisabled(false);
     ui->pull->setDisabled(false);
     ui->prime->setDisabled(false);
@@ -1433,6 +1473,7 @@ void MainWindow::prime_command_requested(){
         prime->setWorkingDirectory(QString(fileName).remove("/snapcraft.yaml"));
         prime->start("snapcraft",QStringList()<<"prime");
 
+        ui->build->setDisabled(true);
         ui->snap->setDisabled(true);
         ui->pull->setDisabled(true);
         ui->stage->setDisabled(true);
@@ -1449,6 +1490,7 @@ void MainWindow::prime_command_requested(){
         prime->setWorkingDirectory(QString(fileName).remove("/snapcraft.yaml"));
         prime->start("snapcraft",QStringList()<<"prime"<<prui.part_name->text());
 
+        ui->build->setDisabled(true);
         ui->snap->setDisabled(true);
         ui->pull->setDisabled(true);
         ui->stage->setDisabled(true);
@@ -1465,6 +1507,7 @@ void MainWindow::prime_command_requested(){
 }
 void MainWindow::change_prime_uis_stagebtn_text(QString txt){
 
+    prui.part_name->setText(txt.simplified());
     if(txt.length()>0){
         prui.prime_button->setEnabled(true);
         prui.prime_button->setText("Prime "+txt);
@@ -1489,6 +1532,7 @@ void MainWindow::prime_finished(int i){
     QTimer::singleShot(500,this,SLOT(set_name_prime()));  //timer to output "Something went wrong." by changing name after a while
     ui->prime->setDisabled(false);
 
+    ui->build->setDisabled(false);
     ui->snap->setDisabled(false);
     ui->pull->setDisabled(false);
     ui->stage->setDisabled(false);
@@ -1520,4 +1564,162 @@ void MainWindow::prime_all_radio_toggled(bool checked)
         prui.part_name->setDisabled(false);
         prui.prime_button->setDisabled(true);
     }
+}
+
+//build command
+void MainWindow::on_build_clicked()
+{
+    if(ui->build->text()=="Cancel"){
+        ui->build->setText("Build");//instantly , so that we can detect user cliked cancel
+        build->kill();
+        show_tree();
+    }
+    else
+    {
+    command_widget=new QWidget();
+    bui.setupUi(command_widget);
+
+    //toggle sui radios
+    bui.build_all_radio->setChecked(true);
+    bui.part_name->setDisabled(true);
+
+    command_widget->setWindowFlags(Qt::Popup);
+    command_widget->move(ui->build->mapToGlobal(QPoint(-command_widget->width()+100,30)));
+    command_widget->showNormal();
+
+    connect(bui.build_all_radio,SIGNAL(toggled(bool)),this,SLOT(build_all_radio_toggled(bool)));
+    connect(bui.part_name,SIGNAL(textChanged(QString)),this,SLOT(change_build_buis_stagebtn_text(QString)));
+    connect(bui.build_button,SIGNAL(clicked(bool)),this,SLOT(build_command_requested()));
+    connect(bui.no_parallel_build,SIGNAL(toggled(bool)),this,SLOT(no_parallel_build_checked_changed(bool)));
+
+    }
+}
+
+void MainWindow::build_command_requested(){
+
+    if(bui.build_button->text()=="Build All Parts"){
+        build->setWorkingDirectory(QString(fileName).remove("/snapcraft.yaml"));
+        build->start("snapcraft",QStringList()<<"build"<<paraller_build);
+
+        ui->prime->setDisabled(true);
+        ui->snap->setDisabled(true);
+        ui->pull->setDisabled(true);
+        ui->stage->setDisabled(true);
+        ui->clean_toolButton->setDisabled(true);
+
+        ui->build->setText("Cancel");
+        bui.build_button->setDisabled(true);
+        ui->build->setDisabled(false);
+
+        ui->terminal->setText("<span style='color:red'>Snapcraft: </span>building parts of "+fileName+"<br>");
+
+    }
+    else{
+        build->setWorkingDirectory(QString(fileName).remove("/snapcraft.yaml"));
+        build->start("snapcraft",QStringList()<<"build"<<prui.part_name->text()<<paraller_build);
+
+        ui->prime->setDisabled(true);
+        ui->snap->setDisabled(true);
+        ui->pull->setDisabled(true);
+        ui->stage->setDisabled(true);
+        ui->clean_toolButton->setDisabled(true);
+
+        ui->build->setText("Cancel");
+        bui.build_button->setDisabled(true);
+        ui->build->setDisabled(false);
+
+        ui->terminal->setText("<span style='color:red'>Snapcraft: </span>building "+bui.part_name->text()+" part of "+fileName+"<br>");
+
+    }
+
+}
+void MainWindow::change_build_buis_stagebtn_text(QString txt){
+
+    bui.part_name->setText(txt.simplified());
+    if(txt.length()>0){
+        bui.build_button->setEnabled(true);
+        bui.build_button->setText("Build "+txt);
+    }else{
+        bui.build_button->setEnabled(false);
+    }
+}
+
+void MainWindow::build_finished(int i){
+    if(i==0){
+        ui->terminal->append("<span style='color:red'>Snapcraft: </span>Finished.");
+        show_tree();
+    }
+    else{
+        if(ui->build->text()=="Build"){
+           ui->terminal->append("<span style='color:red'>Snapcraft: </span>Build Cancelled on user request");
+        }else{
+        ui->terminal->append("<span style='color:red'>Snapcraft: </span>Something went wrong. Maybe part is not defined in snapcraft.yaml<br><span style='color:green'>Suggestions: </span>check syntax errors in yaml file.<br><span style='color:green'>Suggestion: </span>This may happen due to internet connectivity issues.<br>");
+        }
+    }
+
+    QTimer::singleShot(500,this,SLOT(set_name_build()));  //timer to output "Something went wrong." by changing name after a while
+    ui->build->setDisabled(false);
+
+    ui->prime->setDisabled(false);
+    ui->snap->setDisabled(false);
+    ui->pull->setDisabled(false);
+    ui->stage->setDisabled(false);
+    ui->clean_toolButton->setDisabled(false);
+
+    if(command_widget->isVisible()){
+    command_widget->close();
+    }
+}
+
+void MainWindow::set_name_build(){
+ui->build->setText("Build");
+}
+void MainWindow::build_readyRead(){
+ui->terminal->append(build->readAll());
+}
+
+void MainWindow::build_all_radio_toggled(bool checked)
+{
+    if(checked){
+       bui.part_name->setDisabled(true);
+       bui.build_button->setDisabled(false);
+       bui.build_button->setText("Build All Parts");
+       bui.part_name->clear();
+    }
+    else if(!checked){
+        if(bui.part_name->text().length()<0)
+        bui.build_button->setText("Build");
+        bui.part_name->setDisabled(false);
+        bui.build_button->setDisabled(true);
+    }
+}
+
+void MainWindow::no_parallel_build_checked_changed(bool k){
+
+    if(k){
+        paraller_build="--no-parallel-build";
+    }else{
+        paraller_build.clear();
+    }
+}
+
+//login/logout
+void MainWindow::on_actionLogin_triggered()
+{
+    connect(this->login,SIGNAL(finished(int)),this,SLOT(login_finished(int)));
+    connect(this->login,SIGNAL(readyRead()),this,SLOT(login_readyRead()));
+    login->start("gnome-terminal",QStringList()<<"-e"<<"snapcraft login");
+}
+
+void MainWindow::login_finished(int k){
+    if(k==0){
+        qDebug()<<"done";
+    }else{
+        qDebug()<<"fucked";
+    }
+}
+
+void MainWindow::login_readyRead(){
+    qDebug()<<login->readAll();
+//    qDebug()<</
 }

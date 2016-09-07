@@ -14,6 +14,7 @@
 #include "ui_pull_dialog.h"
 #include "ui_stage_dialog.h"
 #include "ui_prime_dialog.h"
+#include "ui_build_dialog.h"
 
 namespace Ui {
 class MainWindow;
@@ -34,6 +35,7 @@ private:
     Ui::pull_dialog pui;
     Ui::stage_dialog sui;
     Ui::prime_dialog prui;
+    Ui::build_dialog bui;
 
     QWidget *command_widget;
     QString fileName;
@@ -65,6 +67,12 @@ private:
     QProcess *stage;
     //prime commands
     QProcess *prime;
+    //build command
+    QProcess *build;
+    QString paraller_build;
+
+    //login
+    QProcess *login;
 
     //yaml editor menu
     QMenu *editor_menu;
@@ -172,6 +180,20 @@ private slots:
    void prime_readyRead();
    void set_name_prime();
 
+   //build command
+   void on_build_clicked();
+   void build_all_radio_toggled(bool);
+   void change_build_buis_stagebtn_text(QString);
+   void build_command_requested();
+   void build_finished(int);
+   void build_readyRead();
+   void set_name_build();
+   void no_parallel_build_checked_changed(bool);
+
+   //login/logout
+    void on_actionLogin_triggered();
+    void  login_finished(int);
+    void  login_readyRead();
 };
 
 #endif // MAINWINDOW_H
