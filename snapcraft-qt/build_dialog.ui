@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>pull_dialog</class>
- <widget class="QWidget" name="pull_dialog">
+ <class>build_dialog</class>
+ <widget class="QWidget" name="build_dialog">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>285</width>
-    <height>110</height>
+    <width>327</width>
+    <height>112</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -27,9 +27,9 @@
       </widget>
      </item>
      <item row="0" column="1">
-      <widget class="QRadioButton" name="all_radio">
+      <widget class="QRadioButton" name="build_all_radio">
        <property name="text">
-        <string>Pull all Parts</string>
+        <string>Build all Parts</string>
        </property>
        <property name="checked">
         <bool>true</bool>
@@ -37,18 +37,25 @@
       </widget>
      </item>
      <item row="0" column="0">
-      <widget class="QRadioButton" name="specific_pull_radio">
+      <widget class="QRadioButton" name="specific_build_radio">
        <property name="text">
-        <string>Pull specific Part</string>
+        <string>Build specific Part</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QCheckBox" name="no_parallel_build">
+       <property name="text">
+        <string>--no-parallel-build</string>
        </property>
       </widget>
      </item>
     </layout>
    </item>
    <item>
-    <widget class="QPushButton" name="pull_button">
+    <widget class="QPushButton" name="build_button">
      <property name="text">
-      <string>Pull All Parts</string>
+      <string>Build All Parts</string>
      </property>
     </widget>
    </item>
