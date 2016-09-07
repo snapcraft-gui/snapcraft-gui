@@ -24,7 +24,7 @@ Install_local_snap_dialog::Install_local_snap_dialog(QWidget *parent) :
     connect(info_process,SIGNAL(finished(int)),this,SLOT(info_process_finished(int)));
 
     ui->install_button->setDisabled(true);
-    ui->remove_snap->setDisabled(true);
+//    ui->remove_snap->setDisabled(true);
     ui->remove_selected_snap->setDisabled(true);
     ui->selected_snap_info->setDisabled(true);
     ui->property_grid->hide();
@@ -36,6 +36,16 @@ Install_local_snap_dialog::Install_local_snap_dialog(QWidget *parent) :
     ui->update->setChecked(false);
     ui->update->hide();
 
+    //style
+    QString style ="QPushButton{color: #000000; background-color: #B5B8B7; border-width: 1px; border-color: #302F2F; border-style: solid; padding-top: 3px; padding-bottom: 3px; padding-left: 3px; padding-right: 3px; border-radius: 2px; outline: none;}"
+                                        "QPushButton:disabled { background-color: #302F2F; border-width: 1px; border-color: #302F2F; border-style: solid; padding-top: 3px; padding-bottom: 3px; padding-left: 5px; padding-right: 5px; /*border-radius: 2px;*/ color: #454545;}"
+                                        "QPushButton:focus { background-color: #B5B8B7; color: #000000;}"
+                                        "QPushButton:hover{border: 1px solid #302F2F;color: #000000;}"
+                                        "QPushButton:pressed { background-color: #484846;color: silver;}";
+
+    //styling command buttons
+    ui->remove_selected_snap->setStyleSheet(style.toUtf8());
+    ui->install_button->setStyleSheet(style.toUtf8());
 
     list_installed_snaps();
 }
@@ -61,13 +71,15 @@ else{//when process exits with status code 1 error while execution
     }
 
     if(ui->terminal_output->toPlainText().contains("_Installed_")){
-       ui->remove_snap->setDisabled(false);
        ui->install_button->setDisabled(true);
+       ui->snap_path->clear();
    }
     else if(ui->terminal_output->toPlainText().contains("_Removed_"))
     {
-        ui->remove_snap->setDisabled(true);
+//        ui->remove_snap->setDisabled(true);
+        if(!ui->snap_path->text().isEmpty()){
         ui->install_button->setDisabled(false);
+        }
     }
 
     ui->installed_package->clear(); //clear list cause new data available now
@@ -128,14 +140,6 @@ void Install_local_snap_dialog::on_devmode_toggled(bool checked)
  devmode = checked;
 }
 
-void Install_local_snap_dialog::on_remove_snap_clicked()
-{
-    process_name = "_Removed_";
-    QString prog = "pkexec";
-    QStringList args;
-    args<<"snap"<<"remove"<<installed_snap_name;
-    install->start(prog, args);
-}
 
 void Install_local_snap_dialog::list_installed_snaps(){
     QString prog = "snap";
@@ -332,12 +336,12 @@ void Install_local_snap_dialog::on_update_toggled(bool checked)
         //list_installed_snaps();//populate list of installed snaps
         ui->install_remove_frame->setEnabled(true);
         ui->update_frame->setEnabled(false);
-        //set remove button enabled if snap from installed list is selected
-        if(ui->remove_snap->text().size()>6){
-        ui->remove_selected_snap->setEnabled(true);
-        }else{
-            ui->remove_selected_snap->setEnabled(false);
-        }
+//        //set remove button enabled if snap from installed list is selected
+//        if(ui->remove_snap->text().size()>6){
+//        ui->remove_selected_snap->setEnabled(true);
+//        }else{
+//            ui->remove_selected_snap->setEnabled(false);
+//        }
         ui->info_terminal->setText("<span style='color:red'>Snap Package Manager: </span>switched install-remove mode.");
     }
     else{//update manager enabled

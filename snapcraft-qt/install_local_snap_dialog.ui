@@ -81,13 +81,6 @@
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="remove_snap">
-              <property name="text">
-               <string>Remove</string>
-              </property>
-             </widget>
-            </item>
-            <item>
              <widget class="QPushButton" name="install_button">
               <property name="text">
                <string>Install</string>

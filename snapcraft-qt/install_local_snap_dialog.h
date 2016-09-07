@@ -32,8 +32,6 @@ private slots:
 
     void on_devmode_toggled(bool checked);
 
-    void on_remove_snap_clicked();
-
     void on_installed_package_clicked(const QModelIndex &index);
 
     void on_remove_selected_snap_clicked();
