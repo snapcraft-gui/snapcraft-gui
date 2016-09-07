@@ -223,7 +223,7 @@
         </property>
         <property name="sizeHint" stdset="0">
          <size>
-          <width>40</width>
+          <width>24</width>
           <height>20</height>
          </size>
         </property>
@@ -256,6 +256,39 @@
          <property name="bottomMargin">
           <number>4</number>
          </property>
+         <item row="0" column="4">
+          <widget class="QPushButton" name="snap">
+           <property name="styleSheet">
+            <string notr="true"/>
+           </property>
+           <property name="text">
+            <string>Snap</string>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>16</width>
+             <height>16</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QPushButton" name="build">
+           <property name="text">
+            <string>Build</string>
+           </property>
+           <property name="icon">
+            <iconset resource="rc.qrc">
+             <normaloff>:/rc/rc/have_child.png</normaloff>:/rc/rc/have_child.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>16</width>
+             <height>16</height>
+            </size>
+           </property>
+          </widget>
+         </item>
          <item row="0" column="0">
           <widget class="QPushButton" name="pull">
            <property name="text">
@@ -273,44 +306,7 @@
            </property>
           </widget>
          </item>
-         <item row="0" column="4">
-          <widget class="QToolButton" name="clean_toolButton">
-           <property name="text">
-            <string>Clean...</string>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>16</width>
-             <height>16</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="4">
-          <widget class="QToolButton" name="assets_toolButton">
-           <property name="text">
-            <string>Assets...</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="2">
-          <widget class="QPushButton" name="stage">
-           <property name="text">
-            <string>Stage</string>
-           </property>
-           <property name="icon">
-            <iconset resource="rc.qrc">
-             <normaloff>:/rc/rc/have_child.png</normaloff>:/rc/rc/have_child.png</iconset>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>16</width>
-             <height>16</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
+         <item row="1" column="1">
           <widget class="QPushButton" name="prime">
            <property name="text">
             <string>Prime</string>
@@ -327,13 +323,37 @@
            </property>
           </widget>
          </item>
-         <item row="1" column="2">
-          <widget class="QPushButton" name="snap">
-           <property name="styleSheet">
-            <string notr="true"/>
+         <item row="0" column="1">
+          <widget class="QPushButton" name="stage">
+           <property name="text">
+            <string>Stage</string>
+           </property>
+           <property name="icon">
+            <iconset resource="rc.qrc">
+             <normaloff>:/rc/rc/have_child.png</normaloff>:/rc/rc/have_child.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>16</width>
+             <height>16</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="4">
+          <widget class="QPushButton" name="clean_toolButton">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
            </property>
            <property name="text">
-            <string>Snap</string>
+            <string>Clean</string>
+           </property>
+           <property name="icon">
+            <iconset resource="rc.qrc">
+             <normaloff>:/rc/rc/have_child.png</normaloff>:/rc/rc/have_child.png</iconset>
            </property>
            <property name="iconSize">
             <size>
@@ -642,8 +662,6 @@ color: rgb(10,92,179);
     </property>
     <addaction name="actionUbuntu_Paste"/>
     <addaction name="actionOpen_Snapcraft_with_Gedit"/>
-    <addaction name="actionEnvironment_infp"/>
-    <addaction name="actionSettings"/>
     <addaction name="separator"/>
     <addaction name="actionList_plugins"/>
     <addaction name="actionLogin"/>
@@ -651,15 +669,13 @@ color: rgb(10,92,179);
     <addaction name="actionRegister"/>
     <addaction name="actionTour"/>
     <addaction name="actionPush"/>
-    <addaction name="actionUpload"/>
-    <addaction name="actionRelease"/>
     <addaction name="separator"/>
-    <addaction name="actionClean"/>
-    <addaction name="actionCleanbuild"/>
     <addaction name="actionPull"/>
+    <addaction name="actionBuild"/>
     <addaction name="actionStage"/>
     <addaction name="actionPrime"/>
     <addaction name="actionSnap"/>
+    <addaction name="actionClean"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -715,7 +731,7 @@ color: rgb(10,92,179);
       <widget class="QTextEdit" name="terminal">
        <property name="font">
         <font>
-         <pointsize>11</pointsize>
+         <pointsize>10</pointsize>
          <italic>true</italic>
         </font>
        </property>
@@ -741,10 +757,16 @@ color: rgb(10,92,179);
    <property name="text">
     <string>New</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
+   </property>
   </action>
   <action name="actionOpen">
    <property name="text">
     <string>Open</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
    </property>
   </action>
   <action name="actionAbout_Qt">
@@ -772,29 +794,9 @@ color: rgb(10,92,179);
     <string>Open  yaml with Gedit</string>
    </property>
   </action>
-  <action name="actionSettings">
-   <property name="text">
-    <string>Settings</string>
-   </property>
-  </action>
-  <action name="actionEnvironment_infp">
-   <property name="text">
-    <string>Environment info</string>
-   </property>
-  </action>
   <action name="actionSnapcraft_io">
    <property name="text">
     <string>Snapcraft.io</string>
-   </property>
-  </action>
-  <action name="actionBrowse_Installed_Apps">
-   <property name="text">
-    <string>Browse Installed Apps</string>
-   </property>
-  </action>
-  <action name="actionBrowse_Installed_apps">
-   <property name="text">
-    <string>Browse Installed apps</string>
    </property>
   </action>
   <action name="actionClose_Currrent">
@@ -837,29 +839,9 @@ color: rgb(10,92,179);
     <string>Push</string>
    </property>
   </action>
-  <action name="actionUpload">
-   <property name="text">
-    <string>Upload</string>
-   </property>
-  </action>
-  <action name="actionRelease">
-   <property name="text">
-    <string>Release</string>
-   </property>
-  </action>
-  <action name="actionLifecycle_commands">
-   <property name="text">
-    <string>Lifecycle commands</string>
-   </property>
-  </action>
   <action name="actionClean">
    <property name="text">
     <string>Clean</string>
-   </property>
-  </action>
-  <action name="actionCleanbuild">
-   <property name="text">
-    <string>Cleanbuild</string>
    </property>
   </action>
   <action name="actionPull">
@@ -882,29 +864,9 @@ color: rgb(10,92,179);
     <string>Snap</string>
    </property>
   </action>
-  <action name="actionList_Installled">
-   <property name="text">
-    <string>List Installed</string>
-   </property>
-  </action>
-  <action name="actionRemove_installed">
-   <property name="text">
-    <string>Remove installed snap</string>
-   </property>
-  </action>
   <action name="actionInstall_a_snap">
    <property name="text">
     <string>Install a local snap or Remove Snaps</string>
-   </property>
-  </action>
-  <action name="actionConnect_to_Snappy_Debug">
-   <property name="text">
-    <string>Connect to Snappy Debug</string>
-   </property>
-  </action>
-  <action name="actionInstall_snappy_debug">
-   <property name="text">
-    <string>Install snappy-debug</string>
    </property>
   </action>
   <action name="actionHttp_developer_ubuntu_com_snappy_snapcraft">
@@ -922,10 +884,112 @@ color: rgb(10,92,179);
     <string>Snapcraft Plugins Help</string>
    </property>
   </action>
+  <action name="actionBuild">
+   <property name="text">
+    <string>Build</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
   <include location="rc.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>actionPull</sender>
+   <signal>triggered()</signal>
+   <receiver>pull</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>696</x>
+     <y>64</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionBuild</sender>
+   <signal>triggered()</signal>
+   <receiver>build</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>696</x>
+     <y>97</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionPrime</sender>
+   <signal>triggered()</signal>
+   <receiver>prime</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>787</x>
+     <y>97</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>787</x>
+     <y>97</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionClean</sender>
+   <signal>triggered()</signal>
+   <receiver>clean_toolButton</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>878</x>
+     <y>97</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionSnap</sender>
+   <signal>triggered()</signal>
+   <receiver>snap</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>878</x>
+     <y>64</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionStage</sender>
+   <signal>triggered()</signal>
+   <receiver>stage</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>787</x>
+     <y>64</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
