@@ -56,8 +56,6 @@ Snap Store: [Started]
 #NOTE:
 Am implementing/adding each feature one by one so, all the features will not work. see the commits log to check what will work and what will not.
 
-Currently it will not build any snap, that feature is yet to be implemented.
-
 
 #ScreenShot
 
