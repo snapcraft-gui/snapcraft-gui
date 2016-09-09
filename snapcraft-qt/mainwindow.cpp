@@ -97,6 +97,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this->prime,SIGNAL(readyRead()),this,SLOT(prime_readyRead()));
     connect(this->build,SIGNAL(finished(int)),this,SLOT(build_finished(int)));
     connect(this->build,SIGNAL(readyRead()),this,SLOT(build_readyRead()));
+    connect(ui->yaml,SIGNAL(cursorPositionChanged()),this,SLOT(highlightCurrentLine()));
 
     connect(ui->yaml->document(), &QTextDocument::contentsChanged,this, &MainWindow::documentWasModified);
 
@@ -122,6 +123,42 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->build->setStyleSheet(style.toUtf8());
     ui->clean_toolButton->setStyleSheet(style.toUtf8());
 //    on_actionSnapcraft_Plugins_Help_triggered();
+
+
+    QFont font;
+    font.setFamily("Courier");
+    font.setStyleHint(QFont::Monospace);
+    font.setFixedPitch(true);
+    font.setPointSize(14);
+    ui->yaml->setFont(font);
+
+    const int tabStop = 4;  // 4 characters
+
+    QFontMetrics metrics(font);
+    ui->yaml->setTabStopWidth(tabStop * metrics.width(' '));
+
+    highlightCurrentLine();
+}
+
+
+
+void MainWindow::highlightCurrentLine()
+{
+    QList<QTextEdit::ExtraSelection> extraSelections;
+
+    if ( !ui->yaml->isReadOnly()) {
+        QTextEdit::ExtraSelection selection ;
+
+        QColor lineColor = QColor(201, 191, 253, 15);
+
+        selection.format.setBackground(lineColor);
+        selection.format.setProperty(QTextFormat::FullWidthSelection, true);
+        selection.cursor = ui->yaml->textCursor();
+        selection.cursor.clearSelection();
+        extraSelections.append(selection);
+    }
+
+    ui->yaml->setExtraSelections(extraSelections);
 }
 
 void MainWindow::documentWasModified(){
@@ -504,7 +541,7 @@ bool MainWindow::saveFile()
 #ifndef QT_NO_CURSOR
     QApplication::setOverrideCursor(Qt::WaitCursor);
 #endif
-    out << ui->yaml->toPlainText();
+    out << ui->yaml->toPlainText().toUtf8();
 #ifndef QT_NO_CURSOR
     QApplication::restoreOverrideCursor();
 #endif
