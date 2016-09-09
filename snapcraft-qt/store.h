@@ -27,12 +27,16 @@ private slots:
 
     void on_install_clicked();
 
+    void install_remove_finished(int);
+
+    void install_remove_readyRead();
 
 
 private:
     Ui::store *ui;
     QProcess *search_process;
     QProcess *install_remove_process;
+    QString selected_package_name;
 };
 
 #endif // STORE_H

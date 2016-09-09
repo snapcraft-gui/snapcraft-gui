@@ -15,6 +15,9 @@ store::store(QWidget *parent) :
     search_process = new QProcess(this);
     install_remove_process = new QProcess(this);
     connect(this->search_process,SIGNAL(finished(int)),this,SLOT(search_finished(int)));
+    connect(this->install_remove_process,SIGNAL(finished(int)),this,SLOT(install_remove_finished(int)));
+    connect(this->install_remove_process,SIGNAL(readyRead()),this,SLOT(install_remove_readyRead()));
+
  }
 
 
@@ -123,16 +126,38 @@ void store::on_available_packages_currentTextChanged(const QString &currentText)
     else{
         ui->install->setDisabled(true);
     }
+
+    selected_package_name = currentText.split(" - ").at(1);
 }
 
 void store::on_install_clicked()
 {
+    ui->available_packages->setDisabled(true);
     if(ui->install->text().contains("Remove")){//remove snap
         qDebug()<<"removing";
             ui->info_terminal->setText("NOT IMPLIMENTED YET");
     }
     else{//install snap
         qDebug()<<"installing";
-            ui->info_terminal->setText("NOT IMPLIMENTED YET");
+
+        install_remove_process->start("pkexec",QStringList()<<"snap"<<"install"<<selected_package_name);
+        ui->install->setDisabled(true);
+        qDebug()<<selected_package_name;
     }
+}
+
+void store::install_remove_finished(int i){
+    if(i==0){
+    ui->info_terminal->setText("Installed"+selected_package_name);
+    }
+    else{
+    ui->info_terminal->setText("Something went wrong.");
+    }
+    ui->available_packages->setDisabled(false);
+    ui->install->setDisabled(false);
+}
+
+void store::install_remove_readyRead(){
+    QString _out_ = QString(install_remove_process->readAll()).simplified();
+    ui->info_terminal->setText(_out_);
 }
