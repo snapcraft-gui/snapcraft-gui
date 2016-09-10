@@ -68,6 +68,7 @@ MainWindow::MainWindow(QWidget *parent) :
     split1->restoreState(settings.value("split1_state").toByteArray());
 
     setStyle(":/rc/style.qss");
+    this->setWindowIcon(QIcon(":/images/images/Snapcraft-gui.png"));
 
     //TODO check if snapcraft is installed
      //added snapcraft as dependency in debian control
