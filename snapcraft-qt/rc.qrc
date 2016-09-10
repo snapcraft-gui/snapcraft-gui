@@ -47,6 +47,7 @@
         <file>images/logo.png</file>
         <file>images/grid.png</file>
         <file>images/logo2.png</file>
+        <file>images/Snapcraft-gui.png</file>
     </qresource>
     <qresource prefix="/txt">
         <file>contrib.txt</file>
