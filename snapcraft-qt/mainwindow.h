@@ -209,6 +209,7 @@ private slots:
 
      void add_part_update_output_to_terminal();
      void parts_update_finished(int);
+     void on_actionPlugins_list_update_triggered();
 };
 
 #endif // MAINWINDOW_H

@@ -631,25 +631,7 @@ void MainWindow::on_terminal_textChanged()
 
     //rules
     if(ui->terminal->toPlainText().contains("snapcraft update")){
-        QMessageBox msgBox;
-        msgBox.setText("Snapcraft need update plugins list.");
-        msgBox.setInformativeText("Do you want to update?");
-        msgBox.setStandardButtons(QMessageBox::Cancel | QMessageBox::Yes);
-        msgBox.setDefaultButton(QMessageBox::Yes);
-        msgBox.buttons().at(1)->setText("Yes Update");
-        ret = msgBox.exec(); //return code
-
-        switch (ret) {
-          case QMessageBox::Yes:
-            parts_update->start("pkexec",QStringList()<<"snapcraft"<<"update");
-            ui->terminal->setText("waiting for user action...");
-              break;
-          case QMessageBox::Cancel:
-              break;
-          default:
-              // should never be reached
-              break;
-        }
+      on_actionPlugins_list_update_triggered();
     }
     }
 
@@ -922,7 +904,6 @@ void MainWindow::on_actionUbuntu_Paste_triggered()
 //the clean toolbutton
 void MainWindow::on_clean_toolButton_clicked()
 {
-    ui->terminal->append("snapcraft update"); //temp
         QMenu *menu=new QMenu(this);
         menu->addAction(QIcon(":/rc/rc/branch_closed.png"),QString("Custom"),this,SLOT(clean_custom()));
         menu->addAction(QIcon(":/rc/rc/branch_closed.png"),QString("All"), this,SLOT(clean_all()));
@@ -1137,7 +1118,7 @@ void MainWindow::snap_snapcraft(){
     ui->snap->setText("Cancel");
     ui->snap->setDisabled(false);
 
-    ui->terminal->setText("<span style='color:red'>Snapcraft: </span>snapping"+fileName+"<br>");
+    ui->terminal->setText("<span style='color:red'>Snapcraft: </span>snapping "+fileName+"<br>");
 }
     else{
         ui->snap->setText("Snap");//instantly
@@ -1156,7 +1137,8 @@ void MainWindow::snap_finished(int i){
         if(ui->snap->text()=="Snap"){
            ui->terminal->append("<span style='color:red'>Snapcraft: </span>Cancelled on user request");
         }else{
-        ui->terminal->append("<span style='color:red'>Snapcraft: </span>Something went wrong.<br><span style='color:green'>Suggestions: </span>check syntax errors in yaml file.<br><span style='color:green'>Suggestion: </span>This may happen due to internet connectivity issues.<br>");
+        ui->terminal->append("<span style='color:red'>Snapcraft: </span>Something went wrong.<br>");
+        ui->terminal->append("<span style='color:red'>Snapcraft returned with : </span>"+snap->readAllStandardError());
         }
     }
 
@@ -1879,5 +1861,28 @@ void MainWindow::on_ignore_changes_clicked()
     if(!ui->save_snapcraft->isEnabled()){
         ui->save_snapcraft->setEnabled(true);
         ui->save_snapcraft->click();
+    }
+}
+
+void MainWindow::on_actionPlugins_list_update_triggered()
+{
+    QMessageBox msgBox;
+    msgBox.setText("Snapcraft need update plugins list.");
+    msgBox.setInformativeText("Do you want to update?");
+    msgBox.setStandardButtons(QMessageBox::Cancel | QMessageBox::Yes);
+    msgBox.setDefaultButton(QMessageBox::Yes);
+    msgBox.buttons().at(1)->setText("Yes Update");
+    ret = msgBox.exec(); //return code
+
+    switch (ret) {
+      case QMessageBox::Yes:
+        parts_update->start("pkexec",QStringList()<<"snapcraft"<<"update");
+        ui->terminal->setText("waiting for user action...");
+          break;
+      case QMessageBox::Cancel:
+          break;
+      default:
+          // should never be reached
+          break;
     }
 }

@@ -824,6 +824,7 @@ color: rgb(10,92,179);
     <addaction name="actionPrime"/>
     <addaction name="actionSnap"/>
     <addaction name="actionClean"/>
+    <addaction name="actionPlugins_list_update"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -895,9 +896,6 @@ color: rgb(10,92,179);
       <widget class="QPushButton" name="clear_term">
        <property name="text">
         <string>Clear</string>
-       </property>
-       <property name="shortcut">
-        <string>Ctrl+C</string>
        </property>
       </widget>
      </item>
@@ -1038,6 +1036,11 @@ color: rgb(10,92,179);
   <action name="actionBuild">
    <property name="text">
     <string>Build</string>
+   </property>
+  </action>
+  <action name="actionPlugins_list_update">
+   <property name="text">
+    <string>Plugins list update</string>
    </property>
   </action>
  </widget>
