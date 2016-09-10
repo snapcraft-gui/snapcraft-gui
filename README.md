@@ -2,9 +2,10 @@
 
 Graphical user interface to create snaps using snapcraft as backend, written in Qt.
 
-# Travis-CI build status
+# Build status and Coveralls status
 
 ![travis-ci](https://travis-ci.org/keshavbhatt/snapcraft-gui.svg?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/keshavbhatt/snapcraft-gui/badge.svg?branch=master)](https://coveralls.io/github/keshavbhatt/snapcraft-gui?branch=master)
 
 # How to install on Ubuntu 16.04 and Ubuntu Yakkety Yak (the development branch)
 
