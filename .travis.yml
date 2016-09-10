@@ -19,3 +19,8 @@ script:
 
 notifications:
   email: false
+  irc:
+    channels:
+      - "irc.freenode.net##snapcraft-gui"
+    use_notice: true
+    skip_join: true
