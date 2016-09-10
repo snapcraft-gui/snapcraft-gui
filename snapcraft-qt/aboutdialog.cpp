@@ -11,6 +11,10 @@
 #include "aboutdialog.h"
 #include "ui_aboutdialog.h"
 
+#include <QFile>
+#include <QTextStream>
+#include <QTableWidgetItem>
+#include <QUrl>
 
 AboutDialog::AboutDialog(QWidget *parent) :
     QDialog(parent),
@@ -18,7 +22,36 @@ AboutDialog::AboutDialog(QWidget *parent) :
 {
     ui->setupUi(this);
             this->setStyleSheet(QString("background-color:#302F2F;"));
-ui->label->setStyleSheet("width:132px;height:132px;");
+            ui->label->setStyleSheet("width:132px;height:132px;");
+
+
+            QFile file(":/txt/contrib.txt");
+                if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+                    return;
+                QTextStream in(&file);
+                QStringList strl ;
+                while (!in.atEnd())
+                  {
+                    strl.append(in.readLine());
+                  }
+
+
+                ui->contrib_list->setColumnCount(3);
+                ui->contrib_list->setRowCount(strl.count());
+                QList<QString> headerLabels;
+                headerLabels << "Name" << "Contribution" << "Contact";
+                ui->contrib_list->setHorizontalHeaderLabels(headerLabels);
+
+
+              for (int i = 0; i < strl.count(); ++i){
+                  //name
+                ui->contrib_list->setItem(i,0 , new QTableWidgetItem(QString(strl.at(i).split(">>").at(0))));
+                  //contirb
+                ui->contrib_list->setItem(i,1 , new QTableWidgetItem(QString(strl.at(i).split(">>").at(1))));
+                  //email
+                ui->contrib_list->setItem(i,2 , new QTableWidgetItem(QString(strl.at(i).split(">>").at(2))));
+                }
+
  }
 AboutDialog::~AboutDialog()
 {
