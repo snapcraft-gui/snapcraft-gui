@@ -12,6 +12,7 @@ Install_local_snap_dialog::Install_local_snap_dialog(QWidget *parent) :
     ui(new Ui::Install_local_snap_dialog)
 {
     ui->setupUi(this);
+    this->setWindowIcon(QIcon(":/images/images/Snapcraft-gui.png"));
 
     install=new QProcess(this);
     list = new QProcess(this);

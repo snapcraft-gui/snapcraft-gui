@@ -195,7 +195,7 @@ font: 75 11pt &quot;Ubuntu&quot;;</string>
           <set>QAbstractItemView::NoEditTriggers</set>
          </property>
          <property name="alternatingRowColors">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
          <property name="selectionBehavior">
           <enum>QAbstractItemView::SelectRows</enum>
@@ -213,7 +213,7 @@ font: 75 11pt &quot;Ubuntu&quot;;</string>
           <bool>true</bool>
          </attribute>
          <attribute name="horizontalHeaderDefaultSectionSize">
-          <number>300</number>
+          <number>200</number>
          </attribute>
          <attribute name="horizontalHeaderMinimumSectionSize">
           <number>100</number>

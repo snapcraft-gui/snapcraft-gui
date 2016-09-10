@@ -21,6 +21,7 @@ AboutDialog::AboutDialog(QWidget *parent) :
     ui(new Ui::AboutDialog)
 {
     ui->setupUi(this);
+    this->setWindowIcon(QIcon(":/images/images/Snapcraft-gui.png"));
             this->setStyleSheet(QString("background-color:#302F2F;"));
             ui->label->setStyleSheet("width:132px;height:132px;");
 
