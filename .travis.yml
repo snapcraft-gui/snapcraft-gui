@@ -3,6 +3,9 @@ language: cpp
 compiler:
   - gcc
 
+services:
+  - docker
+
 sudo: required
 dist: xenial
 
