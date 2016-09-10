@@ -37,6 +37,10 @@ private:
     Ui::prime_dialog prui;
     Ui::build_dialog bui;
 
+    QString  yaml_ondisk;
+    QString  yaml_oneditor;
+    QString  last_saved_text;
+
     QWidget *command_widget;
     QString fileName;
     QString snapname;  //name of snap
@@ -196,6 +200,10 @@ private slots:
     void on_actionLogin_triggered();
     void  login_finished(int);
     void  login_readyRead();
+    void on_yaml_cursorPositionChanged();
+     void on_font_currentFontChanged(const QFont &f);
+     void on_reload_file_clicked();
+     void on_ignore_changes_clicked();
 };
 
 #endif // MAINWINDOW_H
