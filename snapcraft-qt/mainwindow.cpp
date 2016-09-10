@@ -54,6 +54,7 @@ MainWindow::MainWindow(QWidget *parent) :
     split1->addWidget(ui->yaml);
     split1->addWidget(ui->tree);
     split1->setOrientation(Qt::Horizontal);
+    split1->setChildrenCollapsible(false);
 
     ui->horizontalLayout_5->addWidget(split1);
 
@@ -65,20 +66,21 @@ MainWindow::MainWindow(QWidget *parent) :
     split1->restoreState(settings.value("split1_state").toByteArray());
 
     setStyle(":/rc/style.qss");
-//    ui->clean_toolButton->setPopupMode(QToolButton::InstantPopup);
 
     //TODO check if snapcraft is installed
+     //added snapcraft as dependency in debian control
 
     //initiate interface
     hide_current_snap_options();
     on_yaml_textChanged();
 
+    //trigger text change events on some widgets to init thr gui
     ui->snapcraft_path->setText("test");
     ui->snapcraft_path->clear();
     ui->terminal->setText("test");
     ui->terminal->clear();
-    ui->highlight->hide();//temperory
-    ui->zoom->setText(QString::number(ui->yaml->fontInfo().pixelSize()));
+    ui->highlight->hide();//temperory hide online highlighter button
+    ui->zoom->setText(QString::number(ui->yaml->fontInfo().pixelSize()));//editor zoom lable
 
 
     done_message ="<br><span style='color:green'>Done.</span><br>";
@@ -99,8 +101,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this->prime,SIGNAL(readyRead()),this,SLOT(prime_readyRead()));
     connect(this->build,SIGNAL(finished(int)),this,SLOT(build_finished(int)));
     connect(this->build,SIGNAL(readyRead()),this,SLOT(build_readyRead()));
-    connect(ui->yaml,SIGNAL(cursorPositionChanged()),this,SLOT(highlightCurrentLine()));
 
+
+    connect(ui->yaml,SIGNAL(cursorPositionChanged()),this,SLOT(highlightCurrentLine()));
     connect(ui->yaml->document(), &QTextDocument::contentsChanged,this, &MainWindow::documentWasModified);
 
     ui->yaml->setContextMenuPolicy(Qt::CustomContextMenu);//to allow pop custom context menu in yaml editor
@@ -126,7 +129,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->clean_toolButton->setStyleSheet(style.toUtf8());
     ui->reload_file->setStyleSheet(style.toUtf8());
     ui->ignore_changes->setStyleSheet(style.toUtf8());
-//    on_actionSnapcraft_Plugins_Help_triggered();
 
 
     QFont font;
@@ -181,10 +183,8 @@ void MainWindow::highlightCurrentLine()
 }
 
 void MainWindow::documentWasModified(){
-//    setWindowModified(ui->yaml->document()->isModified());
     ui->save_snapcraft->setEnabled(true);
 }
-
 
 //Loading qss and setting style from it--------------------------------
 void MainWindow::setStyle(QString fname)
@@ -205,7 +205,6 @@ void MainWindow::setStyle(QString fname)
 void MainWindow::hide_current_snap_options(){
     ui->current_snap->hide();
     ui->close_current->hide();
-
     ui->actionClose_Currrent->setDisabled(true);//since we having no project opened
 }
 //hide current snap options-------------------------------
@@ -221,9 +220,6 @@ void MainWindow::show_current_snap_options(){
 }
 //hide current snap options-------------------------------
 
-
-
-
 //hide the session options-------------------------------
 void MainWindow::hide_session_options(){
     ui->new_snap->hide();
@@ -238,40 +234,33 @@ void MainWindow::show_session_options(){
 }
 //show the session options-------------------------------
 
-
 //load snapcraft.yaml to interface-------------------------------
 void MainWindow::load_snapcraft_yaml(){
     QFile file(fileName);
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
             return;
         QTextStream in(&file);
-        //to read the name of snap
+        //to file as stringlist to identify name of snap
         QStringList napname ;
         QFileInfo info(fileName);
-        //qDebug()<<info.size();
-        if(info.size()>0){
-
+        if(info.size()>0){//to check if file is not empty
         while (!in.atEnd())
           {
             napname.append(in.readLine());
           }
-        //add data to editor
+        //add data to editor from napname stringlist
         for(int i= 0; i<napname.size() ;i++){
         ui->yaml->append(napname.at(i));
-
         }
-        ui->yaml->setText(ui->yaml->toPlainText().toUtf8());
-//        yaml_ondisk = ui->yaml->toPlainText().toUtf8();
+        ui->yaml->setText(ui->yaml->toPlainText().toUtf8());//finally set yaml data to editor
 
-        last_saved_text =yaml_oneditor;
+        last_saved_text =yaml_oneditor;//save yaml text as last_saved so that we can keep track on yaml file on disk , full function is below in code
 
         firstline = napname.at(0); //save first line to watch snap name changes, to chnage name throughout the session
 
-        ui->terminal->append("<span style='color:red'>Opening </span> <b>"+fileName+"</b>");
+        ui->terminal->append("<span style='color:red'>Opening </span> <b>"+fileName+"</b>");//some terminal info
 
-        //virtually click save button
-       //  on_save_snapcraft_clicked();
-        ui->save_snapcraft->setDisabled(true);
+        ui->save_snapcraft->setDisabled(true);//disable save since we just loaded file ,we are in open funtcion
 
         //set current snap name
         if(napname.at(0).contains("name:")){
@@ -285,18 +274,14 @@ void MainWindow::load_snapcraft_yaml(){
             ui->terminal->append("<br>Please Specify name of snap in line: <b>1</b>");
         }
 
-        //save the initial content into a string to compare later in yaml text xhanged slot to change state of save btn
+        //save the initial content into a string to compare later in yaml text changed slot to change state of save btn , we doing it from two signals channels one our customm and other editor.document.modified()
         snapcraft_yaml.clear();
-        snapcraft_yaml = ui->yaml->toPlainText();
-     //   on_highlight_clicked();
+        snapcraft_yaml = ui->yaml->toPlainText().toUtf8();
+//      on_highlight_clicked();
         on_normal_clicked();
 }
 }
-
-
-//load snapcraft.yaml to interface-------------------------------
-
-
+// edn load snapcraft.yaml to interface-------------------------------
 
 void MainWindow::on_open_snap_clicked()
 {
@@ -333,7 +318,7 @@ void MainWindow::on_open_snap_clicked()
 void MainWindow::show_tree(){ //create tree
 
     bool tree_present = QFileInfo("/usr/bin/tree").exists();
-    if(tree_present||QFileInfo("/usr/local/bin/tree").exists()){
+    if(tree_present||QFileInfo("/usr/local/bin/tree").exists()){//check if tree command available or not
 
     QString prog = "tree";
     QStringList args;
@@ -353,13 +338,14 @@ void MainWindow::show_tree(){ //create tree
   }
 
 }
-//on font changed
+//on editor font changed
 void MainWindow::on_font_currentFontChanged(const QFont &f)
 {
     ui->yaml->setFont(f) ;
     ui->yaml_2->setFont(f) ;
     //save font state TODO
 }
+
 
 void MainWindow::on_new_snap_clicked()
 {
@@ -369,8 +355,6 @@ void MainWindow::on_new_snap_clicked()
           tr("Select a Directory to init SnapCraft"),"" , QFileDialog::ShowDirsOnly
                                                  | QFileDialog::DontResolveSymlinks);
     if(fileName.length()>1){//verify we got directory
-
-       // fileName=fileName+"/snapcraft.yaml";
 
    // run prog
     QString prog = "snapcraft";
@@ -385,14 +369,12 @@ void MainWindow::on_new_snap_clicked()
 
     fileName=fileName+"/snapcraft.yaml";
 
-    //load file to interface
+
     load_snapcraft_yaml();
-    //hide the session options
     hide_session_options();
-    //show current snap options
     show_current_snap_options();
 
-    //set snap name
+    //set snapcraft file path
     ui->snapcraft_path->setText(fileName);
 
     //open snapcraft.yaml from initialized dir
@@ -405,7 +387,6 @@ void MainWindow::on_new_snap_clicked()
                                    QMessageBox::Ok);
         //some info in ui->yaml
         ui->yaml->setText("This is snapcraft.yaml editor with snapcraft's specific yaml syntax highlight support.<br> An online syntax highlighter backend is also integrated which support lots of themes.<br>Click New to create new Snapcraft project or click Open to load existing snapcraft project.<br><br>#This tool is Developed by - Keshav Bhatt [keshavnrj@gmail.com].");
-
         hide_current_snap_options();
     }
 
@@ -413,7 +394,6 @@ void MainWindow::on_new_snap_clicked()
 
 MainWindow::~MainWindow()
 {
-
     delete ui;
 }
 
@@ -430,30 +410,21 @@ void MainWindow::on_close_current_clicked()
 
         switch (ret) {
           case QMessageBox::Save:
-            // Save was clicked
             on_save_snapcraft_clicked();
-            //close current snap
             close_session();
-            //show session options
             show_session_options();
-            //hide current_snap_options
             hide_current_snap_options();
             snapcraft_yaml.clear();
             ui->save_snapcraft->setDisabled(true);
               break;
           case QMessageBox::Discard:
-              // Don't Save was clicked
-            //close current snap
             close_session();
-            //show session options
             show_session_options();
-            //hide current_snap_options
             hide_current_snap_options();
             snapcraft_yaml.clear();
             ui->save_snapcraft->setDisabled(true);
               break;
           case QMessageBox::Cancel:
-              // Cancel was clicked
             ret=2334123;//setting my own code to evoke cancel event
             //do nothing
               break;
@@ -463,16 +434,12 @@ void MainWindow::on_close_current_clicked()
         }
     }
     else{
-        //close current snap
         close_session();
-        //show session options
         show_session_options();
-        //hide current_snap_options
         hide_current_snap_options();
         snapcraft_yaml.clear();
         ui->save_snapcraft->setDisabled(true);
     }
-
 }
 
 //close the session -------------------------------
