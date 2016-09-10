@@ -21,7 +21,7 @@ notifications:
   email: false
   irc:
     channels:
-      - "irc.freenode.net##snapcraft-gui"
+      - "chat.freenode.net##snapcraft-gui"
     template:
       - "%{repository}#%{build_number} (%{branch} - %{commit} : %{author}): %{message}"
       - "Change view : %{compare_url}"
