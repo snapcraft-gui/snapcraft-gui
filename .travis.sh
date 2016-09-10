@@ -7,7 +7,7 @@ if [[ $LATESTQT == "yes" ]]; then
 else
 	if [[ $LATESTQT == "no" ]]; then
 		apt update &&
-		apt -y install build-essential qt5-default qttools5-dev-tools qttools5-dev &&
+		apt -y install build-essential qt5-default qttools5-dev-tools qttools5-dev
 	else
 		exit 1
 	fi
