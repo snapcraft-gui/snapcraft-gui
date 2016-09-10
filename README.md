@@ -67,6 +67,6 @@ make
 ./snapcraft.gui
 ```
 
-If it compiled with no errors, type ./snapcraft-qt to run.
+If it compiled with no errors, type `./snapcraft-qt` to run.
 
 Make sure you installed dependencies listed in the dependencies file.
