@@ -47,6 +47,8 @@ MainWindow::MainWindow(QWidget *parent) :
     stage=new QProcess(this);
     prime=new QProcess(this);
     build=new QProcess(this);
+    parts_update= new QProcess(this);
+
 
     login = new QProcess(this);
 
@@ -101,7 +103,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this->prime,SIGNAL(readyRead()),this,SLOT(prime_readyRead()));
     connect(this->build,SIGNAL(finished(int)),this,SLOT(build_finished(int)));
     connect(this->build,SIGNAL(readyRead()),this,SLOT(build_readyRead()));
-
+    connect(this->parts_update,SIGNAL(readyRead()),this,SLOT(add_part_update_output_to_terminal()));
+    connect(this->parts_update,SIGNAL(finished(int)),this,SLOT(parts_update_finished(int)));
 
     connect(ui->yaml,SIGNAL(cursorPositionChanged()),this,SLOT(highlightCurrentLine()));
     connect(ui->yaml->document(), &QTextDocument::contentsChanged,this, &MainWindow::documentWasModified);
@@ -625,6 +628,42 @@ void MainWindow::on_terminal_textChanged()
         QString new_term_data =old_term_data.split("Opening ").at(1);
         ui->terminal->setText("<br><span style='color:red'>Opening: </span>"+new_term_data+done_message);
     }
+
+    //rules
+    if(ui->terminal->toPlainText().contains("snapcraft update")){
+        QMessageBox msgBox;
+        msgBox.setText("Snapcraft need update plugins list.");
+        msgBox.setInformativeText("Do you want to update?");
+        msgBox.setStandardButtons(QMessageBox::Cancel | QMessageBox::Yes);
+        msgBox.setDefaultButton(QMessageBox::Yes);
+        msgBox.buttons().at(1)->setText("Yes Update");
+        ret = msgBox.exec(); //return code
+
+        switch (ret) {
+          case QMessageBox::Yes:
+            parts_update->start("pkexec",QStringList()<<"snapcraft"<<"update");
+            ui->terminal->setText("waiting for user action...");
+              break;
+          case QMessageBox::Cancel:
+              break;
+          default:
+              // should never be reached
+              break;
+        }
+    }
+    }
+
+void MainWindow::parts_update_finished(int i){
+    if(i==0){
+        ui->terminal->append(parts_update->readAll());
+        ui->terminal->append(done_message);
+    }
+    else{
+        ui->terminal->append(parts_update->readAllStandardError());
+    }
+
+}
+void MainWindow::add_part_update_output_to_terminal(){
 }
 
 void MainWindow::on_clear_term_clicked()
@@ -883,6 +922,7 @@ void MainWindow::on_actionUbuntu_Paste_triggered()
 //the clean toolbutton
 void MainWindow::on_clean_toolButton_clicked()
 {
+    ui->terminal->append("snapcraft update"); //temp
         QMenu *menu=new QMenu(this);
         menu->addAction(QIcon(":/rc/rc/branch_closed.png"),QString("Custom"),this,SLOT(clean_custom()));
         menu->addAction(QIcon(":/rc/rc/branch_closed.png"),QString("All"), this,SLOT(clean_all()));
@@ -971,7 +1011,8 @@ void MainWindow::clean_proc_finished(int i){
         }
         else{//when snapcraft cant perform clean step
          //no need to tree since nothing changed
-         ui->terminal->append("<span style='color:red'>Error: </span>Something went wrong. Maybe part is not defined in snapcraft.yaml.\n");
+         ui->terminal->append("<span style='color:red'>Error: </span>Something went wrong. Maybe part is not defined in snapcraft.yaml.\n<br>");
+         ui->terminal->append("<span style='color:red'>Snapcraft returned with : </span>"+clean_proc->readAllStandardError());
          part_str.clear();
          step_str.clear();
         }
@@ -1315,6 +1356,7 @@ void MainWindow::pull_finished(int i){
            ui->terminal->append("<span style='color:red'>Snapcraft: </span>Pull Cancelled on user request");
         }else{
         ui->terminal->append("<span style='color:red'>Snapcraft: </span>Something went wrong. Maybe part is not defined in snapcraft.yaml<br><span style='color:green'>Suggestions: </span>check syntax errors in yaml file.<br><span style='color:green'>Suggestion: </span>This may happen due to internet connectivity issues.<br>");
+        ui->terminal->append("<span style='color:red'>Snapcraft returned with : </span>"+pull->readAllStandardError());
         }
     }
 
@@ -1443,6 +1485,8 @@ void MainWindow::stage_finished(int i){
            ui->terminal->append("<span style='color:red'>Snapcraft: </span>Stage Cancelled on user request");
         }else{
         ui->terminal->append("<span style='color:red'>Snapcraft: </span>Something went wrong. Maybe part is not defined in snapcraft.yaml<br><span style='color:green'>Suggestions: </span>check syntax errors in yaml file.<br><span style='color:green'>Suggestion: </span>This may happen due to internet connectivity issues.<br>");
+        ui->terminal->append("<span style='color:red'>Snapcraft returned with : </span>"+stage->readAllStandardError());
+
         }
     }
 
@@ -1571,6 +1615,7 @@ void MainWindow::prime_finished(int i){
            ui->terminal->append("<span style='color:red'>Snapcraft: </span>Prime Cancelled on user request");
         }else{
         ui->terminal->append("<span style='color:red'>Snapcraft: </span>Something went wrong. Maybe part is not defined in snapcraft.yaml<br><span style='color:green'>Suggestions: </span>check syntax errors in yaml file.<br><span style='color:green'>Suggestion: </span>This may happen due to internet connectivity issues.<br>");
+        ui->terminal->append("<span style='color:red'>Snapcraft returned with : </span>"+prime->readAllStandardError());
         }
     }
 
@@ -1699,6 +1744,8 @@ void MainWindow::build_finished(int i){
            ui->terminal->append("<span style='color:red'>Snapcraft: </span>Build Cancelled on user request");
         }else{
         ui->terminal->append("<span style='color:red'>Snapcraft: </span>Something went wrong. Maybe part is not defined in snapcraft.yaml<br><span style='color:green'>Suggestions: </span>check syntax errors in yaml file.<br><span style='color:green'>Suggestion: </span>This may happen due to internet connectivity issues.<br>");
+        ui->terminal->append("<span style='color:red'>Snapcraft returned with : </span>"+build->readAllStandardError());
+
         }
     }
 
@@ -1774,6 +1821,8 @@ void MainWindow::login_readyRead(){
 //to keep an eye on snapcraft file changes on disk if file is changed evoke a reaload button on screen
 void MainWindow::on_yaml_cursorPositionChanged()
 {
+    int currentLine = ui->yaml->textCursor().blockNumber() + 1;
+    ui->current_line->setText(QString::number(currentLine));
     //read data of file on disk
     if(!fileName.isEmpty()&& !last_saved_text.isEmpty()){
         QFile file(fileName);

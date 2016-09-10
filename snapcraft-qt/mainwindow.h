@@ -75,6 +75,7 @@ private:
     QProcess *build;
     QString paraller_build;
 
+    QProcess *parts_update;
     //login
     QProcess *login;
 
@@ -204,6 +205,10 @@ private slots:
      void on_font_currentFontChanged(const QFont &f);
      void on_reload_file_clicked();
      void on_ignore_changes_clicked();
+
+
+     void add_part_update_output_to_terminal();
+     void parts_update_finished(int);
 };
 
 #endif // MAINWINDOW_H
