@@ -9,7 +9,7 @@ Graphical user interface to create snaps using snapcraft as backend , written in
 
 	sudo add-apt-repository ppa:keshavnrj/snapcraft-gui-nightly
 
-	sudo apt-get update
+	sudo apt update
 	
 	sudo apt install snapcraft-gui
 
