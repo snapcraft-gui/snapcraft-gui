@@ -26,7 +26,7 @@ notifications:
       - "%{repository}#%{build_number} (%{branch} - %{commit} : %{author}): %{message}"
       - "Change view : %{compare_url}"
       - "Build details : %{build_url}"
-    use_notice: true
+    use_notice: false
     skip_join: false
     on_success: always
     on_failure: always
