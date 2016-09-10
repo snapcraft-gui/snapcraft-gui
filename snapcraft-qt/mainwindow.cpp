@@ -24,6 +24,7 @@
 #include <QTimer>
 #include <QMimeData>
 
+#include <QPainter>
 
 
 
@@ -49,6 +50,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     login = new QProcess(this);
 
+    split1->addWidget(ui->yaml_2);
     split1->addWidget(ui->yaml);
     split1->addWidget(ui->tree);
     split1->setOrientation(Qt::Horizontal);
@@ -122,6 +124,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->prime->setStyleSheet(style.toUtf8());
     ui->build->setStyleSheet(style.toUtf8());
     ui->clean_toolButton->setStyleSheet(style.toUtf8());
+    ui->reload_file->setStyleSheet(style.toUtf8());
+    ui->ignore_changes->setStyleSheet(style.toUtf8());
 //    on_actionSnapcraft_Plugins_Help_triggered();
 
 
@@ -129,15 +133,30 @@ MainWindow::MainWindow(QWidget *parent) :
     font.setFamily("Courier");
     font.setStyleHint(QFont::Monospace);
     font.setFixedPitch(true);
-    font.setPointSize(14);
+    font.setPointSize(12);
+    font.setWeight(QFont::DemiBold);
     ui->yaml->setFont(font);
 
     const int tabStop = 4;  // 4 characters
 
     QFontMetrics metrics(font);
-    ui->yaml->setTabStopWidth(tabStop * metrics.width(' '));
-
+    ui->yaml->setTabStopWidth(tabStop * metrics.width(""));
     highlightCurrentLine();
+
+
+    ui->file_changed_frame->hide();
+    highlighter = new Highlighter(ui->yaml_2->document());
+    ui->yaml_2->setFont(font);
+    ui->yaml_2->setReadOnly(true);
+    ui->yaml_2->hide();
+
+    ui->tree->setMinimumWidth(100);
+    ui->yaml->setMinimumWidth(100);
+    ui->yaml_2->setMinimumWidth(100);
+    split1->setCollapsible(2,false);
+    split1->setCollapsible(1,false);
+    split1->setCollapsible(0,false);
+
 }
 
 
@@ -239,15 +258,19 @@ void MainWindow::load_snapcraft_yaml(){
         //add data to editor
         for(int i= 0; i<napname.size() ;i++){
         ui->yaml->append(napname.at(i));
-        ui->yaml->setText(ui->yaml->toPlainText());
+
         }
+        ui->yaml->setText(ui->yaml->toPlainText().toUtf8());
+//        yaml_ondisk = ui->yaml->toPlainText().toUtf8();
+
+        last_saved_text =yaml_oneditor;
 
         firstline = napname.at(0); //save first line to watch snap name changes, to chnage name throughout the session
 
         ui->terminal->append("<span style='color:red'>Opening </span> <b>"+fileName+"</b>");
 
         //virtually click save button
-      //  on_save_snapcraft_clicked();
+       //  on_save_snapcraft_clicked();
         ui->save_snapcraft->setDisabled(true);
 
         //set current snap name
@@ -329,10 +352,13 @@ void MainWindow::show_tree(){ //create tree
      ui->tree->setText("<span style='color:red'>Tree: </span>tree not installed.<br><br>We assume tree binary is installed in one of these locations:<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/usr/bin/tree<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/usr/local/bin/tree");
   }
 
-
-
-
-
+}
+//on font changed
+void MainWindow::on_font_currentFontChanged(const QFont &f)
+{
+    ui->yaml->setFont(f) ;
+    ui->yaml_2->setFont(f) ;
+    //save font state TODO
 }
 
 void MainWindow::on_new_snap_clicked()
@@ -453,16 +479,22 @@ void MainWindow::on_close_current_clicked()
 void MainWindow::close_session(){
 ui->yaml->document()->clearUndoRedoStacks();//clear() below can do that but fuck it we doing it with document
 ui->yaml->clear();
-this->setWindowTitle("SnapCraft-Gui");
 ui->snapcraft_path->clear();
+this->setWindowTitle("SnapCraft-Gui");
 ui->actionOpen->setDisabled(false); //to allow user open new snapcraft.yaml
 ui->actionNew->setDisabled(false); //to allow user create new snapcraft.yaml
 
+
 //some info in ui->yaml
-ui->yaml->setText("This is snapcraft.yaml editor with snapcraft's specific yaml syntax highlight support.<br> An online syntax highlighter backend is also integrated which support lots of themes.<br>Click New to create new Snapcraft project or click Open to load existing snapcraft project.<br><br>#This tool is Developed by - Keshav Bhatt [keshavnrj@gmail.com].");
+ui->yaml->setText("This is snapcraft.yaml editor with snapcraft's specific yaml syntax highlight support.<br> An online syntax highlighter backend is also integrated which support lots of themes.<br>Click New to create new Snapcraft project or click Open to load existing snapcraft project.<br><br>#This tool is Developed by - Keshav Bhatt [keshavnrj@gmail.com].");//do not chnage this phrase it will breakfunctionality "Keshav Bhatt [keshavnrj@gmail.com]"
 //some info in ui->tree
 ui->tree->setText("Here you can see contents of loaded project directory where snapcraft.yaml is located in a tree-like format.<br>You can see size of Files and Directories, Directories are identified by '/' sign while Executable files are by '*' sign.<br><br>NOTE:<span style='color:grey;font-size:14px;'> Max display depth of the directory tree is 3 to generate tree faster !</span>");
 
+last_saved_text.clear();
+yaml_ondisk.clear();
+yaml_oneditor.clear();
+this->setWindowState(Qt::WindowNoState);
+this->setWindowState(Qt::WindowMaximized);
 }
 //close the session -------------------------------
 
@@ -501,6 +533,8 @@ ui->current_snap->setText(" Current : <b>"+snapname+"</b>");
 ui->doc_stats->setText("Word count: "+QString::number(ui->yaml->document()->characterCount())+" "
                        "Line count: "+QString::number(ui->yaml->document()->lineCount()));
 
+
+yaml_oneditor=ui->yaml->toPlainText().toUtf8();
 }
 
 void MainWindow::on_save_snapcraft_clicked()
@@ -542,6 +576,7 @@ bool MainWindow::saveFile()
     QApplication::setOverrideCursor(Qt::WaitCursor);
 #endif
     out << ui->yaml->toPlainText().toUtf8();
+    last_saved_text =ui->yaml->toPlainText().toUtf8();
 #ifndef QT_NO_CURSOR
     QApplication::restoreOverrideCursor();
 #endif
@@ -634,6 +669,12 @@ void MainWindow::on_clear_term_clicked()
 
 void MainWindow::on_tree_now_clicked()
 {
+    qDebug()<<ui->tree->width();
+//    if(ui->tree->width()<10){
+//        qDebug()<<"true";
+//        ui->tree->resize(600,ui->tree->height());
+//        split1;
+//    }
     show_tree();
 }
 
@@ -1740,7 +1781,7 @@ void MainWindow::no_parallel_build_checked_changed(bool k){
     }
 }
 
-//login/logout
+//login/logout//////////////////////////////////////////////////////////////////////////
 void MainWindow::on_actionLogin_triggered()
 {
     connect(this->login,SIGNAL(finished(int)),this,SLOT(login_finished(int)));
@@ -1759,4 +1800,68 @@ void MainWindow::login_finished(int k){
 void MainWindow::login_readyRead(){
     qDebug()<<login->readAll();
 //    qDebug()<</
+}
+//end login/logout//////////////////////////////////////////////////////////////////////////
+
+
+//to keep an eye on snapcraft file changes on disk if file is changed evoke a reaload button on screen
+void MainWindow::on_yaml_cursorPositionChanged()
+{
+    //read data of file on disk
+    if(!fileName.isEmpty()&& !last_saved_text.isEmpty()){
+        QFile file(fileName);
+            if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+                return;
+            QTextStream in(&file);
+            QStringList strl ;
+            ui->yaml_2->clear();
+            strl.clear();
+            yaml_ondisk.clear();//checl new changes always
+            while (!in.atEnd())
+              {
+                strl.append(in.readLine());
+              }
+            //add data to editor
+            for(int i= 0; i<strl.size() ;i++){
+              ui->yaml_2->append(strl.at(i));
+             }
+             yaml_ondisk=ui->yaml_2->toPlainText();
+
+    //comapre data of disk file and current editor
+    if(yaml_ondisk!=last_saved_text){
+        ui->file_changed_frame->show();
+        ui->yaml_2->show();//show reload stuffs
+    }else{
+            ui->file_changed_frame->hide();
+            ui->yaml_2->hide();
+        }
+    }
+}
+
+//reload button action
+void MainWindow::on_reload_file_clicked()
+{
+    //so that user can do undo redo
+    ui->yaml->selectAll();
+    ui->yaml->cut();
+    ui->yaml->toPlainText().remove("\n");
+
+    //add data and save current version of file
+    ui->yaml->append(yaml_ondisk);
+    last_saved_text.clear();
+    ui->file_changed_frame->hide();
+    ui->yaml_2->hide();
+    ui->save_snapcraft->click();
+}
+//ignore changes action
+void MainWindow::on_ignore_changes_clicked()
+{
+    //last_saved_text.clear();
+    ui->file_changed_frame->hide();
+    ui->yaml_2->hide();
+    //focibly save the user's current changes to file as he requested
+    if(!ui->save_snapcraft->isEnabled()){
+        ui->save_snapcraft->setEnabled(true);
+        ui->save_snapcraft->click();
+    }
 }
