@@ -12,6 +12,10 @@ Graphical user interface to create snaps using snapcraft as backend , written in
 	sudo apt update
 	
 	sudo apt install snapcraft-gui
+	
+#For any queries join us on IRC
+	
+	##snapcraft-gui
 
 #Current task:
 Snap package Manager (click package manager in file menu to see): [Started]
