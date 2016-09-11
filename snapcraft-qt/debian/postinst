@@ -4,3 +4,6 @@
 ln -sf /opt/snapcraft-gui/snapcraft-gui /usr/local/bin/snapcraft-gui
 # Launcher icon
 desktop-file-install /opt/snapcraft-gui/Snapcraft-gui.desktop
+
+#DEBHELPER#
+exit 0
