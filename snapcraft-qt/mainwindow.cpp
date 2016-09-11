@@ -68,7 +68,7 @@ MainWindow::MainWindow(QWidget *parent) :
     split1->restoreState(settings.value("split1_state").toByteArray());
 
     setStyle(":/rc/style.qss");
-    this->setWindowIcon(QIcon(":/images/images/Snapcraft-gui.png"));
+    this->setWindowIcon(QIcon(":/images/images/snapcraft-gui.png"));
 
     //TODO check if snapcraft is installed
      //added snapcraft as dependency in debian control
@@ -302,7 +302,7 @@ void MainWindow::on_open_snap_clicked()
 
       //set snap name
       ui->snapcraft_path->setText(fileName);
-      setWindowTitle("SnapCraft-Gui >> "+snapname + " @ "+fileName);
+      setWindowTitle("Snapcraft GUI >> "+snapname + " @ "+fileName);
 
       //run tree command
       show_tree();
@@ -451,7 +451,7 @@ void MainWindow::close_session(){
 ui->yaml->document()->clearUndoRedoStacks();//clear() below can do that but fuck it we doing it with document
 ui->yaml->clear();
 ui->snapcraft_path->clear();
-this->setWindowTitle("SnapCraft-Gui");
+this->setWindowTitle("Snapcraft GUI");
 ui->actionOpen->setDisabled(false); //to allow user open new snapcraft.yaml
 ui->actionNew->setDisabled(false); //to allow user create new snapcraft.yaml
 
@@ -716,8 +716,8 @@ ui->terminal->append("<span style='color:red'>File Manager: </span>Open snapcraf
 //   }
 //   else{
 //       QMessageBox::critical(this, QObject::tr("Error !"),
-//                                tr("Network Error !<br><br><i>Currently Snapcraft-gui uses online service to highlight yaml.</i>"));
-//       ui->terminal->append("<span style='color:red'>Editor: </span><span style='color:skyblue'>Network Error:</span><i>Currently Snapcraft-gui uses online service to highlight yaml.</i><br>");
+//                                tr("Network Error !<br><br><i>Currently Snapcraft GUI uses online service to highlight yaml.</i>"));
+//       ui->terminal->append("<span style='color:red'>Editor: </span><span style='color:skyblue'>Network Error:</span><i>Currently Snapcraft GUI uses online service to highlight yaml.</i><br>");
 //  ui->highlight->setChecked(false);
 //  ui->normal->setChecked(true);
 
