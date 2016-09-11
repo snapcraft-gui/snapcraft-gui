@@ -20,10 +20,6 @@ if [[ $LATESTQT == "yes" ]]; then
 	apt update &&
 	echo "Downloading the needed packages from Sid..." &&
 	apt download libicu57 qttranslations5-l10n libjpeg62-turbo mesa-utils qt5-gtk-platformtheme libcups2 libwebp6 qtchooser
-	if [[ $DISTRO == "xenial" ]]; then
-		echo "Downloading some Xenial-specific packages from Sid..." &&
-		apt download libgssapi-krb5-2 libkrb5-3 libkrb5support0 krb5-locales
-	fi
 	echo "Disabling Sid..."
 	sed -i "s/deb http:\/\/httpredir.debian.org\/debian unstable/#deb http:\/\/httpredir.debian.org\/debian unstable/" /etc/apt/sources.list &&
 	echo "apt update"
