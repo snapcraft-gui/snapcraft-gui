@@ -791,7 +791,7 @@ color: rgb(10,92,179);
      <x>0</x>
      <y>0</y>
      <width>1024</width>
-     <height>21</height>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -844,6 +844,7 @@ color: rgb(10,92,179);
     <addaction name="actionWebsite"/>
     <addaction name="actionSnapcraft_io"/>
     <addaction name="actionHttp_developer_ubuntu_com_snappy_snapcraft"/>
+    <addaction name="actionDemo_snapcraft"/>
    </widget>
    <widget class="QMenu" name="menuPackae_manager">
     <property name="title">
@@ -1041,6 +1042,11 @@ color: rgb(10,92,179);
   <action name="actionPlugins_list_update">
    <property name="text">
     <string>Plugins list up&amp;date</string>
+   </property>
+  </action>
+  <action name="actionDemo_snapcraft">
+   <property name="text">
+    <string>Demo Snapcraft</string>
    </property>
   </action>
  </widget>

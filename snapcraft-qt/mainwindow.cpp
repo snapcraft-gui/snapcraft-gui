@@ -1887,3 +1887,8 @@ void MainWindow::on_actionPlugins_list_update_triggered()
           break;
     }
 }
+
+void MainWindow::on_actionDemo_snapcraft_triggered()
+{
+//TODO demo snapcraft load in editor
+}
