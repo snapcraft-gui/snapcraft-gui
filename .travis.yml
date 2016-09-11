@@ -30,3 +30,10 @@ notifications:
     skip_join: false
     on_success: always
     on_failure: always
+
+  webhooks:
+    urls:
+      - https://webhooks.gitter.im/e/35a074b2057c30146b56
+    on_success: always   
+    on_failure: always   
+    on_start: never
