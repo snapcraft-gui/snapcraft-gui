@@ -71,6 +71,9 @@ make
 ./snapcraft.gui
 ```
 
-If it compiled with no errors, type `./snapcraft-qt` to run.
-
 Make sure you installed dependencies listed in the dependencies file.
+Few of them are here:
+
+	tree // sudo apt install tree
+	pastebinit // sudo apt install pastebinit 
+	snapcraft //sudo apt install snapcraft 
