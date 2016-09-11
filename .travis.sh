@@ -3,6 +3,9 @@
 echo "Are we using the latest Qt version? $LATESTQT"
 echo "What version of Ubuntu are we using? $DISTRO"
 
+echo "Disabling the apt progress bar..."
+echo 'Dpkg::Progress-Fancy "1";' > /etc/apt/apt.conf.d/99progressbar
+
 echo "Updating the system first..."
 apt update && apt -y full-upgrade
 
