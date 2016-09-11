@@ -10,11 +10,7 @@ Graphical user interface to create snaps using snapcraft as backend, written in 
 # How to install on Ubuntu 16.04 and Ubuntu Yakkety Yak (the development branch)
 
 ```
-sudo add-apt-repository ppa:keshavnrj/snapcraft-gui-nightly
-
-sudo apt update
-
-sudo apt install snapcraft-gui
+We updating new reository here soon //old one was removed due to some reasons
 
 ```
 
