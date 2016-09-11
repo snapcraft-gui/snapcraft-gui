@@ -1,0 +1,29 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+# Sample debian/rules that uses debhelper.
+# This file was originally written by Joey Hess and Craig Small.
+# As a special exception, when this file is copied by dh-make into a
+# dh-make output file, you may use that output file without restriction.
+# This special exception was added by Craig Small in version 0.37 of dh-make.
+
+# Uncomment this to turn on verbose mode.
+export DH_VERBOSE=1
+
+# Work-around for some machines where INSTALL_ROOT is not set properly by
+# dh_auto_install 
+override_dh_auto_install:
+	dh_auto_install -- INSTALL_ROOT=$(CURDIR)/debian/tmp
+# Workaround a bug in that debhelper package version
+override_dh_install:
+	mkdir -p $(CURDIR)/debian/tmp/usr/share/icons/hicolor/128x128/apps/
+	mkdir -p $(CURDIR)/debian/tmp/usr/share/pixmaps/
+	mkdir -p $(CURDIR)/debian/tmp/usr/share/applications/
+	mkdir -p $(CURDIR)/debian/tmp/opt/snapcraft-gui/
+	cp snapcraft-gui $(CURDIR)/debian/tmp/opt/snapcraft-gui/
+	cp assets-linux/Snapcraft-gui.png $(CURDIR)/debian/tmp/usr/share/icons/hicolor/128x128/apps/
+	cp assets-linux/Snapcraft-gui.xpm $(CURDIR)/debian/tmp/usr/share/pixmaps/
+	cp assets-linux/Snapcraft-gui.desktop $(CURDIR)/debian/tmp/opt/snapcraft-gui/
+	dh_install --sourcedir=debian/tmp --fail-missing
+
+%:
+	dh $@
