@@ -13,7 +13,6 @@ env:
   matrix:
   - DISTRO="xenial" LATESTQT="no"
   - DISTRO="yakkety" LATESTQT="no"
-  - DISTRO="xenial" LATESTQT="yes"
   - DISTRO="yakkety" LATESTQT="yes"
 
 script:
