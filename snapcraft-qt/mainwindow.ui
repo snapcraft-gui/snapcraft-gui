@@ -487,7 +487,7 @@
            </property>
            <property name="currentFont">
             <font>
-             <family>Courier 10 Pitch</family>
+             <family>Ubuntu Mono</family>
              <weight>75</weight>
              <bold>true</bold>
             </font>
