@@ -356,7 +356,7 @@ void MainWindow::on_new_snap_clicked()
     ui->yaml->clear();
     //get dir path from qfiledialog
     fileName = QFileDialog::getExistingDirectory(this,
-          tr("Select a Directory to init SnapCraft"),"" , QFileDialog::ShowDirsOnly
+          tr("Select a directory to initialize Snapcraft in"),"" , QFileDialog::ShowDirsOnly
                                                  | QFileDialog::DontResolveSymlinks);
     if(fileName.length()>1){//verify we got directory
 
