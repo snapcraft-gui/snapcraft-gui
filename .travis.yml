@@ -17,7 +17,7 @@ env:
   - DISTRO="yakkety" LATESTQT="yes"
 
 script:
-  - docker run -e LATESTQT=$LATESTQT -v $(pwd):$(pwd) -t ubuntu:$DISTRO sh -c "export LC_ALL=en_US.UTF-8 && locale-gen en_US.UTF-8 && cd $(pwd) && ./.travis.sh"
+  - docker run -e LATESTQT=$LATESTQT -e DISTRO=$DISTRO -v $(pwd):$(pwd) -t ubuntu:$DISTRO sh -c "export LC_ALL=en_US.UTF-8 && locale-gen en_US.UTF-8 && cd $(pwd) && ./.travis.sh"
 
 notifications:
   email: false
