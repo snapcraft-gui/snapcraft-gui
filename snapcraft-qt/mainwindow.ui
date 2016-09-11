@@ -115,7 +115,7 @@
          <item row="1" column="2">
           <widget class="QPushButton" name="pastebin_it">
            <property name="text">
-            <string>Pastebin-it</string>
+            <string>Pastebin it!</string>
            </property>
           </widget>
          </item>
@@ -791,12 +791,12 @@ color: rgb(10,92,179);
      <x>0</x>
      <y>0</y>
      <width>1024</width>
-     <height>19</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
     <property name="title">
-     <string>File</string>
+     <string>Fi&amp;le</string>
     </property>
     <addaction name="actionNew"/>
     <addaction name="actionOpen"/>
@@ -832,7 +832,7 @@ color: rgb(10,92,179);
     </property>
     <widget class="QMenu" name="menuShow_Snapcraft_Help">
      <property name="title">
-      <string>Show Snapcraft Help</string>
+      <string>&amp;Show Snapcraft Help</string>
      </property>
      <addaction name="actionSnapcraft_Plugins_Help"/>
     </widget>
@@ -847,7 +847,7 @@ color: rgb(10,92,179);
    </widget>
    <widget class="QMenu" name="menuPackae_manager">
     <property name="title">
-     <string>Package manager</string>
+     <string>Package &amp;manager</string>
     </property>
     <addaction name="actionInstall_a_snap"/>
     <addaction name="separator"/>
@@ -869,7 +869,7 @@ color: rgb(10,92,179);
     <set>QDockWidget::DockWidgetMovable|QDockWidget::DockWidgetVerticalTitleBar</set>
    </property>
    <property name="windowTitle">
-    <string>   Output</string>
+    <string>   O&amp;utput</string>
    </property>
    <attribute name="dockWidgetArea">
     <number>8</number>
@@ -904,7 +904,7 @@ color: rgb(10,92,179);
   </widget>
   <action name="actionNew">
    <property name="text">
-    <string>New</string>
+    <string>&amp;New</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+N</string>
@@ -912,7 +912,7 @@ color: rgb(10,92,179);
   </action>
   <action name="actionOpen">
    <property name="text">
-    <string>Open</string>
+    <string>&amp;Open</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
@@ -920,52 +920,52 @@ color: rgb(10,92,179);
   </action>
   <action name="actionAbout_Qt">
    <property name="text">
-    <string>About Qt</string>
+    <string>About &amp;Qt</string>
    </property>
   </action>
   <action name="actionAbout">
    <property name="text">
-    <string>About</string>
+    <string>&amp;About</string>
    </property>
   </action>
   <action name="actionWebsite">
    <property name="text">
-    <string>Website</string>
+    <string>&amp;Website</string>
    </property>
   </action>
   <action name="actionUbuntu_Paste">
    <property name="text">
-    <string>Ubuntu Paste</string>
+    <string>&amp;Ubuntu Paste</string>
    </property>
   </action>
   <action name="actionOpen_Snapcraft_with_Gedit">
    <property name="text">
-    <string>Open  yaml with Gedit</string>
+    <string>&amp;Open  yaml with Gedit</string>
    </property>
   </action>
   <action name="actionSnapcraft_io">
    <property name="text">
-    <string>Snapcraft.io</string>
+    <string>Snapcraft.&amp;io</string>
    </property>
   </action>
   <action name="actionClose_Currrent">
    <property name="text">
-    <string>Close Current</string>
+    <string>&amp;Close Current</string>
    </property>
   </action>
   <action name="actionQuit">
    <property name="text">
-    <string>Quit</string>
+    <string>&amp;Quit</string>
    </property>
   </action>
   <action name="actionList_plugins">
    <property name="text">
-    <string>List-plugins</string>
+    <string>&amp;List-plugins</string>
    </property>
   </action>
   <action name="actionLogin">
    <property name="text">
-    <string>Login</string>
+    <string>Lo&amp;gin</string>
    </property>
   </action>
   <action name="actionLogout">
@@ -975,22 +975,22 @@ color: rgb(10,92,179);
   </action>
   <action name="actionRegister">
    <property name="text">
-    <string>Register</string>
+    <string>&amp;Register</string>
    </property>
   </action>
   <action name="actionTour">
    <property name="text">
-    <string>Tour</string>
+    <string>&amp;Tour</string>
    </property>
   </action>
   <action name="actionPush">
    <property name="text">
-    <string>Push</string>
+    <string>&amp;Push</string>
    </property>
   </action>
   <action name="actionClean">
    <property name="text">
-    <string>Clean</string>
+    <string>&amp;Clean</string>
    </property>
   </action>
   <action name="actionPull">
@@ -1000,47 +1000,47 @@ color: rgb(10,92,179);
   </action>
   <action name="actionStage">
    <property name="text">
-    <string>Stage</string>
+    <string>&amp;Stage</string>
    </property>
   </action>
   <action name="actionPrime">
    <property name="text">
-    <string>Prime</string>
+    <string>Pr&amp;ime</string>
    </property>
   </action>
   <action name="actionSnap">
    <property name="text">
-    <string>Snap</string>
+    <string>S&amp;nap</string>
    </property>
   </action>
   <action name="actionInstall_a_snap">
    <property name="text">
-    <string>Install a local snap or Remove Snaps</string>
+    <string>&amp;Install a local snap or Remove Snaps</string>
    </property>
   </action>
   <action name="actionHttp_developer_ubuntu_com_snappy_snapcraft">
    <property name="text">
-    <string>Ubuntu Developer website</string>
+    <string>&amp;Ubuntu Developer website</string>
    </property>
   </action>
   <action name="actionSearchStore">
    <property name="text">
-    <string>Search Store</string>
+    <string>&amp;Search Store</string>
    </property>
   </action>
   <action name="actionSnapcraft_Plugins_Help">
    <property name="text">
-    <string>Snapcraft Plugins Help</string>
+    <string>&amp;Snapcraft Plugins Help</string>
    </property>
   </action>
   <action name="actionBuild">
    <property name="text">
-    <string>Build</string>
+    <string>&amp;Build</string>
    </property>
   </action>
   <action name="actionPlugins_list_update">
    <property name="text">
-    <string>Plugins list update</string>
+    <string>Plugins list up&amp;date</string>
    </property>
   </action>
  </widget>
