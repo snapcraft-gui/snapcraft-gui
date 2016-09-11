@@ -136,10 +136,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     QFont font;
-    font.setFamily("Courier");
+    font.setFamily("Ubuntu Mono");
     font.setStyleHint(QFont::Monospace);
     font.setFixedPitch(true);
-    font.setPointSize(12);
+    font.setPointSize(11);
     font.setWeight(QFont::DemiBold);
     ui->yaml->setFont(font);
 
