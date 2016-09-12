@@ -155,19 +155,14 @@ MainWindow::MainWindow(QWidget *parent) :
     if(settings->value("editor_save_font").toBool()){
         ui->font->setCurrentIndex(settings->value("editor_font").toInt());
     }
-    if(settings->value("editor_save_zoom").toBool()==true){
+    else{
+        ui->font->setCurrentIndex(1);
+    }
+    if(settings->value("editor_save_zoom").toBool()){
        ui->zoom->setText(settings->value("editor_zoom_factor").toString());
        ui->yaml->setFontPointSize(settings->value("editor_zoom_factor").toInt());
     }else{
-        QFont font;
-        font.setFamily("Ubuntu Mono");
-        font.setStyleHint(QFont::Monospace);
-        font.setFixedPitch(true);
-        font.setWeight(QFont::DemiBold);
-        font.setPointSize(11);
-       ui->yaml->setFont(font);
-       ui->zoom->setText(QString::number(font.pointSize()));
-
+       ui->zoom->setText(QString::number(ui->yaml->fontInfo().pointSize()));
     }
 
     const int tabStop = 4;  // 4 characters
@@ -358,11 +353,18 @@ void MainWindow::show_tree(){ //create tree
 //on editor font changed
 void MainWindow::on_font_currentFontChanged(const QFont &f)
 {
-    ui->yaml->setFont(f) ;
+    ui->yaml->setFont(f);
     ui->yaml_2->setFont(f) ;
     //save font state
     settings->setValue("editor_font",ui->font->currentIndex());
 
+}
+void MainWindow::on_font_currentIndexChanged(int index)
+{
+    ui->yaml->setFont(ui->font->currentFont());
+    ui->yaml_2->setFont(ui->font->currentFont()) ;
+    //save font state
+    settings->setValue("editor_font",index);
 }
 
 
@@ -1736,9 +1738,15 @@ void MainWindow::on_build_clicked()
 
 void MainWindow::build_command_requested(){
 
+    paraller_build="";
+
     if(bui.build_button->text()=="Build All Parts"){
         build->setWorkingDirectory(QString(fileName).remove("/snapcraft.yaml"));
-        build->start("snapcraft",QStringList()<<"build"<<paraller_build);
+        if(paraller_build.length()>1){
+            build->start("snapcraft",QStringList()<<"build"<<paraller_build);}
+        else{
+           build->start("snapcraft",QStringList()<<"build");
+        }
 
         ui->prime->setDisabled(true);
         ui->snap->setDisabled(true);
@@ -1755,8 +1763,12 @@ void MainWindow::build_command_requested(){
     }
     else{
         build->setWorkingDirectory(QString(fileName).remove("/snapcraft.yaml"));
-        build->start("snapcraft",QStringList()<<"build"<<prui.part_name->text()<<paraller_build);
-
+        if(paraller_build.length()>1){
+            build->start("snapcraft",QStringList()<<"build"<<bui.part_name->text().simplified()<<paraller_build);
+        }
+        else{
+            build->start("snapcraft",QStringList()<<"build"<<bui.part_name->text().simplified());
+        }
         ui->prime->setDisabled(true);
         ui->snap->setDisabled(true);
         ui->pull->setDisabled(true);
@@ -1840,7 +1852,7 @@ void MainWindow::no_parallel_build_checked_changed(bool k){
     if(k){
         paraller_build="--no-parallel-build";
     }else{
-        paraller_build.clear();
+        paraller_build="";
     }
 }
 
@@ -2033,6 +2045,7 @@ void MainWindow::demo_file_request_done(){
       QMessageBox::critical(this, QObject::tr("Error !"),
                                tr("Network Error."));
       ui->terminal->append("<span style='color:red'>Load Demo: </span>"+this->reply->errorString());
+      ui->close_current->setText("Close Current");
   }
 }
 
@@ -2073,3 +2086,5 @@ void MainWindow::e_settings_save_zoom_toggled(bool checked){
     settings->setValue("editor_save_zoom", checked);
 }
 //start editor settings///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
