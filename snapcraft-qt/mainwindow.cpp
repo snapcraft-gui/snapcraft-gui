@@ -82,7 +82,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->terminal->setText("test");
     ui->terminal->clear();
     ui->highlight->hide();//temperory hide online highlighter button
-    ui->zoom->setText(QString::number(ui->yaml->fontInfo().pixelSize()));//editor zoom lable
 
 
     done_message ="<br><span style='color:green'>Done.</span><br>";
@@ -134,25 +133,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->ignore_changes->setStyleSheet(style.toUtf8());
 
 
-    QFont font;
-    font.setFamily("Ubuntu Mono");
-    font.setStyleHint(QFont::Monospace);
-    font.setFixedPitch(true);
-    font.setPointSize(11);
-    font.setWeight(QFont::DemiBold);
-    ui->yaml->setFont(font);
-
-    const int tabStop = 4;  // 4 characters
-
-    QFontMetrics metrics(font);
-    ui->yaml->setTabStopWidth(tabStop * metrics.width(""));
-    highlightCurrentLine();
 
 
     ui->file_changed_frame->hide();
     highlighter = new Highlighter(ui->yaml_2->document());
-    ui->yaml_2->setFont(font);
-    ui->yaml_2->setReadOnly(true);
+    ui->yaml_2->setReadOnly(false);
     ui->yaml_2->hide();
 
     ui->tree->setMinimumWidth(100);
@@ -161,6 +146,35 @@ MainWindow::MainWindow(QWidget *parent) :
     split1->setCollapsible(2,false);
     split1->setCollapsible(1,false);
     split1->setCollapsible(0,false);
+
+
+
+
+
+    //load editor settings
+    if(settings->value("editor_save_font").toBool()){
+        ui->font->setCurrentIndex(settings->value("editor_font").toInt());
+    }
+    if(settings->value("editor_save_zoom").toBool()==true){
+       ui->zoom->setText(settings->value("editor_zoom_factor").toString());
+       ui->yaml->setFontPointSize(settings->value("editor_zoom_factor").toInt());
+    }else{
+        QFont font;
+        font.setFamily("Ubuntu Mono");
+        font.setStyleHint(QFont::Monospace);
+        font.setFixedPitch(true);
+        font.setWeight(QFont::DemiBold);
+        font.setPointSize(11);
+       ui->yaml->setFont(font);
+       ui->zoom->setText(QString::number(font.pointSize()));
+
+    }
+
+    const int tabStop = 4;  // 4 characters
+
+    QFontMetrics metrics(ui->yaml->font());
+    ui->yaml->setTabStopWidth(tabStop * metrics.width(""));
+    highlightCurrentLine();
 
 }
 
@@ -346,7 +360,9 @@ void MainWindow::on_font_currentFontChanged(const QFont &f)
 {
     ui->yaml->setFont(f) ;
     ui->yaml_2->setFont(f) ;
-    //save font state TODO
+    //save font state
+    settings->setValue("editor_font",ui->font->currentIndex());
+
 }
 
 
@@ -1259,13 +1275,21 @@ void MainWindow::insertPlainText(){
 void MainWindow::on_zoom_in_clicked()
 {
      ui->yaml->zoomIn(1);
-     ui->zoom->setText(QString::number(ui->yaml->fontInfo().pixelSize()));
+     ui->zoom->setText(QString::number(ui->yaml->fontInfo().pointSize()));
+
+
+     settings->setValue("editor_zoom_factor",ui->zoom->text().toInt());
+
 }
 
 void MainWindow::on_zoom_out_clicked()
 {
     ui->yaml->zoomOut(1);
-    ui->zoom->setText(QString::number(ui->yaml->fontInfo().pixelSize()));
+    ui->zoom->setText(QString::number(ui->yaml->fontInfo().pointSize()));
+
+
+    settings->setValue("editor_zoom_factor",ui->zoom->text().toInt());
+
 }
 
 void MainWindow::on_undo_btn_clicked()
@@ -1848,6 +1872,7 @@ void MainWindow::on_yaml_cursorPositionChanged()
 {
     int currentLine = ui->yaml->textCursor().blockNumber() + 1;
     ui->current_line->setText(QString::number(currentLine));
+    if(settings->value("editor_keep_sync").toBool()){
     //read data of file on disk
     if(!fileName.isEmpty()&& !last_saved_text.isEmpty()){
         QFile file(fileName);
@@ -1876,6 +1901,7 @@ void MainWindow::on_yaml_cursorPositionChanged()
             ui->file_changed_frame->hide();
             ui->yaml_2->hide();
         }
+    }
     }
 }
 
