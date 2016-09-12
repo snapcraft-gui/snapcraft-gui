@@ -8,6 +8,9 @@
 #include <QTextCodec>
 #include <QMenu>
 #include <QSplitter>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+#include <QNetworkRequest>
 #include "highlighter.h"
 
 #include "ui_clean_dialog.h"
@@ -47,8 +50,8 @@ private:
     QString firstline; //first line which should conatin "name:"
     QString snapcraft_yaml; //code inside yaml file
     QProcess *snapcraft;
-    QNetworkReply *reply;
-    QNetworkAccessManager m_network_manager;
+
+
     QSplitter *split1;
     QString done_message;
     int ret;
@@ -81,6 +84,11 @@ private:
 
     //yaml editor menu
     QMenu *editor_menu;
+
+    //network
+    QNetworkReply *reply;
+    QNetworkAccessManager m_network_manager;
+    int rand;
 
 
 private slots:
@@ -211,6 +219,11 @@ private slots:
      void parts_update_finished(int);
      void on_actionPlugins_list_update_triggered();
      void on_actionDemo_snapcraft_triggered();
+
+
+     void load_demo();
+     void demo_file_request_done();
+     void demo_download_progress(qint64, qint64);
 };
 
 #endif // MAINWINDOW_H
