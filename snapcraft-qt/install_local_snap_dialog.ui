@@ -78,6 +78,13 @@
              </widget>
             </item>
             <item>
+             <widget class="QCheckBox" name="force_dangerous">
+              <property name="text">
+               <string>--force-dangerous</string>
+              </property>
+             </widget>
+            </item>
+            <item>
              <widget class="QPushButton" name="install_button">
               <property name="text">
                <string>Install</string>
