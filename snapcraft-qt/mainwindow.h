@@ -237,6 +237,7 @@ private slots:
      void  e_settings_keep_sync_toggled(bool);
      void  e_settings_save_font_toggled(bool);
      void  e_settings_save_zoom_toggled(bool);
+     void on_font_currentIndexChanged(int index);
 };
 
 #endif // MAINWINDOW_H
