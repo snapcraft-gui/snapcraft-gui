@@ -247,7 +247,7 @@ void MainWindow::load_snapcraft_yaml(){
         //to file as stringlist to identify name of snap
         QStringList napname ;
         QFileInfo info(fileName);
-        if(info.size()>0){//to check if file is not empty
+        if(info.size()>0){//to check if file is not empty this also prevent napname outof index crash
         while (!in.atEnd())
           {
             napname.append(in.readLine());
@@ -403,6 +403,43 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_close_current_clicked()
 {
+    //close demo session special button modification
+    if(ui->close_current->text()=="Close Demo Session"){
+        //ask user to load demo snapcraft in editor
+           QMessageBox msgBox;
+           msgBox.setText("Snapcraft-gui will delete Demo session files todoand all related Directories.");
+           msgBox.setInformativeText("Do you want to continue ?");
+           msgBox.setStandardButtons(QMessageBox::Cancel | QMessageBox::Yes);
+           msgBox.setDefaultButton(QMessageBox::Yes);
+           msgBox.buttons().at(1)->setText("Yes Delete");
+           ret = msgBox.exec(); //return code
+
+           bool deleted;
+           switch (ret) {
+             case QMessageBox::Yes:
+               // delete demo session dir from /tmp/
+              deleted = QDir(QString(fileName).remove("snapcraft.yaml")).removeRecursively();
+              ui->terminal->append("Deleting "+fileName+" Recursively...");
+              if(deleted){
+                  ui->terminal->append("Deleted"+fileName+done_message);
+                  ui->close_current->setText("Close Current");
+                  ui->save_snapcraft->setDisabled(true);//no prompt to save demo snapcarft.yaml to make it straight
+                  //close session
+
+                  QTimer::singleShot(1000,this,SLOT(on_close_current_clicked()));
+              }
+              else{
+              ui->terminal->append("Deletion of "+fileName+" failed. Please do it manually if you care deleting the data in /tmp.");
+              }
+                 break;
+             case QMessageBox::Cancel:
+                 break;
+             default:
+                 break;
+
+               }
+
+    }else{//this is for regular snapcraft.yaml files and user's projects
     //check if chnages in editor are to be saved first
     if(ui->save_snapcraft->isEnabled()){  //changes are made by user
         QMessageBox msgBox;
@@ -410,6 +447,7 @@ void MainWindow::on_close_current_clicked()
         msgBox.setInformativeText("Do you want to save your changes?");
         msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
         msgBox.setDefaultButton(QMessageBox::Save);
+        msgBox.defaultButton()->setText("Save and Close");
         ret = msgBox.exec(); //return code
 
         switch (ret) {
@@ -443,6 +481,7 @@ void MainWindow::on_close_current_clicked()
         hide_current_snap_options();
         snapcraft_yaml.clear();
         ui->save_snapcraft->setDisabled(true);
+    }
     }
 }
 
@@ -1890,5 +1929,84 @@ void MainWindow::on_actionPlugins_list_update_triggered()
 
 void MainWindow::on_actionDemo_snapcraft_triggered()
 {
-//TODO demo snapcraft load in editor
+ //ask user to load demo snapcraft in editor
+    QMessageBox msgBox;
+    msgBox.setText("Snapcraft-gui will load demo snapcraft in editor.\nYou can use this to create testing snap.");
+    msgBox.setInformativeText("Do you want to continue ?");
+    msgBox.setStandardButtons(QMessageBox::Cancel | QMessageBox::Yes);
+    msgBox.setDefaultButton(QMessageBox::Yes);
+    msgBox.buttons().at(1)->setText("Yes Load");
+    ret = msgBox.exec(); //return code
+
+    switch (ret) {
+      case QMessageBox::Yes:
+
+        //check for project changes are pending to save
+        on_close_current_clicked();
+
+        //this is return code will come from on_close_current_clicked(); not by the above
+        if(ret==2334123){//my custom code to check cancel button event in close session
+            break;
+        }
+        // load the demo snapcrfat.yaml from remote
+        load_demo();
+        qDebug()<<"loaded remote snapcraft.yaml";
+        ui->close_current->setText("Close Demo Session"); //to perform special operations when close_current clicked
+          break;
+      case QMessageBox::Cancel:
+          break;
+      default:
+          break;
+        }
+}
+
+void MainWindow::load_demo(){
+    // create a temp dir in /tmp/random
+    QDir DEMO_DIR ;
+    rand=qrand() % 2234 * QTime::currentTime().msec();
+
+    DEMO_DIR.mkdir("/tmp/"+QString::number(rand).remove("-"));
+    //TODO download remote snapcraft.yaml and save it in DEMO_DIR
+
+    //get category file and read iit
+   QNetworkRequest request(QUrl("https://raw.githubusercontent.com/keshavbhatt/snapcraft-gui-demo-file/master/snapcraft.yaml"));
+   reply =m_network_manager.get(request);
+   ui->terminal->append("<span style='color:red'>Load Demo :</span>Downloading Demo snapcraft project, Please wait...");
+   connect(this->reply,SIGNAL(downloadProgress(qint64,qint64)),this,SLOT(demo_download_progress(qint64, qint64)));
+   connect(this->reply,SIGNAL(finished()),this,SLOT(demo_file_request_done()));
+}
+
+void MainWindow::demo_file_request_done(){
+
+  if(this->reply->error() == QNetworkReply::NoError){
+
+    QByteArray ans= reply->readAll();
+    QString s_data = QTextCodec::codecForMib(106)->toUnicode(ans);  //106 is textcode for UTF-8 here --- http://www.iana.org/assignments/character-sets/character-sets.xml
+
+    fileName=QString("/tmp/"+QString::number(rand)+"/snapcraft.yaml");
+    ui->snapcraft_path->setText(fileName);
+
+    //temp demo file
+    QFile demo_file(fileName);
+    if (!demo_file.open(QIODevice::WriteOnly | QIODevice::Text))
+            return;
+        QTextStream out(&demo_file);
+        out<<s_data<<endl;
+// load it to editor
+    ui->yaml->clear();
+    load_snapcraft_yaml();
+//set gui for session
+    hide_session_options();
+    show_current_snap_options();
+    show_tree();
+  }
+  else{
+      QMessageBox::critical(this, QObject::tr("Error !"),
+                               tr("Network Error."));
+      ui->terminal->append("<span style='color:red'>Load Demo: </span>"+this->reply->errorString());
+  }
+}
+
+void MainWindow::demo_download_progress(qint64 pod, qint64 tot){
+    ui->terminal->append("<span style='color:red'>Load Demo :</span>Downloading "+QString::number(pod)+" of "+QString::number(tot));
 }
