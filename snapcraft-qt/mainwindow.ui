@@ -416,6 +416,9 @@
       </item>
       <item>
        <widget class="QLabel" name="label_2">
+        <property name="styleSheet">
+         <string notr="true">color:silver;</string>
+        </property>
         <property name="text">
          <string>Cursor on line:</string>
         </property>
