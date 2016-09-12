@@ -11,6 +11,7 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QNetworkRequest>
+#include <QSettings>
 #include "highlighter.h"
 
 #include "ui_clean_dialog.h"
@@ -18,6 +19,8 @@
 #include "ui_stage_dialog.h"
 #include "ui_prime_dialog.h"
 #include "ui_build_dialog.h"
+
+#include "ui_editor_settings.h"
 
 namespace Ui {
 class MainWindow;
@@ -39,6 +42,10 @@ private:
     Ui::stage_dialog sui;
     Ui::prime_dialog prui;
     Ui::build_dialog bui;
+
+    Ui::editor_settings e_settings;
+
+    QSettings *settings;
 
     QString  yaml_ondisk;
     QString  yaml_oneditor;
@@ -224,6 +231,12 @@ private slots:
      void load_demo();
      void demo_file_request_done();
      void demo_download_progress(qint64, qint64);
+
+     //esitor settings
+     void on_editor_settings_clicked();
+     void  e_settings_keep_sync_toggled(bool);
+     void  e_settings_save_font_toggled(bool);
+     void  e_settings_save_zoom_toggled(bool);
 };
 
 #endif // MAINWINDOW_H
