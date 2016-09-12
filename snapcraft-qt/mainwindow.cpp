@@ -24,7 +24,7 @@
 #include <QTimer>
 #include <QMimeData>
 
-#include <QPainter>
+#include <QSettings>
 
 
 
@@ -60,12 +60,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->horizontalLayout_5->addWidget(split1);
 
-
-    QSettings settings("com.keshavnrj.snapcraft-gui", "snapcraft-gui");
-    restoreGeometry(settings.value("geometry").toByteArray());
-    restoreState(settings.value("windowState").toByteArray());
-    ui->dockWidget_2->restoreGeometry(settings.value("outputdock_state").toByteArray());
-    split1->restoreState(settings.value("split1_state").toByteArray());
+    settings=new QSettings("com.keshavnrj.snapcraft-gui", "snapcraft-gui");
+    restoreGeometry(settings->value("geometry").toByteArray());
+    restoreState(settings->value("windowState").toByteArray());
+    ui->dockWidget_2->restoreGeometry(settings->value("outputdock_state").toByteArray());
+    split1->restoreState(settings->value("split1_state").toByteArray());
 
     setStyle(":/rc/style.qss");
     this->setWindowIcon(QIcon(":/images/images/snapcraft-gui.png"));
@@ -786,11 +785,10 @@ void MainWindow::closeEvent(QCloseEvent *event)
     }
     else{
 
-    QSettings settings("com.keshavnrj.snapcraft-gui", "snapcraft-gui");
-    settings.setValue("geometry", saveGeometry());
-    settings.setValue("windowState", saveState());
-    settings.setValue("split1_state", split1->saveState());
-    settings.setValue("outputdock_state", ui->dockWidget_2->saveGeometry());
+    settings->setValue("geometry", saveGeometry());
+    settings->setValue("windowState", saveState());
+    settings->setValue("split1_state", split1->saveState());
+    settings->setValue("outputdock_state", ui->dockWidget_2->saveGeometry());
     QMainWindow::closeEvent(event);
     qDebug()<<"closing";}
 }
@@ -822,7 +820,12 @@ void MainWindow::on_actionQuit_triggered()
         //cancel
     }
     else{
-    qApp->quit();
+        settings->setValue("geometry", saveGeometry());
+        settings->setValue("windowState", saveState());
+        settings->setValue("split1_state", split1->saveState());
+        settings->setValue("outputdock_state", ui->dockWidget_2->saveGeometry());
+        ui->terminal->setText("Saving settings before closing...");
+        QTimer::singleShot(500,qApp,SLOT(quit()));
     }
 
 }
@@ -1927,6 +1930,7 @@ void MainWindow::on_actionPlugins_list_update_triggered()
     }
 }
 
+//start demo snapcraft loader///////////////////////////////////////////////////////////////////////////
 void MainWindow::on_actionDemo_snapcraft_triggered()
 {
  //ask user to load demo snapcraft in editor
@@ -2009,3 +2013,37 @@ void MainWindow::demo_file_request_done(){
 void MainWindow::demo_download_progress(qint64 pod, qint64 tot){
     ui->terminal->append("<span style='color:red'>Load Demo :</span>Downloading "+QString::number(pod)+" of "+QString::number(tot));
 }
+//end demo snapcraft loader/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//start editor settings///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void MainWindow::on_editor_settings_clicked()
+{
+    command_widget=new QWidget();
+
+    e_settings.setupUi(command_widget);
+
+    command_widget->setWindowFlags(Qt::Popup);
+    command_widget->move(ui->editor_settings->mapToGlobal(QPoint(-command_widget->width()+100,30)));
+
+    //read and load settings from qsettings
+    e_settings.keep_sync->setChecked(settings->value("editor_keep_sync").toBool());
+    e_settings.save_font->setChecked(settings->value("editor_save_font").toBool());
+    e_settings.save_zoom->setChecked(settings->value("editor_save_zoom").toBool());
+
+    command_widget->showNormal();
+
+    connect(e_settings.keep_sync,SIGNAL(toggled(bool)),this,SLOT(e_settings_keep_sync_toggled(bool)));
+    connect(e_settings.save_font,SIGNAL(toggled(bool)),this,SLOT(e_settings_save_font_toggled(bool)));
+    connect(e_settings.save_zoom,SIGNAL(toggled(bool)),this,SLOT(e_settings_save_zoom_toggled(bool)));
+}
+
+void MainWindow::e_settings_keep_sync_toggled(bool checked){
+    settings->setValue("editor_keep_sync", checked);
+}
+void MainWindow::e_settings_save_font_toggled(bool checked){
+    settings->setValue("editor_save_font", checked);
+}
+void MainWindow::e_settings_save_zoom_toggled(bool checked){
+    settings->setValue("editor_save_zoom", checked);
+}
+//start editor settings///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
