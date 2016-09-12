@@ -586,7 +586,7 @@ bool MainWindow::saveFile()
     QApplication::setOverrideCursor(Qt::WaitCursor);
 #endif
     out << ui->yaml->toPlainText().toUtf8();
-    last_saved_text =ui->yaml->toPlainText().toUtf8();
+    last_saved_text = ui->yaml->toPlainText().toUtf8();
 #ifndef QT_NO_CURSOR
     QApplication::restoreOverrideCursor();
 #endif
@@ -1950,7 +1950,7 @@ void MainWindow::on_actionDemo_snapcraft_triggered()
         }
         // load the demo snapcrfat.yaml from remote
         load_demo();
-        qDebug()<<"loaded remote snapcraft.yaml";
+//        qDebug()<<"loaded remote snapcraft.yaml";
         ui->close_current->setText("Close Demo Session"); //to perform special operations when close_current clicked
           break;
       case QMessageBox::Cancel:
@@ -1966,9 +1966,8 @@ void MainWindow::load_demo(){
     rand=qrand() % 2234 * QTime::currentTime().msec();
 
     DEMO_DIR.mkdir("/tmp/"+QString::number(rand).remove("-"));
-    //TODO download remote snapcraft.yaml and save it in DEMO_DIR
 
-    //get category file and read iit
+    // download remote snapcraft.yaml and save it in DEMO_DIR
    QNetworkRequest request(QUrl("https://raw.githubusercontent.com/keshavbhatt/snapcraft-gui-demo-file/master/snapcraft.yaml"));
    reply =m_network_manager.get(request);
    ui->terminal->append("<span style='color:red'>Load Demo :</span>Downloading Demo snapcraft project, Please wait...");
