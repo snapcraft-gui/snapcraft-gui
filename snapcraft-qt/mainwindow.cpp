@@ -27,7 +27,7 @@
 #include <QSettings>
 
 
-
+int version = 2; //current version of app
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -61,6 +61,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->horizontalLayout_5->addWidget(split1);
 
     settings=new QSettings("com.keshavnrj.snapcraft-gui", "snapcraft-gui");
+    settings->setValue("version", version);
+
     restoreGeometry(settings->value("geometry").toByteArray());
     restoreState(settings->value("windowState").toByteArray());
     ui->dockWidget_2->restoreGeometry(settings->value("outputdock_state").toByteArray());
@@ -170,6 +172,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QFontMetrics metrics(ui->yaml->font());
     ui->yaml->setTabStopWidth(tabStop * metrics.width(""));
     highlightCurrentLine();
+
+    check_for_updates();
 
 }
 
@@ -802,15 +806,16 @@ void MainWindow::closeEvent(QCloseEvent *event)
         event->ignore();
     }
     else{
-
     settings->setValue("geometry", saveGeometry());
     settings->setValue("windowState", saveState());
     settings->setValue("split1_state", split1->saveState());
     settings->setValue("outputdock_state", ui->dockWidget_2->saveGeometry());
-    QMainWindow::closeEvent(event);
-    qDebug()<<"closing";}
+    ui->terminal->setText("Saving settings before closing...");
+    event->ignore();
+    QTimer::singleShot(500,qApp,SLOT(quit()));//tis is looking cool :D
+//    QMainWindow::closeEvent(event);
+    }
 }
-
 
 
 //file menu slots
@@ -843,7 +848,7 @@ void MainWindow::on_actionQuit_triggered()
         settings->setValue("split1_state", split1->saveState());
         settings->setValue("outputdock_state", ui->dockWidget_2->saveGeometry());
         ui->terminal->setText("Saving settings before closing...");
-        QTimer::singleShot(500,qApp,SLOT(quit()));
+        QTimer::singleShot(500,qApp,SLOT(quit()));//or we cann use abouttoclose signal to save settings
     }
 
 }
@@ -1624,7 +1629,6 @@ void MainWindow::prime_command_requested(){
         ui->prime->setDisabled(false);
 
         ui->terminal->setText("<span style='color:red'>Snapcraft: </span>primming parts of "+fileName+"<br>");
-
     }
     else{
         prime->setWorkingDirectory(QString(fileName).remove("/snapcraft.yaml"));
@@ -2010,7 +2014,7 @@ void MainWindow::load_demo(){
     DEMO_DIR.mkdir("/tmp/"+QString::number(rand).remove("-"));
 
     // download remote snapcraft.yaml and save it in DEMO_DIR
-   QNetworkRequest request(QUrl("https://raw.githubusercontent.com/keshavbhatt/snapcraft-gui-demo-file/master/snapcraft.yaml"));
+   QNetworkRequest request(QUrl("https://raw.githubusercontent.com/snapcraft-gui/snapcraft-gui-demo-file/master/snapcraft.yaml"));
    reply =m_network_manager.get(request);
    ui->terminal->append("<span style='color:red'>Load Demo :</span>Downloading Demo snapcraft project, Please wait...");
    connect(this->reply,SIGNAL(downloadProgress(qint64,qint64)),this,SLOT(demo_download_progress(qint64, qint64)));
@@ -2088,3 +2092,57 @@ void MainWindow::e_settings_save_zoom_toggled(bool checked){
 //start editor settings///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+// start snapcraft-gui updater//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//check for updates
+void MainWindow::check_for_updates(){
+     //get new version file and read iit
+    QNetworkRequest request(QUrl("https://raw.githubusercontent.com/snapcraft-gui/snapcraft-gui-demo-file/master/current_version"));
+
+    reply =m_network_manager.get(request);
+    ui->terminal->setText("Checking for updates..<br>");
+    ui->terminal->append("Installed version: "+settings->value("version").toString()+"<br>");
+    connect(this->reply,SIGNAL(finished()),this,SLOT(version_request_done()));
+}
+
+void MainWindow::version_request_done(){
+
+    //TODO check network error before going below
+
+    ui->terminal->append("Request Done..<br>");
+    int k=  settings->value("version").toInt();
+
+    // returns 30
+    QByteArray ans= reply->readAll();
+    QString s_data = QTextCodec::codecForMib(106)->toUnicode(ans);  //106 is textcode for UTF-8 here --- http://www.iana.org/assignments/character-sets/character-sets.xml
+    int p=s_data.simplified().toInt();
+
+    if(k<p){
+        ui->terminal->append("A New version "+QString::number(p)+" of application is available, Please update.");
+//drunk will fix later
+        //        QMessageBox msgBox;
+//        msgBox.setText("<b>Snapcraft-GUI Update Manager:</b>");
+//        msgBox.setIcon(QMessageBox::Information);
+//        msgBox.setInformativeText("Download/Install new Updated version of Snapcraft-GUI");
+//        msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+//        msgBox.setDefaultButton(QMessageBox::Ok);
+//        msgBox.buttons().at(0)->setText("Ok I will");
+
+//        int ret = msgBox.exec();  //return code
+
+//        switch (ret) {
+//           case QMessageBox::Ok:
+//               qDebug()<<"// Will Update";
+//               break;
+//           case QMessageBox::Cancel:
+//               qDebug()<<"// Rejected";
+//               break;
+//           default:
+//               qDebug()<<"//mia chi_chi gand";
+//               break;
+//         }
+    }
+    else{
+        ui->terminal->append("You Running Latest version of application.");
+    }
+}
+//End snapcraft-gui updater//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

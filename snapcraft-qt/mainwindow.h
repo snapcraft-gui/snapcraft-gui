@@ -238,6 +238,12 @@ private slots:
      void  e_settings_save_font_toggled(bool);
      void  e_settings_save_zoom_toggled(bool);
      void on_font_currentIndexChanged(int index);
+
+     //updater
+     void check_for_updates();
+     void version_request_done();
+
+
 };
 
 #endif // MAINWINDOW_H
