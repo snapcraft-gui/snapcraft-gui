@@ -1,2 +1,2 @@
 Keshav Bhatt >> Design, Initial Code, Development >> keshavnrj@gmail.com
-Simon Quigley >> Various Bug Fixing and GUI improvements, App Testing >> tsimonq2@ubuntu.com
+Simon Quigley >> Various Bug Fixing, GUI improvements, App Testing >> tsimonq2@ubuntu.com
