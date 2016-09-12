@@ -801,6 +801,7 @@ color: rgb(10,92,179);
     <addaction name="actionNew"/>
     <addaction name="actionOpen"/>
     <addaction name="actionClose_Currrent"/>
+    <addaction name="actionDemo_snapcraft"/>
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
    </widget>
@@ -844,7 +845,6 @@ color: rgb(10,92,179);
     <addaction name="actionWebsite"/>
     <addaction name="actionSnapcraft_io"/>
     <addaction name="actionHttp_developer_ubuntu_com_snappy_snapcraft"/>
-    <addaction name="actionDemo_snapcraft"/>
    </widget>
    <widget class="QMenu" name="menuPackae_manager">
     <property name="title">
@@ -965,26 +965,41 @@ color: rgb(10,92,179);
    </property>
   </action>
   <action name="actionLogin">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Lo&amp;gin</string>
    </property>
   </action>
   <action name="actionLogout">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Logout</string>
    </property>
   </action>
   <action name="actionRegister">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>&amp;Register</string>
    </property>
   </action>
   <action name="actionTour">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>&amp;Tour</string>
    </property>
   </action>
   <action name="actionPush">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>&amp;Push</string>
    </property>
