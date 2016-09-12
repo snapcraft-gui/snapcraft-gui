@@ -44,7 +44,8 @@ FORMS    += mainwindow.ui \
     pull_dialog.ui \
     stage_dialog.ui \
     prime_dialog.ui \
-    build_dialog.ui
+    build_dialog.ui \
+    editor_settings.ui
 
 RESOURCES += \
     rc.qrc
