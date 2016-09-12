@@ -68,7 +68,8 @@ void Install_local_snap_dialog::install_process_finished(int i){
    }
 }
 else{//when process exits with status code 1 error while execution
-        ui->terminal_output->append("Something went wrong, maybe you are trying to remove a package that is not installed.<br>");
+        ui->terminal_output->append("Something went wrong,<br>");
+        ui->terminal_output->append("<span style='color:red'>Snapcraft returned </span>"+install->readAllStandardError());
     }
 
     if(ui->terminal_output->toPlainText().contains("_Installed_")){
@@ -120,13 +121,25 @@ void Install_local_snap_dialog::on_install_button_clicked()
     if(devmode){
     QString prog = "pkexec";
     QStringList args;
-    args<<"snap"<<"install"<<snap_path <<"--devmode";
+    if(!force_dangerous.isEmpty()){
+           args<<"snap"<<"install"<<force_dangerous<<"--devmode"<<snap_path;
+    }
+    else {
+        args<<"snap"<<"install"<<"--devmode"<<snap_path;
+    }
+
     install->start(prog, args);
     }
     else{
         QString prog = "pkexec";
         QStringList args;
-        args<<"snap"<<"install"<<snap_path;
+         if(!force_dangerous.isEmpty()){
+            args<<"snap"<<"install"<<force_dangerous<<snap_path;
+         }
+         else{
+            args<<"snap"<<"install"<<snap_path;
+         }
+
         install->start(prog, args);
     }
 }
@@ -141,6 +154,15 @@ void Install_local_snap_dialog::on_devmode_toggled(bool checked)
  devmode = checked;
 }
 
+void Install_local_snap_dialog::on_force_dangerous_toggled(bool checked)
+{
+     if(checked){
+         force_dangerous="--force-dangerous";
+     }
+     else{
+         force_dangerous.clear();
+     }
+}
 
 void Install_local_snap_dialog::list_installed_snaps(){
     QString prog = "snap";
@@ -448,3 +470,5 @@ void Install_local_snap_dialog::on_tabWidget_currentChanged(int index)
     }
 
 }
+
+
