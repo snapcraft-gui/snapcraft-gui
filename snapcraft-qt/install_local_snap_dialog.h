@@ -50,6 +50,8 @@ private slots:
 
     void on_tabWidget_currentChanged(int index);
 
+    void on_force_dangerous_toggled(bool checked);
+
 private:
     Ui::Install_local_snap_dialog *ui;
     QProcess *install;
@@ -59,6 +61,7 @@ private:
     QString snap_path;
     QString install_command;
     bool devmode;
+    QString force_dangerous;
     QString installed_snap_name; // to remove snap after installation
     QString process_name;
 };
