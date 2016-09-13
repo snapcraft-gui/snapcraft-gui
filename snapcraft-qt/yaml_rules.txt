@@ -1,0 +1,5 @@
+Tabs are NOT allowed, use spaces ONLY.
+You MUST indent your properties and lists with 1 or more spaces.
+All keys/properties are case-sensitive. ("ThIs", is not the same as "thiS")
+
+"The keys helloworld and HelloWorld are identical except for their case. Don't forget this. YAML will treat these keys as two separate and unrelated keys."
