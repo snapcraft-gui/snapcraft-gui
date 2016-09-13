@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1024</width>
+    <width>1043</width>
     <height>524</height>
    </rect>
   </property>
@@ -415,6 +415,25 @@
        </widget>
       </item>
       <item>
+       <widget class="QPushButton" name="dup">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Dup</string>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>16</width>
+          <height>16</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QLabel" name="label_2">
         <property name="styleSheet">
          <string notr="true">color:silver;</string>
@@ -678,6 +697,27 @@
         <number>2</number>
        </property>
        <item>
+        <widget class="QLabel" name="file_name">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <italic>true</italic>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">color:silver;</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QLabel" name="label">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
@@ -694,7 +734,7 @@
           <string notr="true">color:silver;</string>
          </property>
          <property name="text">
-          <string>file chnaged on disk..</string>
+          <string> chnaged on disk..</string>
          </property>
         </widget>
        </item>
@@ -742,6 +782,9 @@
     </item>
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_5">
+      <property name="spacing">
+       <number>3</number>
+      </property>
       <property name="topMargin">
        <number>0</number>
       </property>
@@ -768,6 +811,13 @@ background-attachment: fixed;
 </string>
         </property>
        </widget>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="linenumberwidget">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+       </layout>
       </item>
       <item>
        <widget class="QTextEdit" name="yaml">
@@ -814,7 +864,7 @@ color: rgb(10,92,179);
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1024</width>
+     <width>1043</width>
      <height>19</height>
     </rect>
    </property>

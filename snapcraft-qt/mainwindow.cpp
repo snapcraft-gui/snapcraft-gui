@@ -25,6 +25,9 @@
 #include <QMimeData>
 
 #include <QSettings>
+#include <QTextEdit>
+#include <QScrollBar>
+
 
 
 int version = 2; //current version of app
@@ -35,6 +38,32 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    QTextEdit *lineNumberArea = new QTextEdit();
+    lineNumberArea->setObjectName(QStringLiteral("lineNumberArea"));
+    lineNumberArea->setWordWrapMode(QTextOption::NoWrap);
+    lineNumberArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    lineNumberArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    lineNumberArea->setReadOnly(true);
+    lineNumberArea->setFrameShape(QFrame::NoFrame);
+    lineNumberArea->setFocusPolicy(Qt::NoFocus);
+    lineNumberArea->setFont(ui->yaml->font());
+    lineNumberArea->verticalScrollBar()->setDisabled(1);
+    lineNumberArea->setStyleSheet(QStringLiteral("background: #302F2F;border:none"));
+    lineNumberArea->setAlignment(Qt::AlignLeft);
+    ui->linenumberwidget->addWidget(lineNumberArea);
+    connect(this->findChildren<QTextEdit *>("lineNumberArea").at(0),SIGNAL(textChanged()),this,SLOT(resize_line_number_widget()));
+
+    setLineNumberArea();
+
+    settings=new QSettings("com.keshavnrj.snapcraft-gui", "snapcraft-gui");
+    settings->setValue("version", version);
+
+    lineNumberArea->setVisible(settings->value("show_lines_no").toBool());
+
+    this->installEventFilter(this);
+    ui->yaml->viewport()->installEventFilter(this);
+
 
     split1 = new QSplitter(this);
 
@@ -59,9 +88,6 @@ MainWindow::MainWindow(QWidget *parent) :
     split1->setChildrenCollapsible(false);
 
     ui->horizontalLayout_5->addWidget(split1);
-
-    settings=new QSettings("com.keshavnrj.snapcraft-gui", "snapcraft-gui");
-    settings->setValue("version", version);
 
     restoreGeometry(settings->value("geometry").toByteArray());
     restoreState(settings->value("windowState").toByteArray());
@@ -135,8 +161,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->ignore_changes->setStyleSheet(style.toUtf8());
 
 
-
-
     ui->file_changed_frame->hide();
     highlighter = new Highlighter(ui->yaml_2->document());
     ui->yaml_2->setReadOnly(false);
@@ -148,9 +172,6 @@ MainWindow::MainWindow(QWidget *parent) :
     split1->setCollapsible(2,false);
     split1->setCollapsible(1,false);
     split1->setCollapsible(0,false);
-
-
-
 
 
     //load editor settings
@@ -177,7 +198,15 @@ MainWindow::MainWindow(QWidget *parent) :
 
 }
 
+void MainWindow::resize_line_number_widget(){
+    // resize widget
+     int textwidth =  this->findChildren<QTextEdit *>("lineNumberArea").at(0)->fontMetrics().size(0,this->findChildren<QTextEdit *>("lineNumberArea").at(0)->toPlainText()).width();
+     int textheight =  this->findChildren<QTextEdit *>("lineNumberArea").at(0)->height();
 
+     this->findChildren<QTextEdit *>("lineNumberArea").at(0)->setMaximumWidth(textwidth+15);
+
+     this->findChildren<QTextEdit *>("lineNumberArea").at(0)->resize(textwidth+15,textheight);
+}
 
 void MainWindow::highlightCurrentLine()
 {
@@ -196,10 +225,13 @@ void MainWindow::highlightCurrentLine()
     }
 
     ui->yaml->setExtraSelections(extraSelections);
+    this->findChildren<QTextEdit *>("lineNumberArea").at(0)->verticalScrollBar()->setValue(ui->yaml->verticalScrollBar()->value());
+
 }
 
 void MainWindow::documentWasModified(){
     ui->save_snapcraft->setEnabled(true);
+    this->findChildren<QTextEdit *>("lineNumberArea").at(0)->verticalScrollBar()->setValue(ui->yaml->verticalScrollBar()->value());
 }
 
 //Loading qss and setting style from it--------------------------------
@@ -358,13 +390,15 @@ void MainWindow::show_tree(){ //create tree
 void MainWindow::on_font_currentFontChanged(const QFont &f)
 {
     ui->yaml->setFont(f);
-    ui->yaml_2->setFont(f) ;
+    ui->yaml_2->setFont(f);
+    this->findChildren<QTextEdit *>("lineNumberArea").at(0)->setFont(f);
     //save font state
     settings->setValue("editor_font",ui->font->currentIndex());
 
 }
 void MainWindow::on_font_currentIndexChanged(int index)
 {
+    this->findChildren<QTextEdit *>("lineNumberArea").at(0)->setFont(ui->font->currentFont());
     ui->yaml->setFont(ui->font->currentFont());
     ui->yaml_2->setFont(ui->font->currentFont()) ;
     //save font state
@@ -459,6 +493,7 @@ void MainWindow::on_close_current_clicked()
                  break;
 
                }
+           ui->actionDemo_snapcraft->setDisabled(false);
 
     }else{//this is for regular snapcraft.yaml files and user's projects
     //check if chnages in editor are to be saved first
@@ -533,6 +568,11 @@ this->setWindowState(Qt::WindowMaximized);
 //snapcraft text change events
 void MainWindow::on_yaml_textChanged()
 {
+    int currentLine = ui->yaml->textCursor().blockNumber() + 1;
+    this->findChildren<QTextEdit *>("lineNumberArea").at(0)->textCursor().movePosition(QTextCursor::Down,QTextCursor::MoveAnchor,currentLine);
+    this->findChildren<QTextEdit *>("lineNumberArea").at(0)->verticalScrollBar()->update();
+    ui->yaml->verticalScrollBar()->update();
+
     ui->undo_btn->setEnabled(ui->yaml->document()->isUndoAvailable());
     ui->redo_btn->setEnabled(ui->yaml->document()->isRedoAvailable());
 
@@ -565,8 +605,16 @@ ui->doc_stats->setText("Word count: "+QString::number(ui->yaml->document()->char
                        "Line count: "+QString::number(ui->yaml->document()->lineCount()));
 
 
-yaml_oneditor=ui->yaml->toPlainText().toUtf8();
+if(ui->yaml->toPlainText().contains("\t")){
+    ui->terminal->append("Tabs not allowed in yaml");
 }
+
+yaml_oneditor=ui->yaml->toPlainText().toUtf8();
+
+this->findChildren<QTextEdit *>("lineNumberArea").at(0)->verticalScrollBar()->setValue(ui->yaml->verticalScrollBar()->value());
+
+}
+
 
 void MainWindow::on_save_snapcraft_clicked()
 {
@@ -718,7 +766,7 @@ void MainWindow::on_clear_term_clicked()
 
 void MainWindow::on_tree_now_clicked()
 {
-    qDebug()<<ui->tree->width();
+//    qDebug()<<ui->tree->width();
 //    if(ui->tree->width()<10){
 //        qDebug()<<"true";
 //        ui->tree->resize(600,ui->tree->height());
@@ -1282,6 +1330,7 @@ void MainWindow::insertPlainText(){
 void MainWindow::on_zoom_in_clicked()
 {
      ui->yaml->zoomIn(1);
+     this->findChildren<QTextEdit *>("lineNumberArea").at(0)->zoomIn(1);
      ui->zoom->setText(QString::number(ui->yaml->fontInfo().pointSize()));
 
 
@@ -1292,8 +1341,8 @@ void MainWindow::on_zoom_in_clicked()
 void MainWindow::on_zoom_out_clicked()
 {
     ui->yaml->zoomOut(1);
+    this->findChildren<QTextEdit *>("lineNumberArea").at(0)->zoomOut(1);
     ui->zoom->setText(QString::number(ui->yaml->fontInfo().pointSize()));
-
 
     settings->setValue("editor_zoom_factor",ui->zoom->text().toInt());
 
@@ -1886,7 +1935,15 @@ void MainWindow::login_readyRead(){
 //to keep an eye on snapcraft file changes on disk if file is changed evoke a reaload button on screen
 void MainWindow::on_yaml_cursorPositionChanged()
 {
+
     int currentLine = ui->yaml->textCursor().blockNumber() + 1;
+    this->findChildren<QTextEdit *>("lineNumberArea").at(0)->textCursor().movePosition(QTextCursor::Down,QTextCursor::MoveAnchor,currentLine);
+    this->findChildren<QTextEdit *>("lineNumberArea").at(0)->verticalScrollBar()->update();
+    ui->yaml->verticalScrollBar()->update();
+
+ui->yaml->verticalScrollBar()->setValue(ui->yaml->verticalScrollBar()->value());
+
+    ui->file_name->setText(fileName);
     ui->current_line->setText(QString::number(currentLine));
     if(settings->value("editor_keep_sync").toBool()){
     //read data of file on disk
@@ -2008,6 +2065,8 @@ void MainWindow::on_actionDemo_snapcraft_triggered()
 
 void MainWindow::load_demo(){
     // create a temp dir in /tmp/random
+    ui->actionDemo_snapcraft->setDisabled(true);
+
     QDir DEMO_DIR ;
     rand=qrand() % 2234 * QTime::currentTime().msec();
 
@@ -2078,6 +2137,15 @@ void MainWindow::on_editor_settings_clicked()
     connect(e_settings.keep_sync,SIGNAL(toggled(bool)),this,SLOT(e_settings_keep_sync_toggled(bool)));
     connect(e_settings.save_font,SIGNAL(toggled(bool)),this,SLOT(e_settings_save_font_toggled(bool)));
     connect(e_settings.save_zoom,SIGNAL(toggled(bool)),this,SLOT(e_settings_save_zoom_toggled(bool)));
+    connect(e_settings.show_line_no,SIGNAL(toggled(bool)),this,SLOT(show_hide_line_no(bool)));
+}
+void MainWindow::show_hide_line_no(bool checked){
+    if(checked){
+        this->findChildren<QTextEdit *>("lineNumberArea").at(0)->show();
+    }else{
+        this->findChildren<QTextEdit *>("lineNumberArea").at(0)->hide();
+    }
+    settings->setValue("show_lines_no",checked);
 }
 
 void MainWindow::e_settings_keep_sync_toggled(bool checked){
@@ -2146,3 +2214,105 @@ void MainWindow::version_request_done(){
     }
 }
 //End snapcraft-gui updater//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//custom event on key press   testing this shit right now not working :D
+bool MainWindow::eventFilter(QObject *obj, QEvent *event) {
+
+    if ((obj == ui->yaml||obj==ui->yaml->viewport()) &&
+           event->type() == QEvent::MouseButtonDblClick)
+      {
+//           qDebug() << "Double click"<<obj->objectName();
+      }
+
+    if(event->type() == QEvent::KeyPress)
+       {
+          QKeyEvent* eventKey = static_cast<QKeyEvent*>(event);
+          if(eventKey->key() == Qt::Key_Return)
+          {
+             //do something
+              ui->terminal->append("damn");
+              return true;
+          }
+       }
+       return QWidget::eventFilter(obj, event);
+}
+
+//duplicates the text in the editor
+void MainWindow::duplicateText() {
+
+    QTextCursor c = ui->yaml->textCursor();
+    QString selectedText = c.selectedText();
+
+    // duplicate line if no text was selected
+    if (selectedText == "") {
+        int position = c.position();
+
+        // select the whole line
+        c.movePosition(QTextCursor::StartOfLine);
+        c.movePosition(QTextCursor::EndOfLine, QTextCursor::KeepAnchor);
+
+        int positionDiff = c.position() - position;
+        selectedText = "\n" + c.selectedText();
+
+        // insert text with new line at end of the selected line
+        c.setPosition(c.selectionEnd());
+        c.insertText(selectedText);
+
+        // set the position to same position it was in the duplicated line
+        c.setPosition(c.position() - positionDiff);
+    } else {
+        // duplicate selected text
+        c.setPosition(c.selectionEnd());
+        int selectionStart = c.position();
+
+        // insert selected text
+        c.insertText(selectedText);
+        int selectionEnd = c.position();
+
+        // select the inserted text
+        c.setPosition(selectionStart);
+        c.setPosition(selectionEnd, QTextCursor::KeepAnchor);
+
+    }
+
+    ui->yaml->setTextCursor(c);
+}
+
+
+void MainWindow::on_dup_clicked()
+{
+    duplicateText();
+}
+
+
+QTextEdit *MainWindow::currentLineNumberArea()
+{
+    QList<QTextEdit *> allLineNumberAreas = this->findChildren<QTextEdit *>("lineNumberArea");
+    QTextEdit *currentLineNumberArea = allLineNumberAreas[0];
+
+    return currentLineNumberArea;
+}
+
+
+void MainWindow::updateLineNumberArea(QTextEdit *lineNumberArea, int num){
+    lineNumberArea->clear();
+    for(int i = 1; i <= num; ++i){
+      lineNumberArea->append(QString::number(i));
+    }
+    lineNumberArea->verticalScrollBar()->setValue(0);
+    this->findChildren<QTextEdit *>("lineNumberArea").at(0)->verticalScrollBar()->setValue(ui->yaml->verticalScrollBar()->value());
+    this->findChildren<QTextEdit *>("lineNumberArea").at(0)->textCursor().movePosition(QTextCursor::End) ;
+}
+
+void MainWindow::setLineNumberArea(){
+    this->findChildren<QTextEdit *>("lineNumberArea").at(0)->setCursor(Qt::ArrowCursor);
+    updateLineNumArea(ui->yaml->document()->blockCount());
+    connect(ui->yaml->document(),SIGNAL(blockCountChanged(int)),this,SLOT(updateLineNumArea(int)));
+    connect(ui->yaml->verticalScrollBar(),SIGNAL(valueChanged(int)),
+    this->findChildren<QTextEdit *>("lineNumberArea").at(0)->verticalScrollBar(),SLOT(setValue(int)));
+}
+void MainWindow::updateLineNumArea(int num){
+
+    this->findChildren<QTextEdit *>("lineNumberArea").at(0)->verticalScrollBar()->setValue(ui->yaml->verticalScrollBar()->value());
+    updateLineNumberArea(this->findChildren<QTextEdit *>("lineNumberArea").at(0), num);
+}

@@ -12,6 +12,8 @@
 #include <QNetworkReply>
 #include <QNetworkRequest>
 #include <QSettings>
+#include <QTextEdit>
+
 #include "highlighter.h"
 
 #include "ui_clean_dialog.h"
@@ -33,7 +35,8 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-
+protected:
+    bool eventFilter(QObject *obj, QEvent *event);
 
 private:
     Ui::MainWindow *ui;
@@ -96,6 +99,9 @@ private:
     QNetworkReply *reply;
     QNetworkAccessManager m_network_manager;
     int rand;
+
+    //lineno.
+    QTextEdit *currentLineNumberArea();
 
 
 private slots:
@@ -243,7 +249,17 @@ private slots:
      void check_for_updates();
      void version_request_done();
 
+     //editor
+     void duplicateText();
+     void on_dup_clicked();
 
+
+     //line no.
+     void updateLineNumberArea(QTextEdit *lineNumberArea, int num);
+     void setLineNumberArea();
+     void updateLineNumArea(int num);
+     void resize_line_number_widget();
+     void show_hide_line_no(bool);
 };
 
 #endif // MAINWINDOW_H
