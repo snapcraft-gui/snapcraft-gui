@@ -10,7 +10,7 @@ Highlighter::Highlighter(QTextDocument *parent)
     QStringList keywordPatterns;
     keywordPatterns << "\\bname\\b" << "\\bsummary\\b" << "\\bconfinement\\b"
                     << "\\bdescription\\b" << "\\bcommand\\b" << "\\bstage-packages\\b"
-                    << "\\bafter\\b";
+                    << "\\bafter\\b"<<"\\bversion\\b";
     foreach (const QString &pattern, keywordPatterns) {
         rule.pattern = QRegExp(pattern);
         rule.format = keywordFormat;
@@ -46,12 +46,28 @@ Highlighter::Highlighter(QTextDocument *parent)
     highlightingRules.append(rule);
 //! [4]
 
-//! [5] key
+////! [5] key
+
     quotationFormat.setForeground(QBrush(QColor("#00733C")));
     quotationFormat.setFontWeight(QFont::Bold);
-    rule.pattern = QRegExp(".*:");
+    rule.pattern = QRegExp("^(?!https)(.*:)$");
     rule.format = quotationFormat;
     highlightingRules.append(rule);
+
+    quotationFormat.setForeground(QBrush(QColor("#00733C")));
+    quotationFormat.setFontWeight(QFont::Bold);
+    rule.pattern = QRegExp(" .*: ");
+    rule.format = quotationFormat;
+    highlightingRules.append(rule);
+
+    //tab key error notifier
+    quotationFormat.setBackground(QBrush(QColor(181,184,183,45)));
+    quotationFormat.setFontWeight(QFont::Bold);
+    rule.pattern = QRegExp("[\\t]");
+    rule.format = quotationFormat;
+    highlightingRules.append(rule);
+
+
 //! [5]
 
 //! [6] text after key in new line
