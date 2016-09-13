@@ -51,4 +51,5 @@ RESOURCES += \
     rc.qrc
 
 DISTFILES += \
-    contrib.txt
+    contrib.txt \
+    yaml_rules.txt
