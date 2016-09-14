@@ -1,0 +1,23 @@
+name: snapcraft-gui  # the name of the snap
+version: 2.0-snap0  # the version of the snap, which can be any string
+summary: Snapcraft graphical user interface  # 79 char long summary
+description: |
+  Graphical user interface to create snaps using snapcraft as backend, written in Qt.
+confinement: devmode  # start with devmode, then use "strict" to enforce system access only via declared interfaces
+grade: devel # use "stable" to assert the snap quality
+                      
+
+apps:
+    snapcraft-gui:
+        command: desktop-launch $SNAP/opt/snapcraft-gui/snapcraft-gui
+        plugs: [x11, network, network-bind, home]
+
+parts:
+    snapcraft-gui: 
+        plugin: qmake
+        qt-version: qt5
+        project-files: [snapcraft-qt/snapcraft-qt.pro]
+        source: .
+        stage-packages: [snapcraft, pastebinit, tree]
+        after:
+                [desktop/qt5]
