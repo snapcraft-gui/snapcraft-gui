@@ -314,11 +314,19 @@ void MainWindow::load_snapcraft_yaml(){
 
         //set current snap name
         if(napname.at(0).contains("name:")){
-        snapname = napname.at(0);
+        snapname = napname.at(0);//list item at 0
+        if(snapname.contains("#")){
         snapname = snapname.split("#").at(0);
-        snapname = snapname.remove("name:");
-        ui->current_snap->setText(" Current : <b>"+snapname+"</b>");
         }
+        snapname = snapname.remove("name:");
+
+        QStringList s;
+        s.append(snapname.split(" "));
+
+        QFontMetrics metrics(ui->current_snap->font());
+        QString elidedText = metrics.elidedText( s.at(0), Qt::ElideRight, 80,Qt::TextSingleLine);
+        ui->current_snap->setText("Current : <b>"+elidedText+"</b>");
+         }
         else{
             //terminal dump (snap name not set)
             ui->terminal->append("<br>Please Specify name of snap in line: <b>1</b>");
@@ -597,10 +605,18 @@ if(ui->yaml->toPlainText().length()>1&&ui->yaml->toPlainText().split(QRegExp("[\
   //  qDebug()<<ui->yaml->toPlainText().split("\n").at(0);
 
 }
-snapname = ui->yaml->toPlainText().split("\n").at(0);
+snapname = ui->yaml->toPlainText().split("\n").at(0);//get frist line of snapcraft.yaml
+if(snapname.contains("#")){
 snapname = snapname.split("#").at(0);
-snapname = snapname.remove("name:");
-ui->current_snap->setText(" Current : <b>"+snapname+"</b>");
+}
+snapname = snapname.remove("name: ");
+
+QStringList s;
+s.append(snapname.split(" ").at(0));
+QFontMetrics metrics(ui->current_snap->font());
+QString elidedText = metrics.elidedText(s.at(0), Qt::ElideRight, 80,Qt::TextSingleLine);
+ui->current_snap->setText(" Current : <b>"+elidedText+"</b>");
+
 
 //show doc stats
 ui->doc_stats->setText("Word count: "+QString::number(ui->yaml->document()->characterCount())+" "

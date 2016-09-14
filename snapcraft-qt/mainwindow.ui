@@ -31,6 +31,12 @@
       </property>
       <item>
        <widget class="QFrame" name="frame_3">
+        <property name="maximumSize">
+         <size>
+          <width>350</width>
+          <height>16777215</height>
+         </size>
+        </property>
         <property name="frameShape">
          <enum>QFrame::StyledPanel</enum>
         </property>
@@ -92,27 +98,35 @@
          </item>
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <property name="spacing">
+            <number>2</number>
+           </property>
            <property name="topMargin">
             <number>0</number>
            </property>
            <item>
             <widget class="QLabel" name="current_snap">
+             <property name="font">
+              <font>
+               <pointsize>10</pointsize>
+              </font>
+             </property>
              <property name="styleSheet">
               <string notr="true">color: rgb(206, 206, 206);</string>
              </property>
              <property name="text">
               <string>Current:</string>
              </property>
+             <property name="scaledContents">
+              <bool>false</bool>
+             </property>
+             <property name="wordWrap">
+              <bool>false</bool>
+             </property>
             </widget>
            </item>
            <item>
             <widget class="QPushButton" name="close_current">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
              <property name="text">
               <string>Close Current</string>
              </property>
@@ -506,6 +520,12 @@
       </property>
       <item>
        <widget class="QPushButton" name="undo_btn">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string/>
         </property>
@@ -523,6 +543,12 @@
       </item>
       <item>
        <widget class="QPushButton" name="redo_btn">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string/>
         </property>
@@ -540,6 +566,12 @@
       </item>
       <item>
        <widget class="QPushButton" name="dup">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string>Duplicate</string>
         </property>
@@ -560,6 +592,12 @@
       </item>
       <item>
        <widget class="QPushButton" name="select_all">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string>Select All</string>
         </property>
@@ -580,6 +618,12 @@
       </item>
       <item>
        <widget class="QPushButton" name="pasteup_2">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string>Paste</string>
         </property>
