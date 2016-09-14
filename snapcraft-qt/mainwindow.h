@@ -262,6 +262,9 @@ private slots:
      void show_hide_line_no(bool);
      void on_pasteup_2_clicked();
      void on_select_all_clicked();
+
+//     tree
+     void show_hide_tree_toggled(bool);
 };
 
 #endif // MAINWINDOW_H

@@ -60,6 +60,7 @@ MainWindow::MainWindow(QWidget *parent) :
     settings->setValue("version", version);
 
     lineNumberArea->setVisible(settings->value("show_lines_no").toBool());
+    ui->tree->setVisible(settings->value("show_tree").toBool());
 
     this->installEventFilter(this);
     ui->yaml->viewport()->installEventFilter(this);
@@ -1995,9 +1996,11 @@ ui->yaml->verticalScrollBar()->setValue(ui->yaml->verticalScrollBar()->value());
     if(yaml_ondisk!=last_saved_text){
         ui->file_changed_frame->show();
         ui->yaml_2->show();//show reload stuffs
+
     }else{
             ui->file_changed_frame->hide();
             ui->yaml_2->hide();
+
         }
     }
     }
@@ -2009,7 +2012,6 @@ void MainWindow::on_reload_file_clicked()
     //so that user can do undo redo
     ui->yaml->selectAll();
     ui->yaml->cut();
-    ui->yaml->toPlainText().remove("\n");
 
     //add data and save current version of file
     ui->yaml->append(yaml_ondisk);
@@ -2150,13 +2152,15 @@ void MainWindow::on_editor_settings_clicked()
     e_settings.setupUi(command_widget);
 
     command_widget->setWindowFlags(Qt::Popup);
-    command_widget->move(ui->editor_settings->mapToGlobal(QPoint(-command_widget->width()+100,30)));
+    command_widget->move(ui->editor_settings->mapToGlobal(QPoint(-command_widget->width()+110,35)));
 
     //read and load settings from qsettings
     e_settings.keep_sync->setChecked(settings->value("editor_keep_sync").toBool());
     e_settings.save_font->setChecked(settings->value("editor_save_font").toBool());
     e_settings.save_zoom->setChecked(settings->value("editor_save_zoom").toBool());
     e_settings.show_line_no->setChecked(settings->value("show_lines_no").toBool());
+    e_settings.show_tree->setChecked(settings->value("show_tree").toBool());
+
 
     command_widget->showNormal();
 
@@ -2164,13 +2168,21 @@ void MainWindow::on_editor_settings_clicked()
     connect(e_settings.save_font,SIGNAL(toggled(bool)),this,SLOT(e_settings_save_font_toggled(bool)));
     connect(e_settings.save_zoom,SIGNAL(toggled(bool)),this,SLOT(e_settings_save_zoom_toggled(bool)));
     connect(e_settings.show_line_no,SIGNAL(toggled(bool)),this,SLOT(show_hide_line_no(bool)));
+    connect(e_settings.show_tree,SIGNAL(toggled(bool)),this,SLOT(show_hide_tree_toggled(bool)));
 }
+
+void MainWindow::show_hide_tree_toggled(bool checked){
+    ui->tree->setVisible(checked);
+    settings->setValue("show_tree",checked);
+}
+
 void MainWindow::show_hide_line_no(bool checked){
-    if(checked){
-        this->findChildren<QTextEdit *>("lineNumberArea").at(0)->show();
-    }else{
-        this->findChildren<QTextEdit *>("lineNumberArea").at(0)->hide();
-    }
+    this->findChildren<QTextEdit *>("lineNumberArea").at(0)->setVisible(checked);
+//    if(checked){
+//        this->findChildren<QTextEdit *>("lineNumberArea").at(0)->show();
+//    }else{
+//        this->findChildren<QTextEdit *>("lineNumberArea").at(0)->hide();
+//    }
     settings->setValue("show_lines_no",checked);
 }
 
@@ -2336,6 +2348,7 @@ void MainWindow::setLineNumberArea(){
     connect(ui->yaml->document(),SIGNAL(blockCountChanged(int)),this,SLOT(updateLineNumArea(int)));
     connect(ui->yaml->verticalScrollBar(),SIGNAL(valueChanged(int)),
     this->findChildren<QTextEdit *>("lineNumberArea").at(0)->verticalScrollBar(),SLOT(setValue(int)));
+    connect(ui->yaml->verticalScrollBar(),SIGNAL(valueChanged(int)),ui->yaml_2->verticalScrollBar(),SLOT(setValue(int)));
 }
 void MainWindow::updateLineNumArea(int num){
     this->findChildren<QTextEdit *>("lineNumberArea").at(0)->verticalScrollBar()->setValue(ui->yaml->verticalScrollBar()->value());
