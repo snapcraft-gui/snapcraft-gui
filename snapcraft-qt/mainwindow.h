@@ -260,6 +260,8 @@ private slots:
      void updateLineNumArea(int num);
      void resize_line_number_widget();
      void show_hide_line_no(bool);
+     void on_pasteup_2_clicked();
+     void on_select_all_clicked();
 };
 
 #endif // MAINWINDOW_H

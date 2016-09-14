@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1043</width>
-    <height>524</height>
+    <width>1268</width>
+    <height>543</height>
    </rect>
   </property>
   <property name="font">
@@ -55,6 +55,16 @@
            <property name="text">
             <string>New (init)</string>
            </property>
+           <property name="icon">
+            <iconset resource="rc.qrc">
+             <normaloff>:/images/images/new.png</normaloff>:/images/images/new.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>12</width>
+             <height>12</height>
+            </size>
+           </property>
            <property name="shortcut">
             <string>Ctrl+N</string>
            </property>
@@ -64,6 +74,16 @@
           <widget class="QPushButton" name="open_snap">
            <property name="text">
             <string>Open (yaml)</string>
+           </property>
+           <property name="icon">
+            <iconset resource="rc.qrc">
+             <normaloff>:/images/images/open.png</normaloff>:/images/images/open.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>12</width>
+             <height>12</height>
+            </size>
            </property>
            <property name="shortcut">
             <string>Ctrl+O</string>
@@ -96,6 +116,64 @@
              <property name="text">
               <string>Close Current</string>
              </property>
+             <property name="icon">
+              <iconset resource="rc.qrc">
+               <normaloff>:/images/images/close.png</normaloff>:/images/images/close.png</iconset>
+             </property>
+             <property name="iconSize">
+              <size>
+               <width>16</width>
+               <height>16</height>
+              </size>
+             </property>
+             <property name="shortcut">
+              <string>Ctrl+W</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_9">
+           <property name="spacing">
+            <number>2</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="label_3">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+             <property name="pixmap">
+              <pixmap resource="rc.qrc">:/images/images/url.png</pixmap>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="snapcraft_path">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>8</pointsize>
+               <italic>true</italic>
+              </font>
+             </property>
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
             </widget>
            </item>
           </layout>
@@ -115,7 +193,20 @@
          <item row="1" column="2">
           <widget class="QPushButton" name="pastebin_it">
            <property name="text">
-            <string>Pastebin it!</string>
+            <string>Paste-bin it!</string>
+           </property>
+           <property name="icon">
+            <iconset resource="rc.qrc">
+             <normaloff>:/images/images/paste.png</normaloff>:/images/images/paste.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>16</width>
+             <height>16</height>
+            </size>
+           </property>
+           <property name="shortcut">
+            <string>Ctrl+Shift+P</string>
            </property>
           </widget>
          </item>
@@ -124,12 +215,35 @@
            <property name="text">
             <string>Open with Editor</string>
            </property>
+           <property name="icon">
+            <iconset resource="rc.qrc">
+             <normaloff>:/images/images/open_editor.png</normaloff>:/images/images/open_editor.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>16</width>
+             <height>16</height>
+            </size>
+           </property>
+           <property name="shortcut">
+            <string>Ctrl+E</string>
+           </property>
           </widget>
          </item>
          <item row="0" column="1">
           <widget class="QPushButton" name="save_snapcraft">
            <property name="text">
             <string>Save</string>
+           </property>
+           <property name="icon">
+            <iconset resource="rc.qrc">
+             <normaloff>:/images/images/save.png</normaloff>:/images/images/save.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>16</width>
+             <height>16</height>
+            </size>
            </property>
            <property name="shortcut">
             <string>Ctrl+S</string>
@@ -140,6 +254,16 @@
           <widget class="QPushButton" name="tree_now">
            <property name="text">
             <string>Tree</string>
+           </property>
+           <property name="icon">
+            <iconset resource="rc.qrc">
+             <normaloff>:/images/images/tree.png</normaloff>:/images/images/tree.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>16</width>
+             <height>16</height>
+            </size>
            </property>
            <property name="shortcut">
             <string>Ctrl+T</string>
@@ -163,12 +287,32 @@
            <property name="text">
             <string>Package Manager</string>
            </property>
+           <property name="icon">
+            <iconset resource="rc.qrc">
+             <normaloff>:/images/images/package_manager.png</normaloff>:/images/images/package_manager.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>16</width>
+             <height>16</height>
+            </size>
+           </property>
           </widget>
          </item>
          <item row="1" column="0">
           <widget class="QPushButton" name="search_store">
            <property name="text">
-            <string>Search Store</string>
+            <string>Search Snap Store</string>
+           </property>
+           <property name="icon">
+            <iconset resource="rc.qrc">
+             <normaloff>:/images/images/search_store.png</normaloff>:/images/images/search_store.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>16</width>
+             <height>16</height>
+            </size>
            </property>
           </widget>
          </item>
@@ -231,6 +375,9 @@
              <width>16</width>
              <height>16</height>
             </size>
+           </property>
+           <property name="shortcut">
+            <string>Ctrl+R</string>
            </property>
           </widget>
          </item>
@@ -358,72 +505,87 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QLineEdit" name="snapcraft_path">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>8</pointsize>
-          <italic>true</italic>
-         </font>
-        </property>
-        <property name="readOnly">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
        <widget class="QPushButton" name="undo_btn">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
         <property name="text">
-         <string>↺</string>
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="rc.qrc">
+          <normaloff>:/images/images/undo.png</normaloff>:/images/images/undo.png</iconset>
         </property>
         <property name="iconSize">
          <size>
-          <width>16</width>
-          <height>16</height>
+          <width>14</width>
+          <height>14</height>
          </size>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QPushButton" name="redo_btn">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
         <property name="text">
-         <string>↻</string>
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="rc.qrc">
+          <normaloff>:/images/images/redo.png</normaloff>:/images/images/redo.png</iconset>
         </property>
         <property name="iconSize">
          <size>
-          <width>16</width>
-          <height>16</height>
+          <width>14</width>
+          <height>14</height>
          </size>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QPushButton" name="dup">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
         <property name="text">
-         <string>Dup</string>
+         <string>Duplicate</string>
+        </property>
+        <property name="icon">
+         <iconset resource="rc.qrc">
+          <normaloff>:/images/images/duplicate.png</normaloff>:/images/images/duplicate.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>12</width>
+          <height>12</height>
+         </size>
+        </property>
+        <property name="shortcut">
+         <string>Ctrl+Shift+D</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="select_all">
+        <property name="text">
+         <string>Select All</string>
+        </property>
+        <property name="icon">
+         <iconset resource="rc.qrc">
+          <normaloff>:/images/images/select_all.png</normaloff>:/images/images/select_all.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>12</width>
+          <height>12</height>
+         </size>
+        </property>
+        <property name="shortcut">
+         <string>Ctrl+Shift+D</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pasteup_2">
+        <property name="text">
+         <string>Paste</string>
+        </property>
+        <property name="icon">
+         <iconset resource="rc.qrc">
+          <normaloff>:/images/images/paste.png</normaloff>:/images/images/paste.png</iconset>
         </property>
         <property name="iconSize">
          <size>
@@ -431,39 +593,160 @@
           <height>16</height>
          </size>
         </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="label_2">
-        <property name="styleSheet">
-         <string notr="true">color:silver;</string>
-        </property>
-        <property name="text">
-         <string>Cursor on line:</string>
+        <property name="shortcut">
+         <string>Ctrl+V</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="current_line">
-        <property name="text">
-         <string/>
+       <widget class="QFrame" name="frame_6">
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
         </property>
+        <property name="frameShadow">
+         <enum>QFrame::Raised</enum>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_8">
+         <property name="spacing">
+          <number>4</number>
+         </property>
+         <property name="leftMargin">
+          <number>3</number>
+         </property>
+         <property name="topMargin">
+          <number>1</number>
+         </property>
+         <property name="rightMargin">
+          <number>3</number>
+         </property>
+         <property name="bottomMargin">
+          <number>1</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="current_line_2">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <italic>true</italic>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">color: silver;
+</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="pixmap">
+            <pixmap resource="rc.qrc">:/images/images/cursor_on.png</pixmap>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_2">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <italic>true</italic>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">color:silver;</string>
+           </property>
+           <property name="text">
+            <string>Cursor on line:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="current_line">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <italic>true</italic>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">color: silver;
+</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="doc_stats">
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-          <italic>true</italic>
-         </font>
+       <widget class="QFrame" name="frame_5">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
         </property>
-        <property name="styleSheet">
-         <string notr="true">color: silver;</string>
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
         </property>
-        <property name="text">
-         <string/>
+        <property name="frameShadow">
+         <enum>QFrame::Raised</enum>
         </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_7">
+         <property name="spacing">
+          <number>4</number>
+         </property>
+         <property name="leftMargin">
+          <number>3</number>
+         </property>
+         <property name="topMargin">
+          <number>1</number>
+         </property>
+         <property name="rightMargin">
+          <number>3</number>
+         </property>
+         <property name="bottomMargin">
+          <number>1</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="doc_stats_2">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <italic>true</italic>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">color: silver;</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="pixmap">
+            <pixmap resource="rc.qrc">:/images/images/line_count.png</pixmap>
+           </property>
+           <property name="scaledContents">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="doc_stats">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <italic>true</italic>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">color: silver;</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </widget>
       </item>
       <item>
@@ -500,6 +783,19 @@
           <number>2</number>
          </property>
          <item>
+          <widget class="QLabel" name="font_icon">
+           <property name="text">
+            <string/>
+           </property>
+           <property name="pixmap">
+            <pixmap resource="rc.qrc">:/images/images/fonts.png</pixmap>
+           </property>
+           <property name="scaledContents">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QFontComboBox" name="font">
            <property name="frame">
             <bool>false</bool>
@@ -509,7 +805,7 @@
            </property>
            <property name="currentFont">
             <font>
-             <family>Ubuntu Mono</family>
+             <family>Courier 10 Pitch</family>
              <weight>75</weight>
              <bold>true</bold>
             </font>
@@ -537,7 +833,17 @@
             </font>
            </property>
            <property name="text">
-            <string>-</string>
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="rc.qrc">
+             <normaloff>:/images/images/zoom-out.png</normaloff>:/images/images/zoom-out.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>16</width>
+             <height>16</height>
+            </size>
            </property>
           </widget>
          </item>
@@ -576,7 +882,17 @@
             </size>
            </property>
            <property name="text">
-            <string>+</string>
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="rc.qrc">
+             <normaloff>:/images/images/zoom-in.png</normaloff>:/images/images/zoom-in.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>16</width>
+             <height>16</height>
+            </size>
            </property>
           </widget>
          </item>
@@ -585,12 +901,6 @@
       </item>
       <item>
        <widget class="QPushButton" name="open_with_files">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
         <property name="font">
          <font>
           <pointsize>8</pointsize>
@@ -599,16 +909,20 @@
         <property name="text">
          <string>open with Files</string>
         </property>
+        <property name="icon">
+         <iconset resource="rc.qrc">
+          <normaloff>:/images/images/open_folder.png</normaloff>:/images/images/open_folder.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>16</width>
+          <height>16</height>
+         </size>
+        </property>
        </widget>
       </item>
       <item>
        <widget class="QPushButton" name="highlight">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
         <property name="font">
          <font>
           <pointsize>8</pointsize>
@@ -627,12 +941,6 @@
       </item>
       <item>
        <widget class="QPushButton" name="normal">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
         <property name="font">
          <font>
           <pointsize>8</pointsize>
@@ -641,6 +949,16 @@
         <property name="text">
          <string>Normal</string>
         </property>
+        <property name="icon">
+         <iconset resource="rc.qrc">
+          <normaloff>:/images/images/normal.png</normaloff>:/images/images/normal.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>14</width>
+          <height>14</height>
+         </size>
+        </property>
         <property name="checkable">
          <bool>true</bool>
         </property>
@@ -648,12 +966,6 @@
       </item>
       <item>
        <widget class="QPushButton" name="editor_settings">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
         <property name="font">
          <font>
           <pointsize>8</pointsize>
@@ -661,6 +973,16 @@
         </property>
         <property name="text">
          <string>Editor Settings</string>
+        </property>
+        <property name="icon">
+         <iconset resource="rc.qrc">
+          <normaloff>:/images/images/settings.png</normaloff>:/images/images/settings.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>16</width>
+          <height>16</height>
+         </size>
         </property>
         <property name="checkable">
          <bool>true</bool>
@@ -749,6 +1071,16 @@
          <property name="text">
           <string>Load these changes to editor</string>
          </property>
+         <property name="icon">
+          <iconset resource="rc.qrc">
+           <normaloff>:/images/images/open_editor.png</normaloff>:/images/images/open_editor.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>16</width>
+           <height>16</height>
+          </size>
+         </property>
         </widget>
        </item>
        <item>
@@ -761,6 +1093,16 @@
          </property>
          <property name="text">
           <string>Ignore these changes and save my current changes</string>
+         </property>
+         <property name="icon">
+          <iconset resource="rc.qrc">
+           <normaloff>:/images/images/save.png</normaloff>:/images/images/save.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>16</width>
+           <height>16</height>
+          </size>
          </property>
         </widget>
        </item>
@@ -864,7 +1206,7 @@ color: rgb(10,92,179);
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1043</width>
+     <width>1268</width>
      <height>19</height>
     </rect>
    </property>
@@ -941,7 +1283,10 @@ color: rgb(10,92,179);
     <bool>false</bool>
    </property>
    <property name="features">
-    <set>QDockWidget::DockWidgetMovable|QDockWidget::DockWidgetVerticalTitleBar</set>
+    <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable|QDockWidget::DockWidgetVerticalTitleBar</set>
+   </property>
+   <property name="allowedAreas">
+    <set>Qt::BottomDockWidgetArea|Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
    </property>
    <property name="windowTitle">
     <string>   O&amp;utput</string>
