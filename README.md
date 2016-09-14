@@ -11,7 +11,6 @@ Graphical user interface to create snaps using snapcraft as backend, written in 
 
 ```
 We updating new reository here soon //old one was removed due to some reasons
-
 ```
 
 # IRC
@@ -54,6 +53,7 @@ Snap Store: [Started]
 ![snapcraft-gui](https://github.com/keshavbhatt/snapcraft-gui/blob/master/screenshots/sc1.png?raw=true)
 ![snapcraft-gui](https://github.com/keshavbhatt/snapcraft-gui/blob/master/screenshots/sc2.png?raw=true)
 ![snapcraft-gui](https://github.com/keshavbhatt/snapcraft-gui/blob/master/screenshots/sc3.png?raw=true)
+![snapcraft-gui](https://github.com/keshavbhatt/snapcraft-gui/blob/master/screenshots/sc4.png?raw=true)
 
 # How to build
 
