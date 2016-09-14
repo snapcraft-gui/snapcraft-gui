@@ -49,7 +49,7 @@ MainWindow::MainWindow(QWidget *parent) :
     lineNumberArea->setFocusPolicy(Qt::NoFocus);
     lineNumberArea->setFont(ui->yaml->font());
     lineNumberArea->verticalScrollBar()->setDisabled(1);
-    lineNumberArea->setStyleSheet(QStringLiteral("background: #302F2F;border:none"));
+    lineNumberArea->setStyleSheet(QStringLiteral("background: #323232;border:none"));
     lineNumberArea->setAlignment(Qt::AlignLeft);
     ui->linenumberwidget->addWidget(lineNumberArea);
     connect(this->findChildren<QTextEdit *>("lineNumberArea").at(0),SIGNAL(textChanged()),this,SLOT(resize_line_number_widget()));
@@ -174,6 +174,7 @@ MainWindow::MainWindow(QWidget *parent) :
     split1->setCollapsible(0,false);
 
 
+
     //load editor settings
     if(settings->value("editor_save_font").toBool()){
         ui->font->setCurrentIndex(settings->value("editor_font").toInt());
@@ -225,6 +226,7 @@ void MainWindow::highlightCurrentLine()
     }
 
     ui->yaml->setExtraSelections(extraSelections);
+
     this->findChildren<QTextEdit *>("lineNumberArea").at(0)->verticalScrollBar()->setValue(ui->yaml->verticalScrollBar()->value());
 
 }
@@ -1935,6 +1937,13 @@ void MainWindow::login_readyRead(){
 //to keep an eye on snapcraft file changes on disk if file is changed evoke a reaload button on screen
 void MainWindow::on_yaml_cursorPositionChanged()
 {
+    this->findChildren<QTextEdit *>("lineNumberArea").at(0)->setText(this->findChildren<QTextEdit *>("lineNumberArea").at(0)->toPlainText().remove("<i>").remove("</i>"));
+
+    QString curre=ui->current_line->text().simplified();
+    QString newd = this->findChildren<QTextEdit *>("lineNumberArea").at(0)->toPlainText().replace(QRegExp("^[-+]?("+curre+")"),"<i>"+curre+"</i>");
+
+    this->findChildren<QTextEdit *>("lineNumberArea").at(0)->setText(newd.replace(" ","\n").remove("<i>").remove("</i>"));
+
 
     int currentLine = ui->yaml->textCursor().blockNumber() + 1;
     this->findChildren<QTextEdit *>("lineNumberArea").at(0)->textCursor().movePosition(QTextCursor::Down,QTextCursor::MoveAnchor,currentLine);
@@ -2131,6 +2140,7 @@ void MainWindow::on_editor_settings_clicked()
     e_settings.keep_sync->setChecked(settings->value("editor_keep_sync").toBool());
     e_settings.save_font->setChecked(settings->value("editor_save_font").toBool());
     e_settings.save_zoom->setChecked(settings->value("editor_save_zoom").toBool());
+    e_settings.show_line_no->setChecked(settings->value("show_lines_no").toBool());
 
     command_widget->showNormal();
 
@@ -2312,7 +2322,16 @@ void MainWindow::setLineNumberArea(){
     this->findChildren<QTextEdit *>("lineNumberArea").at(0)->verticalScrollBar(),SLOT(setValue(int)));
 }
 void MainWindow::updateLineNumArea(int num){
-
     this->findChildren<QTextEdit *>("lineNumberArea").at(0)->verticalScrollBar()->setValue(ui->yaml->verticalScrollBar()->value());
     updateLineNumberArea(this->findChildren<QTextEdit *>("lineNumberArea").at(0), num);
+}
+
+void MainWindow::on_pasteup_2_clicked()
+{
+    insertPlainText();
+}
+
+void MainWindow::on_select_all_clicked()
+{
+    ui->yaml->selectAll();
 }
