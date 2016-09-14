@@ -67,7 +67,6 @@ Highlighter::Highlighter(QTextDocument *parent)
     rule.format = quotationFormat;
     highlightingRules.append(rule);
 
-
 //! [5]
 
 //! [6] text after key in new line
