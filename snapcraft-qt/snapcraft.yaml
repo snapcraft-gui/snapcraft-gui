@@ -1,27 +1,23 @@
 name: snapcraft-gui  # the name of the snap
-version:  "daily"  # the version of the snap
-summary: Build and manage snaps on Ubuntu Linux  # 79 char long summary
-description: Frontend for snapcraft which help build and manage snaps on Ubuntu Linux  # a longer description for the snap
-confinement: strict  # use "strict" to enforce system access only via declared interfaces
+version: 2.0-snap0  # the version of the snap, which can be any string
+summary: Snapcraft graphical user interface  # 79 char long summary
+description: |
+  Graphical user interface to create snaps using snapcraft as backend, written in Qt.
+confinement: devmode  # start with devmode, then use "strict" to enforce system access only via declared interfaces
+grade: devel # use "stable" to assert the snap quality
+                      
 
 apps:
-  snapcraft-gui: 
-      command: desktop-launch  snapcraft-gui
-      plugs:
-	- unity7
-	- network
-	- network-bind
-	- home
-	- mount-observe
-	- opengl
-	- x11
-	
+    snapcraft-gui:
+        command: desktop-launch $SNAP/opt/snapcraft-gui/snapcraft-gui
+        plugs: [x11, network, network-bind, home]
+
 parts:
-  snapcraft-gui: 
-       source: lp:snapcraft-gui
-       source-type: bzr
-       plugin: nil
-       stage-packages:
-               - tree
-               - pastebinit
-       after: [desktop-qt5]
+    snapcraft-gui: 
+        plugin: qmake
+        qt-version: qt5
+        project-files: [snapcraft-qt/snapcraft-qt.pro]
+        source: https://github.com/keshavbhatt/snapcraft-gui.git
+        stage-packages: [snapcraft, pastebinit, tree]
+        after:
+                [desktop/qt5]
