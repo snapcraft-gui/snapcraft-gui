@@ -48,6 +48,29 @@
         <file>images/grid.png</file>
         <file>images/logo2.png</file>
         <file>images/snapcraft-gui.png</file>
+        <file>images/close.png</file>
+        <file>images/new.png</file>
+        <file>images/open.png</file>
+        <file>images/duplicate.png</file>
+        <file>images/zoom-out.png</file>
+        <file>images/zoom-in.png</file>
+        <file>images/paste.png</file>
+        <file>images/settings.png</file>
+        <file>images/normal.png</file>
+        <file>images/open_folder.png</file>
+        <file>images/open_editor.png</file>
+        <file>images/save.png</file>
+        <file>images/tree.png</file>
+        <file>images/paste_bin.png</file>
+        <file>images/package_manager.png</file>
+        <file>images/search_store.png</file>
+        <file>images/fonts.png</file>
+        <file>images/undo.png</file>
+        <file>images/redo.png</file>
+        <file>images/line_count.png</file>
+        <file>images/cursor_on.png</file>
+        <file>images/url.png</file>
+        <file>images/select_all.png</file>
     </qresource>
     <qresource prefix="/txt">
         <file>contrib.txt</file>
