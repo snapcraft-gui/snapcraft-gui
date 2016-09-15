@@ -5,13 +5,13 @@ Maintainer: Keshav Bhatt <keshavnrj@gmail.com>
 Uploaders: Simon Quigley <tsimonq2@ubuntu.com>
 Build-Depends: debhelper (>= 9),
                qt5-qmake,
+               qt-default,
                qtbase5-dev,
                qtbase5-dev-tools,
                qtchooser,
                qttools5-dev,
                qttools5-dev-tools
 Standards-Version: 3.9.8
-Homepage: http://ktechpit.com
 
 Package: snapcraft-gui
 Architecture: amd64
