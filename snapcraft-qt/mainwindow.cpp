@@ -53,6 +53,7 @@ MainWindow::MainWindow(QWidget *parent) :
     lineNumberArea->setAlignment(Qt::AlignLeft);
     ui->linenumberwidget->addWidget(lineNumberArea);
     connect(this->findChildren<QTextEdit *>("lineNumberArea").at(0),SIGNAL(textChanged()),this,SLOT(resize_line_number_widget()));
+    connect(ui->yaml->verticalScrollBar(),SIGNAL(valueChanged(int)),this->findChildren<QTextEdit *>("lineNumberArea").at(0)->verticalScrollBar(),SLOT(setValue(int)));
 
     setLineNumberArea();
 
@@ -1967,7 +1968,7 @@ void MainWindow::on_yaml_cursorPositionChanged()
     this->findChildren<QTextEdit *>("lineNumberArea").at(0)->verticalScrollBar()->update();
     ui->yaml->verticalScrollBar()->update();
 
-ui->yaml->verticalScrollBar()->setValue(ui->yaml->verticalScrollBar()->value());
+    ui->yaml->verticalScrollBar()->setValue(ui->yaml->verticalScrollBar()->value());
 
     ui->file_name->setText(fileName);
     ui->current_line->setText(QString::number(currentLine));
