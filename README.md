@@ -7,6 +7,11 @@ Graphical user interface to create snaps using snapcraft as backend, written in 
 [![Build Status](https://travis-ci.org/snapcraft-gui/snapcraft-gui.svg?branch=master)](https://travis-ci.org/snapcraft-gui/snapcraft-gui)
 [![Coverage Status](https://coveralls.io/repos/github/keshavbhatt/snapcraft-gui/badge.svg?branch=master)](https://coveralls.io/github/keshavbhatt/snapcraft-gui?branch=master)
 
+#Install using debian Package
+
+Download the latest release from here - automatic!
+[Download link](https://github.com/snapcraft-gui/snapcraft-gui/releases)
+
 # How to install on Ubuntu 16.04 and Ubuntu Yakkety Yak (the development branch)
 
 ```
