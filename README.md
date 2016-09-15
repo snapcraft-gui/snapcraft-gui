@@ -9,7 +9,7 @@ Graphical user interface to create snaps using snapcraft as backend, written in 
 
 #Install using debian Package
 
-Download the latest release from here - automatic!
+Download the latest release from here -
 [Download link](https://github.com/snapcraft-gui/snapcraft-gui/releases)
 
 # How to install on Ubuntu 16.04 and Ubuntu Yakkety Yak (the development branch)
