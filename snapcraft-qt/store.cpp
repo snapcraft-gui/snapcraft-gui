@@ -148,7 +148,7 @@ void store::on_install_clicked()
 
 void store::install_remove_finished(int i){
     if(i==0){
-    ui->info_terminal->setText("Installed"+selected_package_name);
+    ui->info_terminal->setText("Installed "+selected_package_name);
     }
     else{
     ui->info_terminal->setText("Something went wrong.");
