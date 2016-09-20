@@ -79,6 +79,12 @@ Few of them are here:
 	pastebinit // sudo apt install pastebinit 
 	snapcraft //sudo apt install snapcraft 
 	
+###Donation
+
+I have recieved emails from lots of people to put a donation via bitcoin or paypal, which simply implies that they are willing to make donation to project so I decided to put a paypal button , am not able to get Bitcoin integrated here for some reason will look for it in future , so right now you can use Paypal if you wana make any doantion and wana support this project 
+
+[![Snapcraft Donation](http://i.imgur.com/Vfl5DN7.png?1)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=V6M9WXWVH2RW4)
+	
 ### Contributing
 
 When submitting code to this project, please indicate that you certify you are able to contribute the code by adding a signed-off-by line at the end of your commit message (using your real name) such as:
