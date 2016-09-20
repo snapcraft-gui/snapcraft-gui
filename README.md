@@ -25,9 +25,6 @@ If you are having trouble or would like to help out, join ##snapcraft-gui on fre
 
 Kiwi IRC (IRC in your web browser) link: https://kiwiirc.com/client/irc.freenode.net/##snapcraft-gui
 
-#Join the chat at gitter
-[![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/Snapcraft-gui/Lobby)
-
 # TODO list:
 
 Snap package Manager (click package manager in file menu to see): [Started]
@@ -54,6 +51,10 @@ Snap Store: [Started]
  - search functionality [Done]
  - identify snap installed or not [Done]
  - install remove snaps from inside [target]
+ 
+Project editor: [Started]
+ - show list of recently opened projects [target]
+ - a note taking widget allowing user to make some notes with autosave features[target]
 
 # Screenshots
 
