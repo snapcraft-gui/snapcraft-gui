@@ -6,6 +6,8 @@ Graphical user interface to create snaps using snapcraft as backend, written in 
 
 [![Build Status](https://travis-ci.org/snapcraft-gui/snapcraft-gui.svg?branch=master)](https://travis-ci.org/snapcraft-gui/snapcraft-gui)
 [![Coverage Status](https://coveralls.io/repos/github/keshavbhatt/snapcraft-gui/badge.svg?branch=master)](https://coveralls.io/github/keshavbhatt/snapcraft-gui?branch=master)
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Snapcraft-gui/Lobby) 
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=V6M9WXWVH2RW4)
 
 #Install using debian Package
 
