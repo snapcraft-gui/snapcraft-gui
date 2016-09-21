@@ -75,6 +75,8 @@
         <file>images/notes.png</file>
         <file>images/clear.png</file>
         <file>images/deattach.png</file>
+        <file>images/recent.png</file>
+        <file>images/recent_small.png</file>
     </qresource>
     <qresource prefix="/txt">
         <file>contrib.txt</file>
