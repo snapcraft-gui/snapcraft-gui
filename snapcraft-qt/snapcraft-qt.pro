@@ -45,7 +45,8 @@ FORMS    += mainwindow.ui \
     stage_dialog.ui \
     prime_dialog.ui \
     build_dialog.ui \
-    editor_settings.ui
+    editor_settings.ui \
+    notes.ui
 
 RESOURCES += \
     rc.qrc
