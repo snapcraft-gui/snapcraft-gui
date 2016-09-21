@@ -38,6 +38,8 @@ Snapcraft.yaml editor: [Started]
  - snapcraft's styled Yaml syntax highlightning [Done]
  - full editor functionalities [Done]
  - pastebin integration [Done]
+ - a note taking widget allowing user to make some notes with autosave features[done]
+ - show list of recently opened projects [done]
 
 Snap lifecycle commands: [Started]
  - clean [Done]
@@ -52,9 +54,6 @@ Snap Store: [Started]
  - identify snap installed or not [Done]
  - install remove snaps from inside [target]
  
-Project editor: [Started]
- - a note taking widget allowing user to make some notes with autosave features[done]
- - show list of recently opened projects [target]
 
 # Screenshots
 
