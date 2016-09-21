@@ -71,6 +71,10 @@
         <file>images/cursor_on.png</file>
         <file>images/url.png</file>
         <file>images/select_all.png</file>
+        <file>images/cut.png</file>
+        <file>images/notes.png</file>
+        <file>images/clear.png</file>
+        <file>images/deattach.png</file>
     </qresource>
     <qresource prefix="/txt">
         <file>contrib.txt</file>
