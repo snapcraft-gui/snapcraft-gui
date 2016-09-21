@@ -31,7 +31,7 @@
 #include <QStandardPaths>
 
 
-int version = 2; //current version of app
+int version = 3; //current version of app
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -2263,28 +2263,27 @@ void MainWindow::version_request_done(){
 
     if(k<p){
         ui->terminal->append("A New version "+QString::number(p)+" of application is available, Please update.");
-//drunk will fix later
-        //        QMessageBox msgBox;
-//        msgBox.setText("<b>Snapcraft-GUI Update Manager:</b>");
-//        msgBox.setIcon(QMessageBox::Information);
-//        msgBox.setInformativeText("Download/Install new Updated version of Snapcraft-GUI");
-//        msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
-//        msgBox.setDefaultButton(QMessageBox::Ok);
-//        msgBox.buttons().at(0)->setText("Ok I will");
+        QMessageBox msgBox;
+        msgBox.setText("<b>Snapcraft-GUI Update Manager:</b>");
+        msgBox.setIcon(QMessageBox::Information);
+        msgBox.setInformativeText("Download/Install new Updated version of Snapcraft-GUI");
+        msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+        msgBox.setDefaultButton(QMessageBox::Ok);
+        msgBox.buttons().at(0)->setText("Download Page");
 
-//        int ret = msgBox.exec();  //return code
+        int ret = msgBox.exec();  //return code
 
-//        switch (ret) {
-//           case QMessageBox::Ok:
-//               qDebug()<<"// Will Update";
-//               break;
-//           case QMessageBox::Cancel:
-//               qDebug()<<"// Rejected";
-//               break;
-//           default:
-//               qDebug()<<"//mia chi_chi gand";
-//               break;
-//         }
+        switch (ret) {
+           case QMessageBox::Ok:
+               QDesktopServices::openUrl(QUrl("https://github.com/snapcraft-gui/snapcraft-gui/releases"));
+               break;
+           case QMessageBox::Cancel:
+                ui->terminal->append("<br>Newer version contain lots of new features and updates, Please update the Software.<br>");
+               break;
+           default:
+              // qDebug()<<"//mia chi_chi gand";
+               break;
+         }
     }
     else{
         ui->terminal->append("You Running Latest version of application.");
