@@ -26,7 +26,11 @@
 
 #include <QSettings>
 #include <QTextEdit>
+#include <QTextBlockFormat>
 #include <QScrollBar>
+#include <QStandardPaths>
+
+
 
 
 
@@ -46,14 +50,21 @@ MainWindow::MainWindow(QWidget *parent) :
     lineNumberArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     lineNumberArea->setReadOnly(true);
     lineNumberArea->setFrameShape(QFrame::NoFrame);
-    lineNumberArea->setFocusPolicy(Qt::NoFocus);
+//    lineNumberArea->setFocusPolicy(Qt::NoFocus);
     lineNumberArea->setFont(ui->yaml->font());
     lineNumberArea->verticalScrollBar()->setDisabled(1);
     lineNumberArea->setStyleSheet(QStringLiteral("background: #323232;border:none"));
     lineNumberArea->setAlignment(Qt::AlignLeft);
     ui->linenumberwidget->addWidget(lineNumberArea);
-    connect(this->findChildren<QTextEdit *>("lineNumberArea").at(0),SIGNAL(textChanged()),this,SLOT(resize_line_number_widget()));
-    connect(ui->yaml->verticalScrollBar(),SIGNAL(valueChanged(int)),this->findChildren<QTextEdit *>("lineNumberArea").at(0)->verticalScrollBar(),SLOT(setValue(int)));
+    connect(lineNumberArea,SIGNAL(textChanged()),this,SLOT(resize_line_number_widget()),Qt::DirectConnection);
+    connect(ui->yaml->verticalScrollBar(),SIGNAL(valueChanged(int)),this->findChildren<QTextEdit *>("lineNumberArea").at(0)->verticalScrollBar(),SLOT(setValue(int)),Qt::DirectConnection);
+
+    //indentation //not using
+//    ui->indent_d->setShortcut(Qt::CTRL + Qt::Key_Comma);
+//    ui->indent_i->setShortcut(Qt::CTRL + Qt::Key_Period);
+
+//    connect(ui->indent_i, SIGNAL(clicked()), this, SLOT(increaseIndentation()));
+//    connect(ui->indent_d, SIGNAL(clicked()), this, SLOT(decreaseIndentation()));
 
     setLineNumberArea();
 
@@ -200,7 +211,7 @@ MainWindow::MainWindow(QWidget *parent) :
     check_for_updates();
 
 }
-
+//increasw or decrese width of line no. area when plcaevalue increases
 void MainWindow::resize_line_number_widget(){
     // resize widget
      int textwidth =  this->findChildren<QTextEdit *>("lineNumberArea").at(0)->fontMetrics().size(0,this->findChildren<QTextEdit *>("lineNumberArea").at(0)->toPlainText()).width();
@@ -627,6 +638,12 @@ ui->doc_stats->setText("Word count: "+QString::number(ui->yaml->document()->char
 
 if(ui->yaml->toPlainText().contains("\t")){
     ui->terminal->append("Tabs not allowed in yaml");
+    //TODO
+//    QTextCursor cursor = ui->yaml->textCursor();
+//    QTextBlockFormat obfmt = cursor.blockFormat();
+//    QTextBlockFormat bfmt;
+//    bfmt.setIndent(obfmt.indent());
+//    cursor.setBlockFormat(bfmt);
 }
 
 yaml_oneditor=ui->yaml->toPlainText().toUtf8();
@@ -2347,9 +2364,8 @@ void MainWindow::setLineNumberArea(){
     this->findChildren<QTextEdit *>("lineNumberArea").at(0)->setCursor(Qt::ArrowCursor);
     updateLineNumArea(ui->yaml->document()->blockCount());
     connect(ui->yaml->document(),SIGNAL(blockCountChanged(int)),this,SLOT(updateLineNumArea(int)));
-    connect(ui->yaml->verticalScrollBar(),SIGNAL(valueChanged(int)),
-    this->findChildren<QTextEdit *>("lineNumberArea").at(0)->verticalScrollBar(),SLOT(setValue(int)));
-    connect(ui->yaml->verticalScrollBar(),SIGNAL(valueChanged(int)),ui->yaml_2->verticalScrollBar(),SLOT(setValue(int)));
+    connect(ui->yaml->verticalScrollBar(),SIGNAL(valueChanged(int)),this->findChildren<QTextEdit *>("lineNumberArea").at(0)->verticalScrollBar(),SLOT(setValue(int)),Qt::DirectConnection);
+    connect(ui->yaml->verticalScrollBar(),SIGNAL(valueChanged(int)),ui->yaml_2->verticalScrollBar(),SLOT(setValue(int)),Qt::DirectConnection);
 }
 void MainWindow::updateLineNumArea(int num){
     this->findChildren<QTextEdit *>("lineNumberArea").at(0)->verticalScrollBar()->setValue(ui->yaml->verticalScrollBar()->value());
@@ -2364,4 +2380,128 @@ void MainWindow::on_pasteup_2_clicked()
 void MainWindow::on_select_all_clicked()
 {
     ui->yaml->selectAll();
+}
+
+//Editor indentation function // not using
+
+//void MainWindow::increaseIndentation() {
+//    indent(+1);
+//}
+
+//void MainWindow::decreaseIndentation() {
+//    indent(-1);
+//}
+
+//void MainWindow::indent(int delta) {
+//    QTextCursor cursor = ui->yaml->textCursor();
+//    cursor.beginEditBlock();
+//    QTextBlockFormat bfmt = cursor.blockFormat();
+//    int ind = bfmt.indent();
+//    if (ind + delta >= 0) {
+//        bfmt.setIndent(ind + delta);
+//        }
+//    cursor.setBlockFormat(bfmt);
+//    cursor.endEditBlock();
+//}
+
+//Editor indentation function // not using
+
+//show notes widget  //notes function///////////////////////////////////////////////////////////////////////////////
+void MainWindow::on_notes_clicked()
+{
+    command_widget=new QWidget();
+    nui.setupUi(command_widget);
+
+    if(!command_widget->isVisible())
+    {
+
+         command_widget->setWindowFlags(Qt::Popup);
+         command_widget->move(ui->notes->mapToGlobal(QPoint(-10,-command_widget->height()-4)));
+
+         command_widget->showNormal();
+         nui.note_edit->setFocus();
+         connect(nui.note_edit,SIGNAL(selectionChanged()),this,SLOT(nui_cursorChanged()));
+
+         connect(nui.note_edit,SIGNAL(cursorPositionChanged()),this,SLOT(nui_cursorChanged()));
+         connect(nui.note_edit, SIGNAL(textChanged()),SLOT(saveData()));
+         connect(nui.cut, SIGNAL(clicked()),nui.note_edit,SLOT(cut()));//cut slot
+         connect(nui.copy, SIGNAL(clicked()),nui.note_edit,SLOT(copy()));
+         connect(nui.paste, SIGNAL(clicked()),nui.note_edit,SLOT(paste()));
+         connect(nui.select_all, SIGNAL(clicked()),nui.note_edit,SLOT(selectAll()));
+         connect(nui.redo, SIGNAL(clicked()),nui.note_edit,SLOT(redo()));
+         connect(nui.undo, SIGNAL(clicked()),nui.note_edit,SLOT(undo()));
+         connect(nui.changeflag,SIGNAL(clicked()),SLOT(changeflag_clicked()));
+
+         //load file to note_edit
+         setData();
+         nui.note_edit->moveCursor(QTextCursor::End);
+    }
+    else if(command_widget->isVisible()){
+        command_widget->hide();
+    }
+}
+void MainWindow::setData()
+{
+    QString path=QStandardPaths::writableLocation(QStandardPaths::DataLocation)+"/notes_Data";
+    QDir dir(path);
+    if (!dir.exists())
+        dir.mkpath(path);
+    QFile file(path+"/notes.txt");
+    file.open(QIODevice::ReadWrite| QIODevice::Text);
+    QTextStream textStream(&file);
+    while (!textStream.atEnd()) {
+        nui.note_edit->append(textStream.readLine());
+    }
+}
+void MainWindow::nui_cursorChanged(){
+    //copy
+   QString d = nui.note_edit->textCursor().selectedText();
+   bool text_available;
+   if(d.length()>0){
+    text_available=false;
+   }else{text_available=true;}
+    nui.copy->setDisabled(text_available);
+    nui.cut->setDisabled(text_available);
+
+   //paste
+   if (const QMimeData *md = QApplication::clipboard()->mimeData()){
+             nui.paste->setEnabled(md->hasText());
+   }
+}
+void MainWindow::saveData()
+{
+    //set buttons undo redo
+    nui.redo->setEnabled(nui.note_edit->document()->isRedoAvailable());
+    nui.undo->setEnabled(nui.note_edit->document()->isUndoAvailable());
+
+
+    //save data
+    QString path= QStandardPaths::writableLocation(QStandardPaths::DataLocation)+"/notes_Data";
+    QDir dir(path);
+    if (!dir.exists())
+        dir.mkpath(path);
+    QFile file(path+"/notes.txt");
+    QString text = nui.note_edit->toPlainText();
+    file.open(QIODevice::WriteOnly|QIODevice::Text);
+    QTextStream out(&file);
+    out<<text<<endl;
+//    file.close();
+}
+//show notes widget  //notes function///////////////////////////////////////////////////////////////////////////////
+
+void MainWindow::on_actionNotes_triggered()
+{
+    on_notes_clicked();
+}
+
+
+
+void MainWindow::changeflag_clicked()
+{
+    if(command_widget->isVisible()){
+        command_widget->setWindowFlags(Qt::Dialog);
+        command_widget->showNormal();
+        nui.changeflag->hide();
+    }
+
 }

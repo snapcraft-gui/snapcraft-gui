@@ -21,6 +21,7 @@
 #include "ui_stage_dialog.h"
 #include "ui_prime_dialog.h"
 #include "ui_build_dialog.h"
+#include "ui_notes.h"
 
 #include "ui_editor_settings.h"
 
@@ -45,6 +46,7 @@ private:
     Ui::stage_dialog sui;
     Ui::prime_dialog prui;
     Ui::build_dialog bui;
+    Ui::notes nui;
 
     Ui::editor_settings e_settings;
 
@@ -265,6 +267,21 @@ private slots:
 
 //     tree
      void show_hide_tree_toggled(bool);
+
+//editor indentation
+//     void indent(int delta);
+//     void increaseIndentation();
+//     void decreaseIndentation();
+
+//notes
+     void on_notes_clicked();
+     void setData();
+     void saveData();
+     void nui_cursorChanged();
+
+     void on_actionNotes_triggered();
+
+     void changeflag_clicked();
 };
 
 #endif // MAINWINDOW_H

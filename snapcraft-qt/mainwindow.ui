@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1268</width>
+    <width>1347</width>
     <height>543</height>
    </rect>
   </property>
@@ -339,7 +339,7 @@
          <enum>Qt::Horizontal</enum>
         </property>
         <property name="sizeType">
-         <enum>QSizePolicy::Minimum</enum>
+         <enum>QSizePolicy::Maximum</enum>
         </property>
         <property name="sizeHint" stdset="0">
          <size>
@@ -1201,7 +1201,7 @@ background-attachment: fixed;
       <item>
        <layout class="QVBoxLayout" name="linenumberwidget">
         <property name="spacing">
-         <number>0</number>
+         <number>3</number>
         </property>
        </layout>
       </item>
@@ -1250,7 +1250,7 @@ color: rgb(10,92,179);
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1268</width>
+     <width>1347</width>
      <height>19</height>
     </rect>
    </property>
@@ -1269,6 +1269,7 @@ color: rgb(10,92,179);
     <property name="title">
      <string>Tools</string>
     </property>
+    <addaction name="actionNotes"/>
     <addaction name="actionUbuntu_Paste"/>
     <addaction name="actionOpen_Snapcraft_with_Gedit"/>
     <addaction name="separator"/>
@@ -1357,11 +1358,51 @@ color: rgb(10,92,179);
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="clear_term">
-       <property name="text">
-        <string>Clear</string>
+      <layout class="QHBoxLayout" name="horizontalLayout_10">
+       <property name="topMargin">
+        <number>0</number>
        </property>
-      </widget>
+       <item>
+        <widget class="QPushButton" name="notes">
+         <property name="toolTip">
+          <string>Notes</string>
+         </property>
+         <property name="text">
+          <string>Notes</string>
+         </property>
+         <property name="icon">
+          <iconset resource="rc.qrc">
+           <normaloff>:/images/images/notes.png</normaloff>:/images/images/notes.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>16</width>
+           <height>16</height>
+          </size>
+         </property>
+         <property name="shortcut">
+          <string>Ctrl+Shift+P</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="clear_term">
+         <property name="text">
+          <string>Clear</string>
+         </property>
+         <property name="icon">
+          <iconset resource="rc.qrc">
+           <normaloff>:/images/images/clear.png</normaloff>:/images/images/clear.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>16</width>
+           <height>16</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
     </layout>
    </widget>
@@ -1525,6 +1566,11 @@ color: rgb(10,92,179);
   <action name="actionDemo_snapcraft">
    <property name="text">
     <string>Demo Snapcraft</string>
+   </property>
+  </action>
+  <action name="actionNotes">
+   <property name="text">
+    <string>Notes</string>
    </property>
   </action>
  </widget>
