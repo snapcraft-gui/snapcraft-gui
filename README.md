@@ -53,8 +53,8 @@ Snap Store: [Started]
  - install remove snaps from inside [target]
  
 Project editor: [Started]
+ - a note taking widget allowing user to make some notes with autosave features[done]
  - show list of recently opened projects [target]
- - a note taking widget allowing user to make some notes with autosave features[target]
 
 # Screenshots
 
@@ -62,6 +62,7 @@ Project editor: [Started]
 ![snapcraft-gui](https://github.com/keshavbhatt/snapcraft-gui/blob/master/screenshots/sc2.png?raw=true)
 ![snapcraft-gui](https://github.com/keshavbhatt/snapcraft-gui/blob/master/screenshots/sc3.png?raw=true)
 ![snapcraft-gui](https://github.com/keshavbhatt/snapcraft-gui/blob/master/screenshots/sc4.png?raw=true)
+![snapcraft-gui](https://github.com/keshavbhatt/snapcraft-gui/blob/master/screenshots/sc5.png?raw=true)
 
 # How to build
 
