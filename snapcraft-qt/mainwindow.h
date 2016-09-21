@@ -22,6 +22,7 @@
 #include "ui_prime_dialog.h"
 #include "ui_build_dialog.h"
 #include "ui_notes.h"
+#include "ui_recent_projects.h"
 
 #include "ui_editor_settings.h"
 
@@ -47,6 +48,7 @@ private:
     Ui::prime_dialog prui;
     Ui::build_dialog bui;
     Ui::notes nui;
+    Ui::recent rui;
 
     Ui::editor_settings e_settings;
 
@@ -104,6 +106,9 @@ private:
 
     //lineno.
     QTextEdit *currentLineNumberArea();
+
+    //recent project
+    QString recent_Project_url;
 
 
 private slots:
@@ -278,10 +283,13 @@ private slots:
      void setData();
      void saveData();
      void nui_cursorChanged();
-
      void on_actionNotes_triggered();
-
      void changeflag_clicked();
+//recent project
+     void on_open_recent_clicked();
+     void recent_Project_url_changed(QString );
+     void open_recent_project();
+     void remove_recent_project();
 };
 
 #endif // MAINWINDOW_H

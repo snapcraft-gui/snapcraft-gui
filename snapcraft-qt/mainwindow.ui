@@ -77,24 +77,48 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="open_snap">
-           <property name="text">
-            <string>Open (yaml)</string>
+          <layout class="QHBoxLayout" name="horizontalLayout_11">
+           <property name="topMargin">
+            <number>0</number>
            </property>
-           <property name="icon">
-            <iconset resource="rc.qrc">
-             <normaloff>:/images/images/open.png</normaloff>:/images/images/open.png</iconset>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>12</width>
-             <height>12</height>
-            </size>
-           </property>
-           <property name="shortcut">
-            <string>Ctrl+O</string>
-           </property>
-          </widget>
+           <item>
+            <widget class="QPushButton" name="open_snap">
+             <property name="text">
+              <string>Open (yaml)</string>
+             </property>
+             <property name="icon">
+              <iconset resource="rc.qrc">
+               <normaloff>:/images/images/open.png</normaloff>:/images/images/open.png</iconset>
+             </property>
+             <property name="iconSize">
+              <size>
+               <width>12</width>
+               <height>12</height>
+              </size>
+             </property>
+             <property name="shortcut">
+              <string>Ctrl+O</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="open_recent">
+             <property name="text">
+              <string>Recent</string>
+             </property>
+             <property name="icon">
+              <iconset resource="rc.qrc">
+               <normaloff>:/images/images/recent_small.png</normaloff>:/images/images/recent_small.png</iconset>
+             </property>
+             <property name="iconSize">
+              <size>
+               <width>13</width>
+               <height>13</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </item>
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_3">

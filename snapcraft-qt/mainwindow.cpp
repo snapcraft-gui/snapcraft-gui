@@ -31,9 +31,6 @@
 #include <QStandardPaths>
 
 
-
-
-
 int version = 2; //current version of app
 
 
@@ -107,7 +104,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->dockWidget_2->restoreGeometry(settings->value("outputdock_state").toByteArray());
     split1->restoreState(settings->value("split1_state").toByteArray());
 
-    setStyle(":/rc/style.qss");
+    this->setStyle(":/rc/style.qss");
     this->setWindowIcon(QIcon(":/images/images/snapcraft-gui.png"));
 
     //TODO check if snapcraft is installed
@@ -287,6 +284,7 @@ void MainWindow::show_current_snap_options(){
 void MainWindow::hide_session_options(){
     ui->new_snap->hide();
     ui->open_snap->hide();
+    ui->open_recent->hide();
 }
 //hide the session options-------------------------------
 
@@ -294,6 +292,7 @@ void MainWindow::hide_session_options(){
 void MainWindow::show_session_options(){
     ui->new_snap->show();
     ui->open_snap->show();
+    ui->open_recent->show();
 }
 //show the session options-------------------------------
 
@@ -485,11 +484,12 @@ void MainWindow::on_close_current_clicked()
     if(ui->close_current->text()=="Close Demo Session"){
         //ask user to load demo snapcraft in editor
            QMessageBox msgBox;
-           msgBox.setText("Snapcraft-gui will delete Demo session files todoand all related Directories.");
+           msgBox.setText("Snapcraft-gui will delete Demo session files and all related Directories.");
            msgBox.setInformativeText("Do you want to continue ?");
-           msgBox.setStandardButtons(QMessageBox::Cancel | QMessageBox::Yes);
+           msgBox.setStandardButtons(QMessageBox::Cancel | QMessageBox::Yes| QMessageBox::No);
            msgBox.setDefaultButton(QMessageBox::Yes);
            msgBox.buttons().at(1)->setText("Yes Delete");
+           msgBox.buttons().at(2)->setText("Only Close");
            ret = msgBox.exec(); //return code
 
            bool deleted;
@@ -505,18 +505,25 @@ void MainWindow::on_close_current_clicked()
                   //close session
 
                   QTimer::singleShot(1000,this,SLOT(on_close_current_clicked()));
+                  ui->actionDemo_snapcraft->setDisabled(false);
               }
               else{
               ui->terminal->append("Deletion of "+fileName+" failed. Please do it manually if you care deleting the data in /tmp.");
               }
-                 break;
-             case QMessageBox::Cancel:
-                 break;
-             default:
-                 break;
+                    break;
 
+             case QMessageBox::No: //close only
+               close_session();
+               show_session_options();
+               hide_current_snap_options();
+               snapcraft_yaml.clear();
+               ui->save_snapcraft->setDisabled(true);
+                    break;
+              case QMessageBox::Cancel:
+                    break;
+              default:
+                    break;
                }
-           ui->actionDemo_snapcraft->setDisabled(false);
 
     }else{//this is for regular snapcraft.yaml files and user's projects
     //check if chnages in editor are to be saved first
@@ -660,7 +667,7 @@ void MainWindow::on_save_snapcraft_clicked()
 
     //if file saved
     if(saveFile()){
-    ui->terminal->append("<span style='color:red'>Editor: </span>Saved file"+fileName+done_message);
+    ui->terminal->append("<span style='color:red'>Editor: </span>Saved file "+fileName+done_message);
 
     //disable after save
     ui->save_snapcraft->setDisabled(true);
@@ -756,6 +763,19 @@ void MainWindow::on_snapcraft_path_textChanged(const QString &arg1)
         ui->actionPull->setDisabled(false);
         ui->actionSnap->setDisabled(false);
         ui->actionStage->setDisabled(false);
+
+
+        //add entry to recent project
+        QString path= QStandardPaths::writableLocation(QStandardPaths::DataLocation)+"/recent_Data";
+        QDir dir(path);
+        if (!dir.exists())
+            dir.mkpath(path);
+        QFile file(path+"/recent.txt");
+        QString text = ui->snapcraft_path->text();
+        file.open(QIODevice::Append|QIODevice::Text);
+        QTextStream out(&file);
+        out<<text<<endl;
+        file.close();
     }
 }
 
@@ -1005,7 +1025,7 @@ void MainWindow::on_package_manager_clicked()
 
 void MainWindow::on_actionClean_triggered()
 {
-    clean_custom();
+    on_clean_toolButton_clicked();
 }
 
 
@@ -2154,6 +2174,7 @@ void MainWindow::demo_file_request_done(){
                                tr("Network Error."));
       ui->terminal->append("<span style='color:red'>Load Demo: </span>"+this->reply->errorString());
       ui->close_current->setText("Close Current");
+      ui->actionDemo_snapcraft->setEnabled(true);
   }
 }
 
@@ -2416,7 +2437,7 @@ void MainWindow::on_notes_clicked()
     {
 
          command_widget->setWindowFlags(Qt::Popup);
-         command_widget->move(ui->notes->mapToGlobal(QPoint(-10,-command_widget->height()-4)));
+         command_widget->move(ui->notes->mapToGlobal(QPoint(-5,-command_widget->height()-4)));
 
          command_widget->showNormal();
          nui.note_edit->setFocus();
@@ -2487,21 +2508,126 @@ void MainWindow::saveData()
     out<<text<<endl;
 //    file.close();
 }
-//show notes widget  //notes function///////////////////////////////////////////////////////////////////////////////
-
 void MainWindow::on_actionNotes_triggered()
 {
     on_notes_clicked();
 }
-
-
-
 void MainWindow::changeflag_clicked()
 {
     if(command_widget->isVisible()){
         command_widget->setWindowFlags(Qt::Dialog);
+//        command_widget->setWindowModality(Qt::ApplicationModal);
         command_widget->showNormal();
         nui.changeflag->hide();
     }
 
 }
+//show notes widget  //notes function///////////////////////////////////////////////////////////////////////////////
+
+
+//recent docs dialog open////////////////////////////////////////////////////////////////////////////////////////////////
+void MainWindow::on_open_recent_clicked()
+{
+    command_widget=new QWidget();
+    rui.setupUi(command_widget);
+    if(!command_widget->isVisible())
+    {
+         command_widget->setWindowFlags(Qt::Popup);
+         command_widget->move(ui->open_recent->mapToGlobal(QPoint(0,30)));
+         command_widget->resize(500,225);
+         command_widget->showNormal();
+         rui.projects_list->setFocus();
+
+       connect(rui.open,SIGNAL(clicked()),SLOT(open_recent_project()));
+       connect(rui.remove,SIGNAL(clicked()),SLOT(remove_recent_project()));
+       connect(rui.projects_list,SIGNAL(currentTextChanged(QString)),SLOT(recent_Project_url_changed(QString)));
+
+
+    }
+    //read recent proejct file and load to ui
+    QString path= QStandardPaths::writableLocation(QStandardPaths::DataLocation)+"/recent_Data";
+    QDir dir(path);
+    if (!dir.exists())
+        dir.mkpath(path);
+    QFile file(path+"/recent.txt");
+    file.open(QIODevice::ReadOnly| QIODevice::Text);
+    QTextStream textStream(&file);
+    QStringList pro;
+    while (!textStream.atEnd()) {//check if project file exists or not if yes add it to Stringlist to process further
+        QString address =textStream.readLine();
+        bool present = QFileInfo(address).exists();
+        if(present){
+            pro.append(address);
+        }
+    }
+
+    QSet<QString> set = pro.toSet();
+
+    for(int i=0;i<set.size();i++){
+            rui.projects_list->addItem(set.toList().at(i));
+            rui.projects_list->item(i)->setIcon(QIcon(":/images/images/package_manager.png"));
+    }
+    if(set.size()>0){
+        rui.remove->setEnabled(true);
+    }
+    else{
+        rui.remove->setEnabled(false);
+    }
+}
+
+void MainWindow::recent_Project_url_changed(QString str){
+    if(str.length()>0){
+        rui.open->setEnabled(true);
+    }else{
+        rui.open->setEnabled(false);
+    }
+    recent_Project_url=str;
+}
+//open a recent project form listwidget
+void MainWindow::open_recent_project(){
+    fileName=recent_Project_url;
+    ui->yaml->clear();
+
+    load_snapcraft_yaml();
+    //hide the session options
+    hide_session_options();
+    //show current snap options
+    show_current_snap_options();
+
+    //set snap name
+    ui->snapcraft_path->setText(fileName);
+    setWindowTitle("Snapcraft GUI >> "+snapname + " @ "+fileName);
+
+    //run tree command
+    show_tree();
+    if(command_widget->isVisible()){
+       command_widget->hide();
+
+       //write clean data to recent project log file
+       QString path= QStandardPaths::writableLocation(QStandardPaths::DataLocation)+"/recent_Data";
+       QDir dir(path);
+       if (!dir.exists())
+           dir.mkpath(path);
+       QFile file(path+"/recent.txt");
+       QStringList l;
+
+       for(int i= 0;i<rui.projects_list->count();i++){
+           l.append(rui.projects_list->item(i)->text()+"\n");
+       }
+
+       file.open(QIODevice::WriteOnly|QIODevice::Text);
+       QTextStream out(&file);
+       for (int i=0;i<l.size();i++){
+       out<<l.at(i);
+       }
+       file.close();
+    }
+}
+void MainWindow::remove_recent_project(){
+
+    //write clean data to recent project log file
+   QString path= QStandardPaths::writableLocation(QStandardPaths::DataLocation)+"/recent_Data/recent.txt";
+   rui.remove->setEnabled(QFile(path).remove());
+   command_widget->hide();
+}
+//recent docs dialog open////////////////////////////////////////////////////////////////////////////////////////////////
